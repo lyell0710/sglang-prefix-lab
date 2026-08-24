@@ -90,3 +90,15 @@
 - **产物**:records/EXP-P07 + 9 jsonl raw + derived + figures/fig2;README/
   RESUME_EVIDENCE 措辞升级。
 - **下一步**:等全区审计工作流结果并逐条修复;面试索引落 Resume 仓。
+
+## 2026-08-24 · EXP-P08(8B 调度权衡)+ 审计收尾批次
+
+- **做了什么**:P08 落账(boundary 档 lpm p50 −62%/hit +17.7pp/p99 +64%——
+  分位数再分配);按全区审计整改本仓:红线表状态同步、theory S→P 编号回填+
+  实证节补数、作废两批移 archive、P04-P08 聚合脚本补链(derived 全部可重算+
+  provenance 头)、raw 目录 manifest、图 dpi 220 并入引用。
+- **为什么**:审计发现"收尾同步"是本仓系统性弱点;P08 完成 P04 的 8B backlog。
+- **关键数字**:见 records/EXP-P08 §5 与各 derived csv。
+- **产物**:records/EXP-P08、scripts/aggregate_{groups,evict,route}.py、
+  data/archive/EXP-P0{2,6}/、各 manifest.txt。
+- **下一步**:待用户建远端后推送;sibling 完成 S04 后补交叉复核。

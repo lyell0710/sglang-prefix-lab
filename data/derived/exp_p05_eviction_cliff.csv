@@ -1,9 +1,9 @@
-# derived from data/raw/EXP-P05/*.json (3 seeds each), model: hit iff pool >= reuse distance 8192*(1+cold_ratio)
-pool_tokens,cold_ratio,reuse_distance_tokens,hot_hit_frac_mean,hot_hit_frac_std,full_hits_of_16,evicted_tokens_endrun_mean
-8192,0,8192,1.0,0.0,16,338600
-8192,1,16384,0.0625,0.0,1,402992
-8192,2,24576,0.0625,0.0,1,500280
-8192,4,40960,0.0625,0.0,1,663360
-16384,4,40960,0.125,0.0,2,306640
-default(~large),0,8192,1.0,0.0,16,0
-default(~large),4,40960,1.0,0.0,16,0
+# provenance: env=sglang-lab cmd="python scripts/aggregate_evict.py" source=data/raw/EXP-P05/*.json (3 seeds/cell)
+pool_tokens,cold_ratio,reuse_distance_tokens,hot_hit_frac_mean,hot_hit_frac_std,full_hits_mean_of_16,evicted_tokens_endrun_mean
+16384,4,40960,0.1250,0.0000,2.0,306640
+8192,0,8192,1.0000,0.0000,16.0,338600
+8192,1,16384,0.0625,0.0000,1.0,402992
+8192,2,24576,0.0625,0.0000,1.0,500280
+8192,4,40960,0.0625,0.0000,1.0,663360
+default,0,8192,1.0000,0.0000,16.0,0
+default,4,40960,1.0000,0.0000,16.0,0

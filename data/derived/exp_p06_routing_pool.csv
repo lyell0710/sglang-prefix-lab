@@ -1,7 +1,6 @@
-# derived from data/raw/EXP-P06/20260824T165910_*.json (3 seeds each, std=0 on all cells)
-# workers: 2x pool 8192 tokens; hot prefixes ~1536 tok, full prompts ~2150 tok (actual, from usage); serial c=1 rotation x4
-config,policy,hot_hit_frac,full_hits,per_worker_traffic_split,mechanism
-hot6_even,round_robin,1.0000,24/24,~50/50,parity-sharding: each worker sees only 3 prefixes (dist ~6450 < 8192)
-hot6_even,cache_aware,0.0020,0/24,100/0,affinity concentrates all tenants on one worker (dist ~12900 > 8192)
-hot5_odd,round_robin,0.0020,0/20,~50/50,parity broken: each worker sees all 5 prefixes (dist ~10750 > 8192)
-hot5_odd,cache_aware,0.0020,0/20,100/0,same concentration collapse
+# provenance: env=sglang-lab cmd="python scripts/aggregate_route.py" source=data/raw/EXP-P06/20260824T165910_*.json (3 seeds/cell, std=0)
+config,policy,hot_hit_frac_mean,full_hits_mean,n_hot,worker0_traffic_mean,worker1_traffic_mean
+hot5_odd,cache_aware,0.0020,0.0,20,51408,0
+hot5_odd,round_robin,0.0020,0.0,20,25979,25429
+hot6_even,cache_aware,0.0020,0.0,24,0,61658
+hot6_even,round_robin,1.0000,24.0,24,30804,30855

@@ -20,7 +20,7 @@ for row in csv.DictReader(l for l in open(src) if not l.startswith("#")):
     key = (row["arm"], row["concurrency"])
     series.setdefault(key, []).append(
         (int(row["prefix_len"]), float(row["ttft_p50_mean_ms"]), float(row["ttft_p50_std_ms"])))
-fig, ax = plt.subplots(figsize=(7, 4.2), dpi=150)
+fig, ax = plt.subplots(figsize=(7, 4.2), dpi=220)
 style = {("on","1"): ("#1a6fb8","o","radix on · 并发1"),
          ("on","8"): ("#0f4c81","s","radix on · 并发8"),
          ("off","1"): ("#c0392b","^","disable-radix · 并发1(反例臂)")}

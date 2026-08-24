@@ -1,4 +1,4 @@
-# derived from data/raw/EXP-P04/*.json (3 seeds), scripts inline in EXP-P04 record
+# provenance: env=sglang-lab cmd="python scripts/aggregate_groups.py data/raw/EXP-P04 data/derived/exp_p04_fcfs_vs_lpm.csv" source=data/raw/EXP-P04/*_s*.json (3 seeds/cell)
 tier,policy,rounds,p50_mean_ms,p50_std,p95_mean_ms,p95_std,p99_mean_ms,p99_std,hit_frac_mean,hit_frac_std,dur_s_mean
 boundary,fcfs,3,249.0,8.4,613.5,32.4,660.6,35.5,0.9918,0.0109,3.27
 boundary,lpm,3,233.4,5.5,640.8,9.8,747.1,20.0,0.9678,0.0050,3.34

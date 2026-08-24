@@ -30,6 +30,7 @@
 | EXP-P04 | lpm_vs_fcfs | 2026-08-24 | ✅ | std 档无可区分;boundary 档(192req>128 窗口)lpm p99 反劣 13%、hit −2.4pp(2σ)→ data/derived/exp_p04_fcfs_vs_lpm.csv |
 | EXP-P05 | eviction_pressure | 2026-08-24 | ✅ | LRU 悬崖:池<重用距离(8192×(1+cr))时 hit 1.0→0.0625 阶跃,三池验证,std=0 → data/derived/exp_p05_eviction_cliff.csv |
 | EXP-P07 | 8b_hit_benefit_curve | 2026-08-24 | ✅ | Qwen3-8B:TTFT p50 −77%(c1)/−78%(c8)@prefix 1792/2048;device_hit 逐 token 闭环复现;off 臂平 → data/derived/exp_p07_8b_ttft_vs_prefix.csv |
+| EXP-P08 | 8b_scheduling_tradeoff | 2026-08-24 | ✅ | 8B boundary:lpm p50 −62%/hit +17.7pp 但 p99 +64%——分位数再分配,不是标量优劣 → data/derived/exp_p08_8b_fcfs_vs_lpm.csv |
 | EXP-P06 | routing_pool_capacity | 2026-08-24 | ✅ | 双预测双证伪:rr@偶数热集=奇偶分片巧合全命中;cache_aware 冷启动全钉一卡而崩(100/0 流量);hot5 对照坐实 → data/derived/exp_p06_routing_pool.csv |
 
 ## 当前关键数字
@@ -37,21 +38,21 @@
 - **命中收益曲线(EXP-P07,Qwen3-8B,3 seeds)**:共享前缀 1792/2048 时 TTFT p50
   228.4→52.9ms(并发 1,**−77%**)、1068.3→234.5ms(并发 8,**−78%**);
   disable-radix 反例臂全线打平;engine device_hit=466,944 与客户端 Σcached
-  逐 token 相等 → data/derived/exp_p07_8b_ttft_vs_prefix.csv,figures/fig2
+  逐 token 相等 → data/derived/exp_p07_8b_ttft_vs_prefix.csv,figures/fig2(dpi220)
 - 0.6B 机理版曲线(EXP-P03):−36%/−63%,量化了小模型的非 prefill 地板效应
   → data/derived/exp_p03_ttft_vs_prefix.csv,figures/fig1
 - radix 首证:第二发 cached=1324/1325(=n−1)(EXP-P01)
 - 逐出悬崖(EXP-P05):LRU 命中 ⇔ 池 ≥ 热前缀重用距离 8192×(1+cr);越线即 1.0→0.0625 崩塌(三池、3 seeds、std=0)
-- 调度窗口(EXP-P04):lpm 轻载无可区分,192-req 积压档 p99 反劣 13%
+- 调度权衡(EXP-P08,8B):积压档 lpm p50 −62%、命中 +17.7pp、p99 +64%——延迟在分位数间再分配;0.6B 版(EXP-P04)为单纯反劣,模型重量改变权衡形态
 - 路由×容量(EXP-P06):cache-aware 亲和在低负载把全部热前缀钉到一张卡(流量 100/0)反而崩;rr 的全命中是轮转周期与卡数整除的巧合——映射分散度 > 策略标签
 
 ## 措辞红线
 
 | 主张 | 状态 | 解锁条件 |
 |---|---|---|
-| "搭建 SGLang 前缀缓存实验台" | ⛔ | EXP-P01 全 PASS |
+| "搭建 SGLang 前缀缓存实验台(单 worker)" | ✅ 已解锁(EXP-P01,08-24)| — |
 | "前缀命中使 TTFT 降 77%/78%"(8B) | ✅ 已解锁 | EXP-P07 全 gate PASS(3 seeds+反例臂+计数器闭环)|
-| "lpm 调度提升命中率/尾延迟" | ⛔ | EXP-P04 gate 全过 |
+| "lpm 调度提升命中率/尾延迟"(无定语) | 🚫 永久禁用 | P04(0.6B 反劣)与 P08(8B 分位数再分配)证明须带模型/负载/分位数定语 |
 | "router cache-aware 提升 TTFT/吞吐"类主张 | ⛔ | 本仓只测了容量受限机理格(P06);性能矩阵属 sibling 仓范围 |
 | "生产级/多机/集群" | 🚫 | 超出硬件与实验范围 |
 

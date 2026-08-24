@@ -55,13 +55,13 @@ verified_against: EXP-P01(cached=n−1 实测)、EXP-P02(契约矩阵)
   否则建 `RadixCache`(:165-167)。→ 我们的反例臂(证明收益确来自前缀复用)可以用
   `--disable-radix-cache` 做 A/B 对照。
 
-## 3. 本项目实证(待跑,EXP-S02/S04)
+## 3. 本项目实证(已回填)
 
-- EXP-S02 正确性/契约:构造 byte 级相同前缀的 manifest,单 worker 开 `--enable-cache-report`,
-  验 `usage.prompt_tokens_details.cached_tokens`(见 §4)= 预期共享前缀长度(±page)。
-- EXP-S04:`sglang:cache_hit_rate` 与 per-worker `cached_tokens_total` 随路由策略变化。
-- 反例臂:`--disable-radix-cache` 时命中率应 ≈0,cache-aware 相对 round-robin 的 TTFT 收益消失。
-  *(数字待本仓 raw;此处只写机制,不写未测数字——CORE 铁律 6。)*
+- cached = **prompt−1 的精确值**(1324/1325),不是近似——"至少重算 1 token"上限的实测锚(EXP-P01)。
+- 契约矩阵五格:input_ids/salt_same 均 n−1、salt_diff 全 miss、thinking 开关纯尾扩展不破坏共享(EXP-P02,含证伪与修正)。
+- 收益:TTFT p50 −77%(c1)/−78%(c8)@ Qwen3-8B, prefix 1792/2048(EXP-P07);0.6B 版 −36%/−63%(EXP-P03);
+  `disable-radix` 反例臂全线打平;engine `device_hit=466,944` 与客户端 Σcached 逐 token 相等(P03/P07 双复现)。
+- 逐出:LRU 命中 ⇔ 池 ≥ 重用距离(EXP-P05,三池 std=0)。
 
 ## 4. 怎么"看见"命中(观测点,写实验必须知道)
 
@@ -76,7 +76,7 @@ verified_against: EXP-P01(cached=n−1 实测)、EXP-P02(契约矩阵)
   `sglang:evicted_tokens_total`。
 - **每请求时序**(仅 `--enable-metrics`):`e2e_latency`(恒设)、`queue_time`、
   `forward_entry_time`、`prefill_finished_time`(req_time_stats.py:1167-1182)——
-  这批字段让我们把 TTFT 拆成"排队 vs prefill",做 S05 归因。
+  这批字段可把 TTFT 拆成"排队 vs prefill";本仓的归因闭环实际用 counter 差分完成(EXP-P03/P07 §6)。
 - `/flush_cache`(http_server.py:966-981):**仅在 idle 时**真的清(scheduler.py:4251-4279),
   有 pending 请求会 warn 且 success=false。→ 每个 A/B arm 冷启动 = flush 且确认成功后开始。
 
