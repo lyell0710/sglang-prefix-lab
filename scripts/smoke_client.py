@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Dependency-free OpenAI-compatible deterministic smoke probe."""
+"""Dependency-free OpenAI-compatible deterministic transport smoke probe."""
 
 from __future__ import annotations
 
@@ -48,11 +48,17 @@ def main() -> int:
         "temperature": 0.0,
         "max_tokens": 16,
         "stream": False,
+        "chat_template_kwargs": {"enable_thinking": False},
     }
     chat_status, chat, chat_s = request_json(
         f"{args.base_url}/v1/chat/completions", payload, args.timeout
     )
-    passed = models_status == 200 and chat_status == 200
+    choices = chat.get("choices", []) if isinstance(chat, dict) else []
+    content = ""
+    if choices:
+        message = choices[0].get("message", {})
+        content = message.get("content") or ""
+    passed = models_status == 200 and chat_status == 200 and bool(content.strip())
     result = {
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "base_url": args.base_url,
@@ -61,6 +67,7 @@ def main() -> int:
         "chat_status": chat_status,
         "models_elapsed_s": models_s,
         "chat_elapsed_s": chat_s,
+        "nonempty_content": bool(content.strip()),
         "passed": passed,
         "models_response": models,
         "chat_response": chat,
@@ -71,4 +78,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

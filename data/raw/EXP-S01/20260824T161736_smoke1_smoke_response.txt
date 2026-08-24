@@ -1,0 +1,55 @@
+# provenance: env=sglang-lab sha=71de97b264b04dcd514cf904003028aefe9775c8 evidence_sha=582fc6af2a6809865260135b28a8bf60b7b66898 cmd="bash scripts/run_smoke.sh smoke1 http://127.0.0.1:18001 Qwen/Qwen3-0.6B EXP-S01" date=2026-08-24T16:17:36Z gpu="NVIDIA GeForce RTX 4090" driver=610.57.04 seed=none
+{
+  "timestamp_utc": "2026-08-24T16:17:37.214260+00:00",
+  "base_url": "http://127.0.0.1:18001",
+  "model": "Qwen/Qwen3-0.6B",
+  "models_status": 200,
+  "chat_status": 200,
+  "models_elapsed_s": 0.03192621807102114,
+  "chat_elapsed_s": 0.057638474041596055,
+  "passed": true,
+  "models_response": {
+    "object": "list",
+    "data": [
+      {
+        "id": "Qwen/Qwen3-0.6B",
+        "object": "model",
+        "created": 1787588257,
+        "owned_by": "sglang",
+        "root": "Qwen/Qwen3-0.6B",
+        "parent": null,
+        "max_model_len": 4096
+      }
+    ]
+  },
+  "chat_response": {
+    "id": "664bccc2da1e45508e4390611782a159",
+    "object": "chat.completion",
+    "created": 1787588257,
+    "model": "Qwen/Qwen3-0.6B",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "<think>\nOkay, the user wants me to reply with exactly \"SGLang",
+          "reasoning_content": null,
+          "tool_calls": null
+        },
+        "logprobs": null,
+        "finish_reason": "length",
+        "matched_stop": null
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 17,
+      "total_tokens": 33,
+      "completion_tokens": 16,
+      "prompt_tokens_details": null,
+      "reasoning_tokens": 0
+    },
+    "metadata": {
+      "weight_version": "default"
+    }
+  }
+}

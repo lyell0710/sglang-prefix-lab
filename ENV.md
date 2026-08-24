@@ -11,14 +11,16 @@
 
 ## 固定版本
 
-性能基线锁定 SGLang `v0.5.18`，不跟随 mutable `main` 或 `latest`。该版本官方依赖包括
-Torch 2.13.0、FlashInfer 0.6.17、`sglang-kernel` 0.4.6.post1；最终完整 freeze 由 EXP-S01 生成。
+性能基线锁定 SGLang `v0.5.18@71de97b264b0`，不跟随 mutable `main` 或 `latest`。本机已验证
+Torch 2.13.0+cu130、Triton 3.7.1、Transformers 5.12.1、FlashInfer 0.6.17、
+`sglang-kernel` 0.4.6.post1、`sglang-router` 0.3.2。完整 freeze：
+`data/raw/EXP-S01/20260824T161031_pip_freeze.txt`。
 
 建议复现方式：
 
 ```bash
 uv venv --python 3.12 .venv
-uv pip install --python .venv/bin/python --prerelease=allow 'sglang==0.5.18' sglang-router
+uv pip install --python .venv/bin/python 'sglang==0.5.18' 'sglang-router==0.3.2'
 ```
 
 安装后必须运行 EXP-S01 smoke；“pip 成功”不等于 CUDA backend 可用。

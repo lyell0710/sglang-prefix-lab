@@ -1,0 +1,33 @@
+# provenance: env=sglang-lab sha=71de97b264b04dcd514cf904003028aefe9775c8 evidence_sha=582fc6af2a6809865260135b28a8bf60b7b66898 cmd="bash scripts/preflight.sh data/raw/EXP-S01/20260824T161135_preflight_before_smoke.txt" date=2026-08-24T16:12:10Z gpu="NVIDIA GeForce RTX 4090" driver=610.57.04 seed=none
+project_root=/root/projects/sglang-inference-lab
+date_utc=2026-08-24T16:12:10Z
+host=cpod-1u8o0xv30sr6
+kernel=6.12.101-compshare
+python=Python 3.12.11
+uv=uv 0.12.5 (x86_64-unknown-linux-gnu)
+cuda=13.2
+disk_root=197G/350G used=57% available=154G
+
+[gpu]
+0, NVIDIA GeForce RTX 4090, GPU-9fb3e681-924d-fd76-ef23-7062772e4827, 4 MiB, 24564 MiB, 0 %, P8, 27, 450.00 W
+1, NVIDIA GeForce RTX 4090, GPU-d5e97115-f626-5692-9eb6-1dc7685e8a4b, 1 MiB, 24564 MiB, 0 %, P8, 25, 450.00 W
+
+[gpu_compute_processes]
+
+[ports]
+port_18000=free
+port_18001=free
+port_30000=free
+
+[uninterruptible_tasks]
+
+[sglang_processes]
+ 627852       1 Ssl  /root/venvs/sglang-lab/bin/python -m sglang.launch_server --model-path /root/.cache/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca --served-model-name Qwen/Qwen3-0.6B --host 127.0.0.1 --port 18000 --tp-size 1 --context-length 4096 --mem-fraction-static 0.55 --enable-metrics --log-level info
+ 628356  627852 S    /root/venvs/sglang-lab/bin/python -c from multiprocessing.resource_tracker import main;main(21)
+ 628357  627852 Rl   /root/venvs/sglang-lab/bin/python -c from multiprocessing.spawn import spawn_main; spawn_main(tracker_fd=22, pipe_handle=24) --multiprocessing-fork
+ 628358  627852 Rl   /root/venvs/sglang-lab/bin/python -c from multiprocessing.spawn import spawn_main; spawn_main(tracker_fd=22, pipe_handle=24) --multiprocessing-fork
+ 628722  623356 Ss   /bin/bash -c source /root/.claude/shell-snapshots/snapshot-bash-1787587727904-pzmeg6.sh 2>/dev/null || true && shopt -u extglob 2>/dev/null || true && { \builtin unalias -- 'unsetenv'; \builtin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'source scripts/provenance.sh && TS=20260824T161135 && P=data/raw/EXP-S01 bash scripts/preflight.sh $P/${TS}_preflight_before_smoke.txt > /dev/null bash scripts/worker_ctl.sh start w0 0 18000 --model-path Qwen/Qwen3-0.6B --revision c1899de289a04d12100db370d81485cdf75e47ca --tp 1 --mem-fraction-static 0.8 --enable-metrics --log-level info bash scripts/worker_ctl.sh wait_health w0 600; rc=$?; echo "health rc=$rc" if [ $rc -eq 0 ]; then   /root/venvs/sglang-lab/bin/python scripts/smoke_client.py --base-url http://127.0.0.1:18000 --model Qwen/Qwen3-0.6B > $P/${TS}_w0_smoke.json; echo "smoke rc=$?"   { prov_line "python scripts/smoke_client.py --base-url http://127.0.0.1:18000 --model Qwen/Qwen3-0.6B"; } > $P/${TS}_w0_smoke.json.prov   { prov_line "nvidia-smi --query-gpu=index,memory.used,utilization.gpu,temperature.gpu,clocks.sm --format=csv"; nvidia-smi --query-gpu=index,memory.used,utilization.gpu,temperature.gpu,clocks.sm --format=csv; } > $P/${TS}_w0_gpu_after_smoke.csv   { prov_line "curl -s http://127.0.0.1:18000/get_server_info"; curl -s http://127.0.0.1:18000/get_server_info; } > $P/${TS}_w0_server_info.json   { prov_line "curl -s http://127.0.0.1:18000/metrics"; curl -s http://127.0.0.1:18000/metrics; } > $P/${TS}_w0_metrics.txt   { prov_line "cp runtime/w0.log (startup log)"; cat runtime/w0.log; } > $P/${TS}_w0_startup.log   echo "=== smoke result"; python3 -c "import json; d=json.load(open('"'"'$P/${TS}_w0_smoke.json'"'"')); print({k:d[k] for k in ['"'"'models_status'"'"','"'"'chat_status'"'"','"'"'models_elapsed_s'"'"','"'"'chat_elapsed_s'"'"','"'"'passed'"'"']}); print(d['"'"'chat_response'"'"']['"'"'choices'"'"'][0]['"'"'message'"'"']['"'"'content'"'"'][:200]); print(d['"'"'chat_response'"'"'].get('"'"'usage'"'"'))"   echo "=== backend / key startup lines"; grep -iE "attention backend|attn_backend|Capture cuda graph|max_total_num_tokens|KV size|Load weight|memory|sampling backend" runtime/w0.log | head -12   cat $P/${TS}_w0_gpu_after_smoke.csv | tail -2 fi' < /dev/null && pwd -P >| /tmp/claude-1529-cwd
+
+[upstream]
+/root/repos/sglang-v0.5.18 sha=71de97b264b04dcd514cf904003028aefe9775c8 describe=v0.5.18 dirty=no
+/root/repos/sglang sha=76d1401881f2593b0f781146b87ce27583b6209a describe=76d1401 dirty=no

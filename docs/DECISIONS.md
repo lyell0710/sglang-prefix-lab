@@ -20,3 +20,9 @@
 - 决策：服务脚本只管理自身写入 `runtime/` 的 PID；不使用 killall/模糊 pkill。
 - 原因：共享机器上有 Jupyter、Cursor/Claude 和其他项目守护进程。
 
+## D-004 · 单一服务生命周期入口
+
+- 日期：2026-08-24
+- 决策：后续统一使用 `scripts/service_ctl.sh`；并发 bootstrap 产生的 `scripts/worker_ctl.sh` 只保留作事故证据。
+- 原因：EXP-S01 曾有两个 agent 同时向 GPU0/port 18000 启动 worker。canonical 脚本在启动前同时检查端口和
+  GPU compute process，并只停止自己记录且身份核对通过的进程组。

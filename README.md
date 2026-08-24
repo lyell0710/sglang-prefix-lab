@@ -1,4 +1,4 @@
-# SGLang Inference Lab · 前缀缓存与双副本路由
+# SGLang Agentic Serving Lab · 前缀缓存与双副本路由
 
 > 本文件是项目的**唯一状态源**：项目边界、运行入口、EXP 台账、当前数字和简历措辞红线均以此为准。
 > 实验协议见 [docs/PLAN.md](docs/PLAN.md)，学习路线见 [docs/STUDY_GUIDE.md](docs/STUDY_GUIDE.md)，过程记录见
@@ -13,6 +13,7 @@
 
 项目主角是**工作负载设计、请求级证据和边界归因**，不是“把服务跑起来”。所有 headline 数字必须由固定
 workload manifest、正确性 gate、router/worker metrics、GPU telemetry 和至少 3 个独立 round 共同支撑。
+主矩阵先用可控 generated-shared-prefix 建因果证据，再在 EXP-S05 用 agentic/multi-turn trace 检查外部有效性。
 
 ### 与现有项目的边界
 
@@ -35,16 +36,24 @@ workload manifest、正确性 gate、router/worker metrics、GPU telemetry 和�
 
 ## 怎么跑
 
-当前处于 bootstrap，先运行无副作用体检：
+先运行无副作用体检：
 
 ```bash
 cd /root/projects/sglang-inference-lab
 bash scripts/preflight.sh
 ```
 
-环境和服务入口会在 EXP-S01 smoke 通过后写入本节；在此之前不提供未经验证的“一键 benchmark”命令。
-远端安装方法见 [ENV.md](ENV.md)，本机路径只登记在
-`/root/work/infra/machine/ENV_REGISTRY.md`。
+已验证的单 worker smoke：
+
+```bash
+model_snapshot=/root/.cache/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca
+scripts/service_ctl.sh start-worker smoke1 1 18001 "$model_snapshot" Qwen/Qwen3-0.6B 4096 0.35
+scripts/wait_http.py http://127.0.0.1:18001/health --timeout 300
+scripts/run_smoke.sh smoke1 http://127.0.0.1:18001 Qwen/Qwen3-0.6B EXP-S01
+scripts/service_ctl.sh stop smoke1
+```
+
+远端安装方法见 [ENV.md](ENV.md)，本机路径只登记在 `/root/work/infra/machine/ENV_REGISTRY.md`。
 
 ## EXP 索引台账
 
@@ -53,7 +62,7 @@ bash scripts/preflight.sh
 | 编号 | slug | 日期 | 状态 | 关键数字（指针） |
 |---|---|---:|:---:|---|
 | EXP-S00 | bootstrap_audit | 2026-08-24 | ✅ | GPU/端口空闲；超时最可能来自 host I/O 阻塞（records/EXP-S00） |
-| EXP-S01 | env_and_single_worker_smoke | — | ⬜ | 无 |
+| EXP-S01 | env_and_single_worker_smoke | 2026-08-24 | ✅ | v0.5.18 + CUDA PASS；0.6B worker/API/metrics PASS（records/EXP-S01） |
 | EXP-S02 | correctness_and_workload_contract | — | ⬜ | 无 |
 | EXP-S03 | dual_replica_router_observability | — | ⬜ | 无 |
 | EXP-S04 | routing_policy_matrix | — | ⬜ | 无 |
@@ -63,7 +72,8 @@ bash scripts/preflight.sh
 
 ## 当前关键数字
 
-暂无可用于简历的性能数字。环境体检结果是运维事实，不是性能结论。
+暂无可用于简历的性能数字。已确认 SGLang v0.5.18 在 RTX 4090 上完成 CUDA/JIT/Graph、RadixCache、
+OpenAI API 与 metrics smoke；这是环境 gate，不是 latency benchmark（EXP-S01）。
 
 ## 措辞红线
 

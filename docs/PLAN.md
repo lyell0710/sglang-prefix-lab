@@ -11,6 +11,7 @@
 
 - SGLang v0.5.18；Qwen3-0.6B 只做 smoke，正式矩阵使用固定 revision 的 Qwen3-8B；BF16/greedy。
 - GPU0/GPU1 各一个 TP=1 worker；相同 server 参数和显存配额。
+- CUDA Graph 先使用 v0.5.18 默认；每个模型的 `mem-fraction-static` 只在单进程 smoke 后锁定，所有路由臂保持一致。
 - 每次 A/B 使用同一请求 manifest、相同 seed、相同 worker 冷启动和固定 warmup。
 - client 与两 worker 同机，因此只比较策略，不外推网络集群。
 
@@ -75,7 +76,8 @@
 
 ### EXP-S05 · boundary and profile attribution
 
-围绕 S04 的反转点做最小附加 sweep；用独立 profile run 验证是 prefix prefill、排队还是路由开销主导，不混用 profile 时延。
+围绕 S04 的反转点做 Zipf/阈值最小附加 sweep；用独立 profile run 验证是 prefix prefill、排队还是路由开销主导，
+不混用 profile 时延。最后用官方 agentic-trace 或固定 multi-turn replay 检查受控 GSP 结论能否外推到会话型流量。
 
 ### EXP-S06 · repeatability and resume evidence
 
