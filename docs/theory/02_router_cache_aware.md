@@ -84,6 +84,15 @@ python -m sglang_router.launch_router \
 换 `--policy round_robin` 得对照臂(其余参数不变)。**同一 manifest、同 seed、
 两臂 worker 冷启动等价**(见 protocol)。
 
+## 5.5 容量受限下的亲和集中(EXP-P06 实测补节)
+
+双 worker 各限池 8192 token、6 热前缀(~12900 token 工作集)串行轮转:
+cache_aware 把 **100% 流量钉到一张卡**(worker 计数器 61799/0),单池装不下
+整个热集 → 命中 0.002;round_robin 反而全命中——但那是轮转周期 6 与卡数 2
+整除的**巧合分片**(hot5 奇数对照立即崩塌)。教训:亲和性等效于扩大池容量的
+前提是 tenant 分散,而 cache_aware 冷启动(低负载、失衡回退不触发)会集中。
+详见 records/EXP-P06。
+
 ## 6. 面试追问 Q&A
 
 - **Q:cache-aware 一定更快吗?** 不。低并发+强共享前缀时它把热前缀钉住放大命中→TTFT 降;

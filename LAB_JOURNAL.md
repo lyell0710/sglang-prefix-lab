@@ -64,3 +64,18 @@
   8192×(1+cr) ⇔ 命中"三池全符合;预注册的"退化曲线"被实测修正为阶跃。
 - **产物**:records/EXP-P05 + 21 组 raw + derived。
 - **下一步**:面试讲稿(docs/talk)汇总 P01-P05;P06 视 sibling 状态定。
+
+## 2026-08-24 · EXP-P06:双预测双证伪 + 两个 router 工程陷阱
+
+- **做了什么**:双 worker 限池 8192 × {rr, cache_aware} × {hot6 偶, hot5 奇对照}
+  × 3 seed;首轮整批作废(router 丢 input_ids → 请求静默退化;setproctitle 改名
+  → stop 落空致 cache_aware 臂实为 rr),v2 加 prompt_tokens 硬 gate + policy
+  标签前置 gate 重跑。
+- **关键数字**:rr@hot6 命中 1.0(奇偶巧合分片,hot5 崩)、cache_aware 流量
+  100/0 全崩;全部格 seed std=0。
+- **教训**:①中间层可能静默改写请求体——client 端必须对回显(prompt_tokens)
+  设 gate;②进程身份校验要容忍 setproctitle;③扫描进程别用含模式的裸 grep
+  (又差点自匹配)。
+- **产物**:records/EXP-P06 + 12 组有效 raw + 4 组 router 指标 + derived;
+  theory/02 补节;讲稿 P06 段。
+- **下一步**:收尾自检 + 记忆更新;sibling 完成 S04 后可补交叉复核。

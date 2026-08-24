@@ -29,7 +29,7 @@
 | EXP-P03 | hit_benefit_curve | 2026-08-24 | ✅ | TTFT p50:c1 −36%/c8 −63%(prefix 1792/2048);device_hit 计数与 Σcached 逐 token 相等;OFF 臂平 → data/derived/exp_p03_ttft_vs_prefix.csv |
 | EXP-P04 | lpm_vs_fcfs | 2026-08-24 | ✅ | std 档无可区分;boundary 档(192req>128 窗口)lpm p99 反劣 13%、hit −2.4pp(2σ)→ data/derived/exp_p04_fcfs_vs_lpm.csv |
 | EXP-P05 | eviction_pressure | 2026-08-24 | ✅ | LRU 悬崖:池<重用距离(8192×(1+cr))时 hit 1.0→0.0625 阶跃,三池验证,std=0 → data/derived/exp_p05_eviction_cliff.csv |
-| EXP-P06 | dual_replica_crosscheck(扩展) | — | ⬜ | 无 |
+| EXP-P06 | routing_pool_capacity | 2026-08-24 | ✅ | 双预测双证伪:rr@偶数热集=奇偶分片巧合全命中;cache_aware 冷启动全钉一卡而崩(100/0 流量);hot5 对照坐实 → data/derived/exp_p06_routing_pool.csv |
 
 ## 当前关键数字
 
@@ -40,6 +40,7 @@
 - radix 首证:第二发 cached=1324/1325(=n−1)(EXP-P01)
 - 逐出悬崖(EXP-P05):LRU 命中 ⇔ 池 ≥ 热前缀重用距离 8192×(1+cr);越线即 1.0→0.0625 崩塌(三池、3 seeds、std=0)
 - 调度窗口(EXP-P04):lpm 轻载无可区分,192-req 积压档 p99 反劣 13%
+- 路由×容量(EXP-P06):cache-aware 亲和在低负载把全部热前缀钉到一张卡(流量 100/0)反而崩;rr 的全命中是轮转周期与卡数整除的巧合——映射分散度 > 策略标签
 
 ## 措辞红线
 
@@ -48,7 +49,7 @@
 | "搭建 SGLang 前缀缓存实验台" | ⛔ | EXP-P01 全 PASS |
 | "前缀命中使 TTFT 降 X%" | ⛔ | EXP-P03:3 round + 反例臂(disable-radix)+ server 侧归因 |
 | "lpm 调度提升命中率/尾延迟" | ⛔ | EXP-P04 gate 全过 |
-| "router cache-aware ..."(任何路由主张) | 🚫 | 属 sibling 仓范围;仅 P06 交叉复核后可引用其编号 |
+| "router cache-aware 提升 TTFT/吞吐"类主张 | ⛔ | 本仓只测了容量受限机理格(P06);性能矩阵属 sibling 仓范围 |
 | "生产级/多机/集群" | 🚫 | 超出硬件与实验范围 |
 
 ## 怎么跑

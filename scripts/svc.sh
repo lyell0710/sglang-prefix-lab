@@ -15,13 +15,16 @@ port_of() { grep -o -- '--port [0-9]*' "$cmdf" | awk '{print $2}'; }
 
 case "$cmd" in
   start)
-    gpu=${3:?gpu}; port=${4:?port}; shift 4
+    gpu=${3:?gpu}; port=${4:?port}; shift 4     # router 用 gpu 参数占位填 none
     if [[ -f "$pidf" ]] && kill -0 "$(cat "$pidf")" 2>/dev/null; then
       echo "already running: $name pid=$(cat "$pidf")"; exit 1; fi
     if ss -H -ltn "sport = :$port" | grep -q .; then echo "port $port busy"; exit 1; fi
-    launch=("$VENV/bin/python" -m sglang.launch_server --host 127.0.0.1 --port "$port" "$@")
+    mod=sglang.launch_server
+    if [[ "$name" == router* ]]; then mod=sglang_router.launch_router; fi
+    launch=("$VENV/bin/python" -m "$mod" --host 127.0.0.1 --port "$port" "$@")
     printf '%q ' "CUDA_VISIBLE_DEVICES=$gpu" "${launch[@]}" > "$cmdf"; echo >> "$cmdf"
     : > "$logf"
+    [[ "$gpu" == none ]] && gpu=""
     CUDA_VISIBLE_DEVICES=$gpu HF_HUB_OFFLINE=${HF_HUB_OFFLINE:-1} \
       setsid nohup "${launch[@]}" >> "$logf" 2>&1 < /dev/null &
     echo $! > "$pidf"
@@ -50,7 +53,8 @@ case "$cmd" in
     # 身份校验:必须是本 venv 的 python 且在跑 sglang.launch_server
     exe=$(readlink -f "/proc/$pid/exe" || true); cl=$(tr '\0' ' ' < "/proc/$pid/cmdline")
     venv_py=$(readlink -f "$VENV/bin/python")   # uv venv 的 python 是符号链接,比真身
-    if [[ "$exe" != "$venv_py" || "$cl" != *sglang.launch_server* ]]; then
+    # 注意:sglang-router 会 setproctitle 成 "sglang::router",cmdline 不含模块名
+    if [[ "$exe" != "$venv_py" ]] || [[ "$cl" != *sglang.launch_server* && "$cl" != *sglang_router.launch_router* && "$cl" != sglang::router* ]]; then
       echo "REFUSE: pid $pid is not our worker ($exe)"; exit 1; fi
     pgid=$(ps -o pgid= -p "$pid" | tr -d ' ')
     kill -TERM -- "-$pgid" 2>/dev/null || kill -TERM "$pid"

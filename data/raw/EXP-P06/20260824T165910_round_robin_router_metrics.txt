@@ -1,0 +1,3 @@
+# provenance: env=sglang-lab sha=71de97b evidence_sha=9590a56 cmd="router prometheus after round_robin" date=2026-08-24T17:01:07Z gpu="NVIDIA GeForce RTX 4090" driver=610.57.04 seed=none
+# TYPE smg_worker_selection_total counter
+smg_worker_selection_total{worker_type="regular",connection_mode="http",model="Qwen/Qwen3-0.6B",policy="round_robin"} 91
