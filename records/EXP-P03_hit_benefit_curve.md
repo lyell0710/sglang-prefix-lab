@@ -45,6 +45,8 @@ preflight → ON 臂(6 组 jsonl)→ 抓 /metrics → stop → OFF 臂(`--disabl
 cached 校验:ON 臂每请求 cached **精确 = prefix_len**(cached_ok 全 True);
 OFF 臂与 pl=0 全部无 cached。
 
+图:`figures/fig1_p03_ttft_vs_prefix_0p6b.png`(plot_ttft_curve.py 生成,2026-08-24)。
+
 ## 6. 分析与结论
 
 - **三判定全成立**。反例臂钉死因果:收益只在 radix 开启且确有共享前缀时出现。

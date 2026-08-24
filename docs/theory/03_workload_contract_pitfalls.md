@@ -1,6 +1,6 @@
 ---
 topic: 共享前缀实验的工作负载契约 —— "看起来相同"到"token 级相同"之间的坑
-status: 源码级完成;实测锚待 EXP-P02
+status: 完成(实测锚=EXP-P02,含 thinking 证伪修正)
 ---
 
 # 03 · 为什么"同一段文本"不等于"同一段前缀"
@@ -41,7 +41,7 @@ radix 命中判定发生在 **token id 序列**上(theory/01 §2.1),而 OpenAI �
   TPOT=(E2E−TTFT)/(out−1);ITL=chunk 间隔均摊(serving.py:747-767,:1116-1127)。
 - server 侧(`--enable-metrics` 才有):`queue_time`、`forward_entry_time`、
   `prefill_finished_time`、`e2e_latency`(req_time_stats.py:1167-1182,:479-480)。
-  → TTFT ≈ 排队 + prefill + 流式开销;归因实验(EXP-P05)靠 server 侧字段拆分,
+  → TTFT ≈ 排队 + prefill + 流式开销;归因闭环已由 engine counter 差分完成(EXP-P03/P07),
   **不要**拿 client TTFT 直接说"prefill 变快了"。
 - 预热与冷启动:JIT/CUDA graph 首跑污染第一批请求;`/flush_cache` 只在 idle 真清
   (scheduler.py:4251-4279)→ 每臂开始前:确认 flush success=true + 固定 warmup。

@@ -59,6 +59,8 @@ engine_metrics.txt,template_divergence.json}`
 - thinking_flip 的 B 命中含输出重叠 1 token,若换 system-prompt 开头非 `<think>`
   的模型该 +1 不复现——结论限定 Qwen3 模板族。
 
+- 追记(08-24 审计):首跑残留 20260824T163333_*(含 0 字节 json,两次中断产物)已移 data/archive/EXP-P02/ 附原因。
+
 ## 8. 下游影响
 
 - P03/P04 manifest:input_ids 直传为正式形态;messages 形态保留 probe 臂。

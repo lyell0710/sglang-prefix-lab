@@ -1,7 +1,7 @@
 ---
 topic: SGLang 双副本路由 —— round_robin vs cache_aware 的机制与回退
 status: 源码级完成(file:line 锚 sgl-model-gateway = PyPI sglang-router 0.3.2 的实现)
-verified_against: 本仓 EXP-S04(策略矩阵)——待跑
+verified_against: EXP-P06(容量机理格实测,§5.5)
 ---
 
 # 02 · cache-aware 路由:把同前缀送到持有 KV 的那张卡,以及它何时"故意不这么做"
@@ -20,8 +20,8 @@ verified_against: 本仓 EXP-S04(策略矩阵)——待跑
 `cache_aware` 每来一个请求,先看**负载是否已失衡**:失衡就退化成"最短队列"(丢掉
 亲和性保平衡);不失衡才查近似前缀树,匹配率 > 阈值就送到**持有该前缀的 worker**,
 否则送最小负载。**收益来自把热前缀钉在同一张卡上放大 engine 侧 radix 命中;回退
-机制是它在高并发下不至于把所有请求堆到一张卡的安全阀**——这个"回退点"正是 S05 要
-定位的边界。
+机制是它在高并发下不至于把所有请求堆到一张卡的安全阀**。**容量侧已由 EXP-P06 实测(§5.5):低负载(回退不触发)时亲和把全部 tenant 钉到一张卡,池小于工作集则崩**;负载侧的
+定位属 sibling 仓范围。
 
 ## 2. 决策流程(cache_aware.rs:387-526,伪代码带行号)
 
@@ -48,7 +48,7 @@ else                            -> 送最小负载(随机 tie-break)          # 
 | 树上限 | `--max-tree-size` | 2^26 |
 
 读法:`is_imbalanced` 要**同时**满足绝对差 >64 **且** 最大 > 1.5×最小,才触发平衡回退。
-→ S05 的 sweep 就是把并发/热前缀偏斜推到跨过这条线,看 TTFT 收益如何翻转。
+→ 把负载推过失衡线的 TTFT sweep 属 sibling 仓范围;本仓 EXP-P06 只测容量机理格。
 
 ## 3. 近似树用字符不用 token(cache_aware.rs:1-61, tree.rs)
 
@@ -97,7 +97,7 @@ cache_aware 把 **100% 流量钉到一张卡**(worker 计数器 61799/0),单池�
 
 - **Q:cache-aware 一定更快吗?** 不。低并发+强共享前缀时它把热前缀钉住放大命中→TTFT 降;
   但热前缀极度偏斜+高并发时,亲和性把请求全堆到一张卡,另一张闲置,整体 p99 反而更差——
-  这时平衡阈值触发回退。**"更快"是有区间的,S04/S05 就是把这个区间量出来**,并保留
+  这时平衡阈值触发回退。**"更快"是有区间的,EXP-P06 实测了容量机理格;负载区间 sweep 属 sibling 仓**,并保留
   unique-prefix 反例证明收益确来自前缀复用而非别的。
 - **Q:router 树和 engine 树什么关系?** 两棵独立的树:router(字符,决定去哪张卡)、
   engine(token,决定省不省算)。router 命中 ≠ engine 命中,但 router 命中是 engine
