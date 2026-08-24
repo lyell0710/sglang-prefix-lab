@@ -23,6 +23,7 @@ case "$cmd" in
     if [[ "$name" == router* ]]; then mod=sglang_router.launch_router; fi
     launch=("$VENV/bin/python" -m "$mod" --host 127.0.0.1 --port "$port" "$@")
     printf '%q ' "CUDA_VISIBLE_DEVICES=$gpu" "${launch[@]}" > "$cmdf"; echo >> "$cmdf"
+    if [[ -s "$logf" ]]; then mv "$logf" "$logf.prev"; fi   # 证据保全:上一段日志轮转不截断
     : > "$logf"
     [[ "$gpu" == none ]] && gpu=""
     CUDA_VISIBLE_DEVICES=$gpu HF_HUB_OFFLINE=${HF_HUB_OFFLINE:-1} \
