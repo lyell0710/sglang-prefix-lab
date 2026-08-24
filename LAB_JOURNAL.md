@@ -34,3 +34,15 @@
   preflight /proc 竞态(段内 set +e);transformers 5.x BatchEncoding。
 - **产物**:records/EXP-P01、EXP-P02 + data/raw 配对;theory 修订。
 - **下一步**:P03 收益曲线(radix on/off × 并发 1/8 × 3 seed)。
+
+## 2026-08-24 · EXP-P03:收益曲线 + token 级归因闭环
+
+- **做了什么**:TTFT vs 共享前缀(0..1792/2048)双臂(radix on/off)×并发(1/8)
+  ×3 seed;聚合出 derived 表。
+- **关键数字**:c1 −36%(26.84→17.27ms)、c8 −63%(115.14→42.73ms);OFF 臂平;
+  engine device_hit 466,944 = Σcached 逐 token 闭环;c1 斜率 5.3µs/token,
+  c8 40µs/token(排队放大)。
+- **坑**:`cache_hit_rate` 是窗口 gauge,空闲归零,累计口径要用
+  prefill_effective_tokens_total counter。
+- **产物**:records/EXP-P03 + raw 9 jsonl + derived csv。
+- **下一步**:P04 fcfs vs lpm(含 >128 等待队列的 lpm 退化边界档)。
