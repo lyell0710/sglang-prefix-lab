@@ -1,0 +1,2 @@
+# provenance: env=sglang-lab sha=71de97b evidence_sha=a4c11d5 cmd="bench_evict.py hot4 pl1536 cold_ratio=4 (max-total-tokens 16384, threshold-proof arm)" date=2026-08-24T16:50:27Z gpu="NVIDIA GeForce RTX 4090" driver=610.57.04 seed=20260826
+{"hot_count": 4, "prefix_len": 1536, "total_len": 2048, "cold_ratio": 4, "hot_requests": 16, "seed": 20260826, "flush": "Cache flushed.\nPleas", "duration_s": 3.35, "hot_hit_frac_mean": 0.125, "hot_full_hit_count": 2, "evicted_tokens_total": 459960.0, "hot_cached": [1536, 1536, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}

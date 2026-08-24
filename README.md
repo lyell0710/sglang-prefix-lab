@@ -28,7 +28,7 @@
 | EXP-P02 | token_contract_matrix | 2026-08-24 | ✅ | 5 格:4 格符合预注册,thinking_flip 证伪(Qwen3 开关是纯尾扩展,命中 1326/1329)→ data/raw/EXP-P02/ |
 | EXP-P03 | hit_benefit_curve | 2026-08-24 | ✅ | TTFT p50:c1 −36%/c8 −63%(prefix 1792/2048);device_hit 计数与 Σcached 逐 token 相等;OFF 臂平 → data/derived/exp_p03_ttft_vs_prefix.csv |
 | EXP-P04 | lpm_vs_fcfs | 2026-08-24 | ✅ | std 档无可区分;boundary 档(192req>128 窗口)lpm p99 反劣 13%、hit −2.4pp(2σ)→ data/derived/exp_p04_fcfs_vs_lpm.csv |
-| EXP-P05 | eviction_pressure | — | ⬜ | 无 |
+| EXP-P05 | eviction_pressure | 2026-08-24 | ✅ | LRU 悬崖:池<重用距离(8192×(1+cr))时 hit 1.0→0.0625 阶跃,三池验证,std=0 → data/derived/exp_p05_eviction_cliff.csv |
 | EXP-P06 | dual_replica_crosscheck(扩展) | — | ⬜ | 无 |
 
 ## 当前关键数字
@@ -38,6 +38,8 @@
   `disable-radix` 反例臂全线打平;engine `device_hit=466,944` 与客户端 Σcached
   逐 token 相等 → data/derived/exp_p03_ttft_vs_prefix.csv
 - radix 首证:第二发 cached=1324/1325(=n−1)(EXP-P01)
+- 逐出悬崖(EXP-P05):LRU 命中 ⇔ 池 ≥ 热前缀重用距离 8192×(1+cr);越线即 1.0→0.0625 崩塌(三池、3 seeds、std=0)
+- 调度窗口(EXP-P04):lpm 轻载无可区分,192-req 积压档 p99 反劣 13%
 
 ## 措辞红线
 
