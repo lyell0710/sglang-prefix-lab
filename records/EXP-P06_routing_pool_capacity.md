@@ -69,7 +69,12 @@ preflight;16:53 首轮作废数据保留原地,作废原因见 §7);聚合
   router 存活跨臂,cache_aware 臂实际仍是 rr(selection 指标 policy 标签抓包
   坐实)——修正:身份放行三形态 + 每臂 policy 标签前置 gate。作废 raw 保留。
 - 开放:cache_aware 冷启动全落一卡的内部路径未定(候选:min-load 平局的确定性
-  选择 vs 文档所称随机 tie-break;需 RUST_LOG=debug 复跑取路由理由日志)。
+  选择 vs 文档所称随机 tie-break)。**追记(08-24):两次日志级尝试均失败**——
+  ①RUST_LOG=debug 未透过 Python 包装生效(0 条 debug);②`--log-level debug`
+  生效(170 条 debug)但 sglang-router 0.3.2 构建**不输出决策级日志**(全部为
+  job_queue/MCP/registry 基建行,无 select/tenant/match_rate 行;raw=
+  data/raw/EXP-P06/20260824T175130_cache_aware_debug_rationale.txt)。结论维持
+  "内部路径未定",确证需读 wheel 内实际源码或上游加日志——列为潜在 issue 素材。
 - 开放:非严格轮转的真实到达序(Poisson/并发)下 rr 的奇偶巧合会被打破,
   cache_aware 的失衡回退会被激活——高并发行为未测,不外推。
 
