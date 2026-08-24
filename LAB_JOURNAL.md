@@ -46,3 +46,13 @@
   prefill_effective_tokens_total counter。
 - **产物**:records/EXP-P03 + raw 9 jsonl + derived csv。
 - **下一步**:P04 fcfs vs lpm(含 >128 等待队列的 lpm 退化边界档)。
+
+## 2026-08-24 · EXP-P04:调度收益窗口的两面
+
+- **做了什么**:fcfs vs lpm × {std 64req@c16, boundary 192req@c64} × 3 seed。
+- **关键数字**:std 档差异与波动同量级(如实判平);boundary 档 lpm p99 747±20 vs
+  fcfs 661±36(+13%,>2σ),hit 0.968 vs 0.992——lpm 超出设计窗口反成负资产。
+- **方法论**:fcfs 命中方差(0.027)≫ lpm(0.006),方差差异本身即"排序削平到达
+  序随机性"的机制证据。
+- **产物**:records/EXP-P04 + raw 12 json + derived csv。
+- **下一步**:P05 逐出压力(小池 vs 默认池)。

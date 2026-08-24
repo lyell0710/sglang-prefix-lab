@@ -27,7 +27,7 @@
 | EXP-P01 | env_single_worker_smoke | 2026-08-24 | ✅ | 确定性✓;第二发 cached=1324/1325(=n−1);hit_rate 0.9992;flashinfer 后端 → data/raw/EXP-P01/ |
 | EXP-P02 | token_contract_matrix | 2026-08-24 | ✅ | 5 格:4 格符合预注册,thinking_flip 证伪(Qwen3 开关是纯尾扩展,命中 1326/1329)→ data/raw/EXP-P02/ |
 | EXP-P03 | hit_benefit_curve | 2026-08-24 | ✅ | TTFT p50:c1 −36%/c8 −63%(prefix 1792/2048);device_hit 计数与 Σcached 逐 token 相等;OFF 臂平 → data/derived/exp_p03_ttft_vs_prefix.csv |
-| EXP-P04 | lpm_vs_fcfs | — | ⬜ | 无 |
+| EXP-P04 | lpm_vs_fcfs | 2026-08-24 | ✅ | std 档无可区分;boundary 档(192req>128 窗口)lpm p99 反劣 13%、hit −2.4pp(2σ)→ data/derived/exp_p04_fcfs_vs_lpm.csv |
 | EXP-P05 | eviction_pressure | — | ⬜ | 无 |
 | EXP-P06 | dual_replica_crosscheck(扩展) | — | ⬜ | 无 |
 
