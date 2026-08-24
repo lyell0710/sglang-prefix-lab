@@ -1,7 +1,7 @@
 ---
 topic: SGLang RadixAttention / 前缀缓存的机制
 status: 源码级完成(file:line 锚 /root/repos/sglang-v0.5.18/python/sglang/srt)
-verified_against: 本仓 EXP-S02(cached_tokens 实测)——待跑
+verified_against: EXP-P01(cached=n−1 实测)、EXP-P02(契约矩阵)
 ---
 
 # 01 · RadixAttention:前缀缓存怎么把"重复的前缀只算一次"
@@ -87,8 +87,9 @@ verified_against: 本仓 EXP-S02(cached_tokens 实测)——待跑
   (为省 tokenize,router tree.rs 注释自述),两者是**两棵不同的树**——engine 侧决定
   "算不算得省",router 侧决定"往哪张卡送"。见 theory/02。
 - **Q:为什么共享前缀却没命中?** 逐 token 不一致:chat template 的 BOS/role token、
-  `enable_thinking` 开关改了 system 段、`cache_salt`/LoRA id 不同,任一处第一个 diff
-  token 起就分叉。用 `request.input_ids` 直传可绕过模板(serving_chat.py:1123-1134)。
+  `cache_salt`/LoRA id 不同,任一处第一个 diff token 起就分叉。用 `request.input_ids`
+  直传可绕过模板(serving_chat.py:1123-1134)。注意 Qwen3 的 `enable_thinking` 开关
+  **不在此列**——它只扩展模板尾部,不破坏前缀共享(EXP-P02 实测,theory/03 §2)。
 - **Q:在途请求的 KV 会被别人逐出吗?** 不会,lock_ref>0 的前缀在 protected 段,
   逐出扫描跳过(:821-824)。
 

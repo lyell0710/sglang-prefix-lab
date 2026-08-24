@@ -1,0 +1,40 @@
+{
+ "template_rendered_len": 1325,
+ "cells": {
+  "base_messages": {
+   "flush": "Cache flushed.\nPlease check backend logs for more details. (",
+   "A_prompt_tokens": 1325,
+   "A_cached": null,
+   "B_prompt_tokens": 1325,
+   "B_cached": 1324
+  },
+  "thinking_flip": {
+   "flush": "Cache flushed.\nPlease check backend logs for more details. (",
+   "A_prompt_tokens": 1325,
+   "A_cached": null,
+   "B_prompt_tokens": 1329,
+   "B_cached": 1326
+  },
+  "input_ids_direct": {
+   "flush": "Cache flushed.\nPlease check backend logs for more details. (",
+   "A_prompt_tokens": 1325,
+   "A_cached": null,
+   "B_prompt_tokens": 1325,
+   "B_cached": 1324
+  },
+  "salt_same": {
+   "flush": "Cache flushed.\nPlease check backend logs for more details. (",
+   "A_prompt_tokens": 1325,
+   "A_cached": null,
+   "B_prompt_tokens": 1325,
+   "B_cached": 1324
+  },
+  "salt_diff": {
+   "flush": "Cache flushed.\nPlease check backend logs for more details. (",
+   "A_prompt_tokens": 1325,
+   "A_cached": null,
+   "B_prompt_tokens": 1325,
+   "B_cached": null
+  }
+ }
+}

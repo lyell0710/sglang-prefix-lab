@@ -24,8 +24,8 @@
 
 | 编号 | slug | 日期 | 状态 | 关键数字(指针) |
 |---|---|---:|:---:|---|
-| EXP-P01 | env_single_worker_smoke | — | ⬜ | 无 |
-| EXP-P02 | token_contract_matrix | — | ⬜ | 无 |
+| EXP-P01 | env_single_worker_smoke | 2026-08-24 | ✅ | 确定性✓;第二发 cached=1324/1325(=n−1);hit_rate 0.9992;flashinfer 后端 → data/raw/EXP-P01/ |
+| EXP-P02 | token_contract_matrix | 2026-08-24 | ✅ | 5 格:4 格符合预注册,thinking_flip 证伪(Qwen3 开关是纯尾扩展,命中 1326/1329)→ data/raw/EXP-P02/ |
 | EXP-P03 | hit_benefit_curve | — | ⬜ | 无 |
 | EXP-P04 | lpm_vs_fcfs | — | ⬜ | 无 |
 | EXP-P05 | eviction_pressure | — | ⬜ | 无 |
@@ -33,7 +33,7 @@
 
 ## 当前关键数字
 
-暂无(理论笔记与协议已就绪,未产生性能数字)。
+- radix 活性首证:同 prompt 第二发 cached_tokens=1324/1325(=prompt−1),engine cache_hit_rate 0.9992(EXP-P01,2026-08-24)。性能数字暂无。
 
 ## 措辞红线
 

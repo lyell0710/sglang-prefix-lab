@@ -23,7 +23,14 @@ radix 命中判定发生在 **token id 序列**上(theory/01 §2.1),而 OpenAI �
 2. **thinking 开关**(Qwen3):模板含 `enable_thinking` 切换(protocol.py:958-971,
    qwen3 默认开,template_detection.py:188-208);`--default-chat-template-kwargs` 与
    每请求 `chat_template_kwargs` 合并(serving_chat.py:1053-1060,请求侧优先)。
-   **两臂/两轮之间 thinking 配置不同 → system 段 token 变 → 全 miss**。
+   **实测修正(EXP-P02,预注册假设被证伪)**:Qwen3 模板的开关落在 generation
+   prompt 尾部——thinking-off = thinking-on 的完整渲染 **原样 + 追加**
+   `<think>\n\n</think>\n\n`(1325→1329 token,首分叉位=1325 即无分叉,raw=
+   EXP-P02/20260824T163438_template_divergence.json)。因此 **thinking 配置不一致
+   并不破坏前缀共享**(命中 1326/1329);"改 system 段导致全 miss"是错误推断。
+   顺带实测:radix 树缓存的是 input+output **全序列**(cache_finished_req 插
+   input+output,theory/01 §2.3),thinking-off 请求的 `<think>` 尾 token 恰与
+   前一请求的首个输出 token 相同,命中因此多 1(1326=1325+1)。
 3. **命名空间**:`cache_salt`(protocol.py:867)与 LoRA `extra_key` 进 RadixKey
    (schedule_batch.py:922-929;radix_cache.py:227-229)→ 不同 salt 天然隔离,
    同 salt 才可能共享。(可反过来用:用 salt 做"人为 miss"的对照臂。)

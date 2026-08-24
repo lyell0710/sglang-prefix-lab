@@ -1,0 +1,18 @@
+{
+ "models_ok": true,
+ "deterministic": true,
+ "second_send_cache_hit": true,
+ "rounds": [
+  {
+   "latency_s": 0.0911,
+   "prompt_tokens": 1325,
+   "cached_tokens": null
+  },
+  {
+   "latency_s": 0.2485,
+   "prompt_tokens": 1325,
+   "cached_tokens": 1324
+  }
+ ],
+ "passed": true
+}

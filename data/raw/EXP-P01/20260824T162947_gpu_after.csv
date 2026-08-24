@@ -1,0 +1,4 @@
+# provenance: env=sglang-lab sha=71de97b evidence_sha=1378595 cmd="nvidia-smi query after probe" date=2026-08-24T16:30:25Z gpu="NVIDIA GeForce RTX 4090" driver=610.57.04 seed=none
+index, memory.used [MiB], utilization.gpu [%], temperature.gpu
+0, 20830 MiB, 0 %, 29
+1, 1 MiB, 0 %, 25

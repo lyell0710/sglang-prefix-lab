@@ -22,3 +22,15 @@
   file:line 锚)+ docs/tooling/bench_serving 笔记 + PLAN(P01-P06 预注册)+
   scripts(svc/preflight/provenance)+ records/data freeze。
 - **下一步**:commit → preflight → EXP-P01 smoke(GPU0, 28000)。
+
+## 2026-08-24 · EXP-P01/P02:radix 首证与契约矩阵(含一处证伪)
+
+- **做了什么**:P01 单 worker smoke(确定性+cached=n−1 首证);P02 五格契约矩阵
+  (messages/input_ids/thinking/salt),thinking_flip 格证伪预注册假设,CPU 渲染
+  对比钉死机制(纯尾部扩展),theory/01/03 当场修订。
+- **关键数字**:cached=1324/1325(=n−1);hit_rate 0.9992;thinking_flip 命中
+  1326/1329(+1 来自树缓存 input+output 全序列咬进上一请求首输出 token)。
+- **排障**:svc.sh stop 身份校验误判(uv venv python 符号链接→readlink -f 归一);
+  preflight /proc 竞态(段内 set +e);transformers 5.x BatchEncoding。
+- **产物**:records/EXP-P01、EXP-P02 + data/raw 配对;theory 修订。
+- **下一步**:P03 收益曲线(radix on/off × 并发 1/8 × 3 seed)。

@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 # LEGACY bootstrap helper retained as EXP-S01 incident evidence.
-# Canonical lifecycle entrypoint is scripts/service_ctl.sh; do not use both in one run.
 # 进程生命周期:只管理本脚本写入 runtime/<name>.pid 的进程组。
 # 用法: worker_ctl.sh start <name> <gpu> <port> [extra launch_server args...]
 #       worker_ctl.sh stop <name> | status <name> | wait_health <name> [secs]
@@ -49,8 +48,9 @@ case "$cmd" in
     pid=$(cat "$pidf")
     if ! kill -0 "$pid" 2>/dev/null; then echo "not running"; rm -f "$pidf"; exit 0; fi
     # 身份校验:必须是本 venv 的 python 且在跑 sglang.launch_server
-    exe=$(readlink "/proc/$pid/exe" || true); cl=$(tr '\0' ' ' < "/proc/$pid/cmdline")
-    if [[ "$exe" != "$VENV"/bin/python* || "$cl" != *sglang.launch_server* ]]; then
+    exe=$(readlink -f "/proc/$pid/exe" || true); cl=$(tr '\0' ' ' < "/proc/$pid/cmdline")
+    venv_py=$(readlink -f "$VENV/bin/python")   # uv venv 的 python 是符号链接,比真身
+    if [[ "$exe" != "$venv_py" || "$cl" != *sglang.launch_server* ]]; then
       echo "REFUSE: pid $pid is not our worker ($exe)"; exit 1; fi
     pgid=$(ps -o pgid= -p "$pid" | tr -d ' ')
     kill -TERM -- "-$pgid" 2>/dev/null || kill -TERM "$pid"

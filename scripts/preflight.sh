@@ -12,13 +12,14 @@ fail=0
   printf '\n[gpu]\n'; nvidia-smi --query-gpu=index,name,memory.used,memory.total,utilization.gpu,pstate,temperature.gpu,power.limit --format=csv,noheader
   printf '\n[gpu_compute_processes]\n'; nvidia-smi --query-compute-apps=pid,process_name,used_memory --format=csv,noheader 2>/dev/null || true
   printf '\n[foreign_gpu_procs]\n'
+  (set +e   # /proc 竞态:进程随时消失,本段禁 set -e 连坐
   for p in /proc/[0-9]*; do
     pid=${p#/proc/}
-    ls "$p/fd" 2>/dev/null | while read -r fd; do :; done
     if ls -la "$p/fd" 2>/dev/null | grep -q nvidia; then
-      printf '%s %s :: %.120s\n' "$pid" "$(readlink "$p/exe" 2>/dev/null)" "$(tr "\0" " " < "$p/cmdline" 2>/dev/null)"
+      exe=$(readlink "$p/exe" 2>/dev/null); cl=$(tr "\0" " " < "$p/cmdline" 2>/dev/null)
+      printf '%s %s :: %.120s\n' "$pid" "$exe" "$cl"
     fi
-  done
+  done; true)
   printf '\n[ports]\n'
   for port in 28000 28001 40000 29000; do
     if ss -H -ltn "sport = :$port" | grep -q .; then printf 'port_%s=busy\n' "$port"; else printf 'port_%s=free\n' "$port"; fi
