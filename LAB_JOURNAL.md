@@ -79,3 +79,14 @@
 - **产物**:records/EXP-P06 + 12 组有效 raw + 4 组 router 指标 + derived;
   theory/02 补节;讲稿 P06 段。
 - **下一步**:收尾自检 + 记忆更新;sibling 完成 S04 后可补交叉复核。
+
+## 2026-08-24 · EXP-P07:8B 升级,简历数字定稿
+
+- **做了什么**:P03 同协议换 Qwen3-8B(on c1/c8 + off 反例,3 seeds);聚合+fig2。
+- **关键数字**:TTFT p50 −77%(c1,228→53ms)/−78%(c8,1068→235ms);off 臂平;
+  device_hit=466,944 三方逐 token 相等(8B 复现)。0.6B 定语撤销。
+- **异常**:1/240 孤立 29.3s 离群,server 日志被启动截断丢失(根因不可考,
+  终端级);svc.sh 已改启动轮转。
+- **产物**:records/EXP-P07 + 9 jsonl raw + derived + figures/fig2;README/
+  RESUME_EVIDENCE 措辞升级。
+- **下一步**:等全区审计工作流结果并逐条修复;面试索引落 Resume 仓。

@@ -29,14 +29,17 @@
 | EXP-P03 | hit_benefit_curve | 2026-08-24 | ✅ | TTFT p50:c1 −36%/c8 −63%(prefix 1792/2048);device_hit 计数与 Σcached 逐 token 相等;OFF 臂平 → data/derived/exp_p03_ttft_vs_prefix.csv |
 | EXP-P04 | lpm_vs_fcfs | 2026-08-24 | ✅ | std 档无可区分;boundary 档(192req>128 窗口)lpm p99 反劣 13%、hit −2.4pp(2σ)→ data/derived/exp_p04_fcfs_vs_lpm.csv |
 | EXP-P05 | eviction_pressure | 2026-08-24 | ✅ | LRU 悬崖:池<重用距离(8192×(1+cr))时 hit 1.0→0.0625 阶跃,三池验证,std=0 → data/derived/exp_p05_eviction_cliff.csv |
+| EXP-P07 | 8b_hit_benefit_curve | 2026-08-24 | ✅ | Qwen3-8B:TTFT p50 −77%(c1)/−78%(c8)@prefix 1792/2048;device_hit 逐 token 闭环复现;off 臂平 → data/derived/exp_p07_8b_ttft_vs_prefix.csv |
 | EXP-P06 | routing_pool_capacity | 2026-08-24 | ✅ | 双预测双证伪:rr@偶数热集=奇偶分片巧合全命中;cache_aware 冷启动全钉一卡而崩(100/0 流量);hot5 对照坐实 → data/derived/exp_p06_routing_pool.csv |
 
 ## 当前关键数字
 
-- 命中收益曲线(EXP-P03,0.6B,3 seeds):共享前缀 1792/2048 时 TTFT p50
-  26.84→17.27ms(并发 1,−36%)、115.14→42.73ms(并发 8,−63%);
-  `disable-radix` 反例臂全线打平;engine `device_hit=466,944` 与客户端 Σcached
-  逐 token 相等 → data/derived/exp_p03_ttft_vs_prefix.csv
+- **命中收益曲线(EXP-P07,Qwen3-8B,3 seeds)**:共享前缀 1792/2048 时 TTFT p50
+  228.4→52.9ms(并发 1,**−77%**)、1068.3→234.5ms(并发 8,**−78%**);
+  disable-radix 反例臂全线打平;engine device_hit=466,944 与客户端 Σcached
+  逐 token 相等 → data/derived/exp_p07_8b_ttft_vs_prefix.csv,figures/fig2
+- 0.6B 机理版曲线(EXP-P03):−36%/−63%,量化了小模型的非 prefill 地板效应
+  → data/derived/exp_p03_ttft_vs_prefix.csv,figures/fig1
 - radix 首证:第二发 cached=1324/1325(=n−1)(EXP-P01)
 - 逐出悬崖(EXP-P05):LRU 命中 ⇔ 池 ≥ 热前缀重用距离 8192×(1+cr);越线即 1.0→0.0625 崩塌(三池、3 seeds、std=0)
 - 调度窗口(EXP-P04):lpm 轻载无可区分,192-req 积压档 p99 反劣 13%
@@ -47,7 +50,7 @@
 | 主张 | 状态 | 解锁条件 |
 |---|---|---|
 | "搭建 SGLang 前缀缓存实验台" | ⛔ | EXP-P01 全 PASS |
-| "前缀命中使 TTFT 降 X%" | ⛔ | EXP-P03:3 round + 反例臂(disable-radix)+ server 侧归因 |
+| "前缀命中使 TTFT 降 77%/78%"(8B) | ✅ 已解锁 | EXP-P07 全 gate PASS(3 seeds+反例臂+计数器闭环)|
 | "lpm 调度提升命中率/尾延迟" | ⛔ | EXP-P04 gate 全过 |
 | "router cache-aware 提升 TTFT/吞吐"类主张 | ⛔ | 本仓只测了容量受限机理格(P06);性能矩阵属 sibling 仓范围 |
 | "生产级/多机/集群" | 🚫 | 超出硬件与实验范围 |

@@ -1,0 +1,17 @@
+# derived from data/raw/EXP-P07/*_8b_radix_*.jsonl (3 seeds/point), Qwen3-8B
+arm,concurrency,prefix_len,rounds,ttft_p50_mean_ms,ttft_p50_std_ms,ttft_mean_mean_ms,cached_ok_all
+off,1,0,3,229.72,2.93,229.07,True
+off,1,512,3,230.40,2.45,230.19,True
+off,1,1024,3,230.76,1.28,230.67,True
+off,1,1536,3,231.51,1.02,231.69,True
+off,1,1792,3,231.79,0.84,231.66,True
+on,1,0,3,228.44,3.87,227.78,True
+on,1,512,3,180.51,2.61,788.41,True
+on,1,1024,3,128.99,1.92,128.97,True
+on,1,1536,3,79.62,0.95,79.96,True
+on,1,1792,3,52.85,0.45,52.83,True
+on,8,0,3,1068.33,13.25,972.78,True
+on,8,512,3,890.24,11.00,838.62,True
+on,8,1024,3,672.28,4.80,565.04,True
+on,8,1536,3,444.45,5.17,352.28,True
+on,8,1792,3,234.52,4.59,216.55,True
