@@ -1,7 +1,7 @@
 # 实验计划 · RadixAttention 机理与工作负载契约(engine 侧)
 
 > 协议 v1,2026-08-24 预注册。参数改动须新开协议版本并在 EXP 记录解释,不得覆盖本文件。
-> 与 sibling 仓 `/root/projects/sglang-inference-lab`(router 策略矩阵)的分工见 README 边界节。
+> 与 sibling 仓(router 策略矩阵)的分工见 README 边界节。〔注 2026-08-25:该仓已并入本仓,其协议=docs/PLAN_router_matrix.md;本行为指针更新,协议参数未动〕
 
 ## 研究问题
 
