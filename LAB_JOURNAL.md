@@ -127,3 +127,18 @@
 - **产物**:README.md、scripts/plot_{eviction_cliff,sched_tradeoff}.py、
   figures/fig3_p05_eviction_cliff.png、figures/fig4_p08_sched_tradeoff.png。
 - **下一步**:用户建远端后推送;router 矩阵 S02-S07 择机执行。
+
+## 2026-08-25 · README 对外/对内分家(LEDGER 立账)
+
+- **做了什么**:新建 LEDGER.md 收纳 README 的全部对内内容(EXP 台账含日期/状态、
+  措辞红线表、边界与资源纪律、路线图/待办),顶部声明其为状态与措辞唯一权威;
+  README 重写为纯对外门面(核心结果/图表/关键发现机制解释/代码导览/Quickstart/
+  无日期无状态的记录索引/测量方法对外化/Future work/相关项目),禁词逐项 grep
+  清零(日期/流程词全去,终端级证据改"单轮");三个出图脚本脚注去日期、补硬件
+  标注,fig1-4 全部重出;CLAUDE.md 追加附则,docs/PLAN.md 边界指针改指 LEDGER。
+- **为什么**:README 读者是陌生面试官,状态账目与措辞治理属对内,两种读者不能
+  共用一份文档;记录索引保留以满足自检对 records 覆盖的要求。
+- **关键数字**:无新测量;数字全部沿用现行 derived,测量条件定语保留。
+- **产物**:LEDGER.md、README.md、scripts/plot_{ttft_curve,eviction_cliff,sched_tradeoff}.py、
+  figures/fig1-4、CLAUDE.md、docs/PLAN.md。收尾自检 0 FAIL。
+- **下一步**:建远端后推送;router 矩阵按 LEDGER 待办择机执行。

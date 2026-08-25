@@ -9,3 +9,4 @@
 - 进程只经 `scripts/svc.sh` 管理(写 runtime/<name>.pid);禁止 killall/模糊 pkill;
   停止前用 /proc/<pid>/exe 校验是本仓 venv 的 launch_server 才动手。
 - 每个性能点 ≥3 独立 round;profile run 永不进性能汇总;raw 不覆盖。
+- README=对外门面(面试官视角);状态/红线唯一权威=LEDGER.md。

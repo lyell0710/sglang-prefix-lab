@@ -51,7 +51,7 @@ ax.set_title("LRU 逐出不是斜坡是悬崖:池 < 重用距离 D 时命中 1.0
              "(Qwen3-0.6B,EXP-P05,三池 × 四档冷流量,无中间态)", fontsize=10)
 ax.legend(fontsize=7.5, loc="upper center", ncol=3, framealpha=0.95)
 ax.grid(alpha=0.25, axis="y")
-fig.text(0.01, 0.01, f"src: {src.split('/')[-1]} · {prov[:90]} · 2026-08-24", fontsize=5, color="#999")
+fig.text(0.01, 0.01, f"src: {src.split('/')[-1]} · {prov[:90]} · RTX 4090", fontsize=5, color="#999")
 fig.tight_layout()
 fig.savefig(out, facecolor="white")
 print("saved", out)

@@ -48,7 +48,7 @@ ax.text(0.985, 0.72, f"命中率:fcfs {hf:.3f} → lpm {hl:.3f}(+{(hl-hf)*100:.1
         bbox=dict(fc="#f5f5f5", ec="#999", lw=0.5))
 ax.legend(fontsize=8, loc="center right")
 ax.grid(alpha=0.25, axis="x")
-fig.text(0.01, 0.01, f"src: {src.split('/')[-1]} · {prov[:90]} · 2026-08-24", fontsize=5, color="#999")
+fig.text(0.01, 0.01, f"src: {src.split('/')[-1]} · {prov[:90]} · RTX 4090", fontsize=5, color="#999")
 fig.tight_layout()
 fig.savefig(out, facecolor="white")
 print("saved", out)
