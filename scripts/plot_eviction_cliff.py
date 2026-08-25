@@ -52,7 +52,7 @@ ax.set_ylabel("热前缀命中率(3 seeds mean±std,std=0)")
 ax.set_ylim(0, 1.42)   # 顶部留白:放图例与数值标注,不与 bar 重叠
 ax.axhline(1.0, color="#999", lw=0.8, ls=":")   # 满命中参考线:悬崖上沿
 ax.set_title("LRU 逐出不是斜坡是悬崖:池 < 重用距离 D 时命中 1.0→0.06 阶跃崩塌\n"
-             "(Qwen3-0.6B,EXP-P05,三池 × 四档冷流量,无中间态)", fontsize=10)
+             "(Qwen3-0.6B,EXP-P05,三池 × 四档冷流量,仅边界 16384@cr4 见 0.12 残余)", fontsize=10)
 ax.legend(fontsize=7.5, loc="upper center", ncol=3, framealpha=0.95)
 ax.grid(alpha=0.25, axis="y")
 fig.text(0.01, 0.01, f"src: {src.split('/')[-1]} · {prov[:90]} · RTX 4090", fontsize=5, color="#999")
