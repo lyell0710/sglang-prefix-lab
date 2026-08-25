@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""P04/P08 聚合:bench_groups raw json → derived csv。用法:aggregate_groups.py <EXP-dir> <out_csv> [fname_hint]"""
+"""P04/P08 聚合:bench_groups raw json → derived csv(mean±std over 3 seeds)。
+用法:aggregate_groups.py <EXP-dir> <out_csv> [fname_hint]
+
+文件名约定 *_<policy>_<tier>_s<seed>.json:policy(fcfs/lpm)与 tier
+(std/boundary)从倒数第 3/2 段解析——raw 命名即协议编码,聚合不读参数。
+产出列含 p50/p95/p99 各自的 mean±std:EXP-P08 的结论(lpm p50 −62% 但 p99
++64%,分位数再分配)要求头尾两端同时呈现,单一均值会掩盖权衡。
+"""
 import glob, json, statistics as st, sys
 P, OUT = sys.argv[1], sys.argv[2]
 rows = {}

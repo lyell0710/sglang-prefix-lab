@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 """单图单结论(EXP-P08):8B 积压档 lpm 赢 p50 输 p99——延迟在分位数间再分配。
-用法:plot_sched_tradeoff.py data/derived/exp_p08_8b_fcfs_vs_lpm.csv figures/fig4_p08_sched_tradeoff.png"""
+用法:plot_sched_tradeoff.py data/derived/exp_p08_8b_fcfs_vs_lpm.csv figures/fig4_p08_sched_tradeoff.png
+
+p50 与 p99 并排横条 + 命中率注记:让"换来什么(p50/hit)/付出什么(p99)"
+同图可见——这正是"不是标量优劣"这句结论的图形形态。
+"""
 import csv, sys
 import matplotlib
-matplotlib.use("Agg")
+matplotlib.use("Agg")   # 无头渲染
 import matplotlib.pyplot as plt
 from matplotlib import font_manager
 font_manager.fontManager.addfont("/usr/share/fonts/truetype/arphic/uming.ttc")
@@ -19,7 +23,7 @@ with open(src) as f:
 data = {}
 for row in csv.DictReader(l for l in open(src) if not l.startswith("#")):
     if row["tier"] != "boundary":
-        continue  # 单图单结论:只画积压档(std 档两策略无可区分,见 EXP-P08 §6)
+        continue  # 单图单结论:只画积压档(std 档两策略无可区分,见 EXP-P08 §6),混入会稀释结论
     data[row["policy"]] = row
 
 metrics = [("p50", "TTFT p50"), ("p99", "TTFT p99")]
@@ -38,7 +42,7 @@ for gi, (m, mlabel) in enumerate(metrics):
 ax.set_yticks(ys); ax.set_yticklabels(labels)
 ax.invert_yaxis()
 ax.set_xlabel("TTFT(ms,3 seeds mean±std,G16×R12 @ 并发 64)")
-ax.set_xlim(0, 19500)
+ax.set_xlim(0, 19500)   # 右侧留白:p99 ~1.9 万 ms 级,数值标签需出条外
 ax.set_title("8B 积压档:lpm p50 -62% 但 p99 +64%——延迟在分位数间再分配,不是标量优劣\n"
              "(Qwen3-8B,EXP-P08 boundary 档;std 档两策略无可区分)", fontsize=10)
 hf, hl = float(data["fcfs"]["hit_frac_mean"]), float(data["lpm"]["hit_frac_mean"])
