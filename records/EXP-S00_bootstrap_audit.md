@@ -1,5 +1,7 @@
 # EXP-S00 · bootstrap 现场审计
 
+> 迁移注(2026-08-25):自 sglang-inference-lab(Codex 建仓)并入本仓,编号沿用;文内 scripts/ 指原仓工装(git 历史 582fc6a/3a091ad 可查),现行工装=本仓 scripts/。
+
 ## 0. 元信息
 
 | 字段 | 值 |

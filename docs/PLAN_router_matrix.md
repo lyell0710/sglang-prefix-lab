@@ -1,3 +1,5 @@
+> 迁移注(2026-08-25):本协议为并入的 router 性能矩阵预注册计划(S02-S07,未执行),原仓 sglang-inference-lab;机读配置=config/protocol-router-v1.json;执行前须按本仓 CORE 附则复核端口与资源纪律。
+
 # 实验计划 · Prefix locality × routing policy × load
 
 > 协议版本 v1，2026-08-24 预注册。若后续修改参数，必须新建协议版本并在 EXP 记录中解释，不能覆盖本文件历史。

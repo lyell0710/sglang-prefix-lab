@@ -13,7 +13,7 @@
 
 | 项目 | 分工 |
 |---|---|
-| `/root/projects/sglang-inference-lab`(sibling agent 并行仓) | 双副本 **router 策略矩阵**(cache_aware vs round_robin);本仓不重复,仅在 EXP-P06 交叉复核 |
+| ~~sglang-inference-lab~~(已于 2026-08-25 并入本仓) | 其 EXP-S00/S01 与 router 矩阵协议已收编;完整历史在本仓 git;旧路径留指路牌 |
 | `vllm/experiments` | vLLM 侧部署形态/PD/MoE;本仓只做 SGLang engine 侧前缀机理 |
 | `llm-engine` / kernel 仓 | 算子与手写引擎;本仓不把服务 wall-clock 冒充 kernel 数字 |
 
@@ -24,6 +24,8 @@
 
 | 编号 | slug | 日期 | 状态 | 关键数字(指针) |
 |---|---|---:|:---:|---|
+| EXP-S00 | bootstrap_audit(并入) | 2026-08-24 | ✅ | 60s 超时事故排查+host 体检;GPU/端口清白证明 → data/raw/EXP-S00/ |
+| EXP-S01 | env_and_single_worker_smoke(并入) | 2026-08-24 | ✅ | venv sglang-lab 安装验证(现行共用环境的出生证明)→ records/EXP-S01 |
 | EXP-P01 | env_single_worker_smoke | 2026-08-24 | ✅ | 确定性✓;第二发 cached=1324/1325(=n−1);hit_rate 0.9992;flashinfer 后端 → data/raw/EXP-P01/ |
 | EXP-P02 | token_contract_matrix | 2026-08-24 | ✅ | 5 格:4 格符合预注册,thinking_flip 证伪(Qwen3 开关是纯尾扩展,命中 1326/1329)→ data/raw/EXP-P02/ |
 | EXP-P03 | hit_benefit_curve | 2026-08-24 | ✅ | TTFT p50:c1 −36%/c8 −63%(prefix 1792/2048);device_hit 计数与 Σcached 逐 token 相等;OFF 臂平 → data/derived/exp_p03_ttft_vs_prefix.csv |
@@ -55,6 +57,11 @@
 | "lpm 调度提升命中率/尾延迟"(无定语) | 🚫 永久禁用 | P04(0.6B 反劣)与 P08(8B 分位数再分配)证明须带模型/负载/分位数定语 |
 | "router cache-aware 提升 TTFT/吞吐"类主张 | ⛔ | 本仓只测了容量受限机理格(P06);性能矩阵属 sibling 仓范围 |
 | "生产级/多机/集群" | 🚫 | 超出硬件与实验范围 |
+
+## 路线图(未执行阶段)
+
+双副本 router 性能矩阵(S02-S07,预注册协议=docs/PLAN_router_matrix.md +
+config/protocol-router-v1.json)——简历"serving 部署故事"的下一阶段,需整机独占。
 
 ## 怎么跑
 

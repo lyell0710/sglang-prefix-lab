@@ -102,3 +102,15 @@
 - **产物**:records/EXP-P08、scripts/aggregate_{groups,evict,route}.py、
   data/archive/EXP-P0{2,6}/、各 manifest.txt。
 - **下一步**:待用户建远端后推送;sibling 完成 S04 后补交叉复核。
+
+## 2026-08-25 · 双仓合一
+
+- **做了什么**:sglang-inference-lab(Codex 建)以完整历史并入(merge commit
+  c80aceb),随后拍平:收编 EXP-S00/S01(+raw)与 router 矩阵预注册协议
+  (docs/PLAN_router_matrix.md),删除重复脚手架(git 历史可找回);旧路径留
+  指路牌,本地备份保全其 ignored 运行日志。
+- **为什么**:用户要求合一;Codex 自 08-24 16:22 静止,收编其唯一增量价值
+  (环境出生证明 + 未执行的矩阵路线图)。
+- **产物**:records/EXP-S00,S01、docs/PLAN_router_matrix.md、
+  config/protocol-router-v1.json;README 台账+边界+路线图更新。
+- **下一步**:router 矩阵按并入协议择机执行(需整机);建远端后推送。
