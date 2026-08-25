@@ -105,7 +105,7 @@ bash scripts/svc.sh stop w0
 
 ## 实验记录
 
-每个实验一份结构化记录,内容从预注册假设、协议、原始数据指针到结论与证伪情况。原理笔记见 [docs/theory/](docs/theory/),预注册协议见 [docs/PLAN.md](docs/PLAN.md)。
+每个实验一份结构化记录,内容从预注册假设、协议、原始数据指针到结论与证伪情况。原理笔记见 [docs/theory/](docs/theory/),预注册协议见 [docs/PLAN.md](docs/PLAN.md)。深度讲义(不跳步推导+代码/数据走读)见 [docs/lectures/](docs/lectures/)。
 
 | 记录 | 一句话结论 |
 |---|---|
