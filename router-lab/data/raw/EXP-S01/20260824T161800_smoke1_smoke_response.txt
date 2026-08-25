@@ -1,0 +1,56 @@
+# provenance: env=sglang-lab sha=71de97b264b04dcd514cf904003028aefe9775c8 evidence_sha=582fc6af2a6809865260135b28a8bf60b7b66898 cmd="bash scripts/run_smoke.sh smoke1 http://127.0.0.1:18001 Qwen/Qwen3-0.6B EXP-S01" date=2026-08-24T16:18:00Z gpu="NVIDIA GeForce RTX 4090" driver=610.57.04 seed=none
+{
+  "timestamp_utc": "2026-08-24T16:18:09.055530+00:00",
+  "base_url": "http://127.0.0.1:18001",
+  "model": "Qwen/Qwen3-0.6B",
+  "models_status": 200,
+  "chat_status": 200,
+  "models_elapsed_s": 0.030652425019070506,
+  "chat_elapsed_s": 8.37451759900432,
+  "nonempty_content": true,
+  "passed": true,
+  "models_response": {
+    "object": "list",
+    "data": [
+      {
+        "id": "Qwen/Qwen3-0.6B",
+        "object": "model",
+        "created": 1787588280,
+        "owned_by": "sglang",
+        "root": "Qwen/Qwen3-0.6B",
+        "parent": null,
+        "max_model_len": 4096
+      }
+    ]
+  },
+  "chat_response": {
+    "id": "b07e248e0d7d4f21ae2a11568e8fc3f4",
+    "object": "chat.completion",
+    "created": 1787588289,
+    "model": "Qwen/Qwen3-0.6B",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "SGLang smoke passed.",
+          "reasoning_content": null,
+          "tool_calls": null
+        },
+        "logprobs": null,
+        "finish_reason": "stop",
+        "matched_stop": 151645
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 21,
+      "total_tokens": 28,
+      "completion_tokens": 7,
+      "prompt_tokens_details": null,
+      "reasoning_tokens": 0
+    },
+    "metadata": {
+      "weight_version": "default"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+# provenance: env=sglang-lab sha=71de97b264b04dcd514cf904003028aefe9775c8 evidence_sha=582fc6af2a6809865260135b28a8bf60b7b66898 cmd="bash scripts/capture_env.sh data/raw/EXP-S01" date=2026-08-24T16:10:31Z gpu="NVIDIA GeForce RTX 4090" driver=610.57.04 seed=none
+python_executable=/root/venvs/sglang-lab/bin/python
+upstream_dir=/root/repos/sglang-v0.5.18
+upstream_sha=71de97b264b04dcd514cf904003028aefe9775c8
+upstream_describe=v0.5.18
+model_smoke_snapshot=/root/.cache/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca
+model_benchmark_snapshot=/root/.cache/huggingface/hub/models--Qwen--Qwen3-8B/snapshots/b968826d9c46dd6066d109eabc6255188de91218
+python=3.12.11
+sglang=0.5.18
+sglang-router=0.3.2
+torch=2.13.0
+triton=3.7.1
+transformers=5.12.1
+flashinfer-python=0.6.17
+sglang-kernel=0.4.6.post1
+torch_version_cuda=13.0
+cuda_available=True
+device_count=2
+gpu_0=NVIDIA GeForce RTX 4090 capability=(8, 9)
+gpu_1=NVIDIA GeForce RTX 4090 capability=(8, 9)
+nvcc=13.2
+driver=610.57.04

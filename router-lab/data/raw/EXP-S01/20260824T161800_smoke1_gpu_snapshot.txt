@@ -1,0 +1,6 @@
+# provenance: env=sglang-lab sha=71de97b264b04dcd514cf904003028aefe9775c8 evidence_sha=582fc6af2a6809865260135b28a8bf60b7b66898 cmd="nvidia-smi smoke snapshot for smoke1" date=2026-08-24T16:18:09Z gpu="NVIDIA GeForce RTX 4090" driver=610.57.04 seed=none
+0, NVIDIA GeForce RTX 4090, GPU-9fb3e681-924d-fd76-ef23-7062772e4827, 1 MiB, 24564 MiB, 0 %, P8, 27, 12.83 W, 450.00 W
+1, NVIDIA GeForce RTX 4090, GPU-d5e97115-f626-5692-9eb6-1dc7685e8a4b, 9914 MiB, 24564 MiB, 0 %, P2, 29, 61.49 W, 450.00 W
+
+[compute_processes]
+633543, sglang::scheduler, GPU-d5e97115-f626-5692-9eb6-1dc7685e8a4b, 9904 MiB

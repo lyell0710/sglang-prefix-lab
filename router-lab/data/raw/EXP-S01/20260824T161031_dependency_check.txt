@@ -1,0 +1,4 @@
+# provenance: env=sglang-lab sha=71de97b264b04dcd514cf904003028aefe9775c8 evidence_sha=582fc6af2a6809865260135b28a8bf60b7b66898 cmd="uv pip check --python /root/venvs/sglang-lab/bin/python" date=2026-08-24T16:10:34Z gpu="NVIDIA GeForce RTX 4090" driver=610.57.04 seed=none
+Using Python 3.12.11 environment at: /root/venvs/sglang-lab
+Checked 204 packages in 4ms
+All installed packages are compatible
