@@ -28,7 +28,7 @@ for row in csv.DictReader(l for l in open(src) if not l.startswith("#")):
 dists = sorted({int(r["reuse_distance_tokens"]) for r in rows})
 pools = [("8192", "#c0392b", "池 8192(=最小 D,越线即崩)"),
          ("16384", "#0f4c81", "池 16384"),
-         ("default", "#1a6fb8", "默认池(≈57 万,远大于 D)")]
+         ("default", "#1a6fb8", "默认池(≈16 万(161671,EXP-P01 启动日志),远大于 D)")]
 cell = {(r["pool_tokens"], int(r["reuse_distance_tokens"])):
         (float(r["hot_hit_frac_mean"]), float(r["hot_hit_frac_std"])) for r in rows}
 
