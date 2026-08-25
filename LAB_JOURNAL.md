@@ -114,3 +114,16 @@
 - **产物**:records/EXP-S00,S01、docs/PLAN_router_matrix.md、
   config/protocol-router-v1.json;README 台账+边界+路线图更新。
 - **下一步**:router 矩阵按并入协议择机执行(需整机);建远端后推送。
+
+## 2026-08-25 · README 门面升级(GitHub-facing)
+
+- **做了什么**:README 重排为门面结构(Headline 表/图表区/代码导览/Quickstart/
+  结构树/方法论),EXP 台账与红线表原样保留;新增 fig3(P05 悬崖)、fig4(P08
+  分位数再分配)及脚本 plot_eviction_cliff.py / plot_sched_tradeoff.py(从
+  derived 读数,dpi220,固定配色)。
+- **为什么**:面试官 30 秒扫读需要数据/图/代码/方法论同屏;P05/P08 两个最有
+  区分度的结论此前无图。
+- **关键数字**:无新测量;全部沿用 P03/P05/P07/P08 现行 derived(指针见 README)。
+- **产物**:README.md、scripts/plot_{eviction_cliff,sched_tradeoff}.py、
+  figures/fig3_p05_eviction_cliff.png、figures/fig4_p08_sched_tradeoff.png。
+- **下一步**:用户建远端后推送;router 矩阵 S02-S07 择机执行。
