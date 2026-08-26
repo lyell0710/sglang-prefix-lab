@@ -5,7 +5,7 @@
 | 字段 | 值 |
 |---|---|
 | 日期 | 2026-08-24 |
-| 环境 | venv sglang-lab · GPU0 · Qwen3-8B @ 28000(参数同 EXP-P07)· evidence sha 2ddd624 |
+| 环境 | venv sglang-lab · GPU0 · Qwen3-8B @ 28000(参数同 EXP-P07《8B 收益曲线》)· evidence sha 2ddd624 |
 | 状态 | 完成 |
 | 关联清单项 | EXP-P04 §7 的 8B 复测 backlog |
 
@@ -16,7 +16,7 @@ P04 同协议换 8B。预期:prefill 变重后 P04 在 0.6B 上测得的"边界�
 
 ## 2-3. 配置与步骤
 
-同 EXP-P04(bench_groups.py,std=G8×R8@c16 / boundary=G16×R12@c64,
+同 EXP-P04《调度策略》(bench_groups.py,std=G8×R8@c16 / boundary=G16×R12@c64,
 prefix 1536/2048,3 seeds,`--schedule-policy {fcfs,lpm}` 各起一次 worker)。
 
 ## 4. 原始数据

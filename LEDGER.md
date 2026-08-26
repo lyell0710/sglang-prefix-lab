@@ -6,18 +6,18 @@
 
 ## 🧾 EXP 台账
 
-| 编号 | slug | 日期 | 状态 | 关键数字(指针) |
-|---|---|---:|:---:|---|
-| EXP-S00 | bootstrap_audit(并入) | 2026-08-24 | ✅ | 60s 超时事故排查+host 体检;GPU/端口清白证明 → data/raw/EXP-S00/ |
-| EXP-S01 | env_and_single_worker_smoke(并入) | 2026-08-24 | ✅ | venv sglang-lab 安装验证(现行共用环境的出生证明)→ records/EXP-S01 |
-| EXP-P01 | env_single_worker_smoke | 2026-08-24 | ✅ | 确定性✓;第二发 cached=1324/1325(=n−1);hit_rate 0.9992;flashinfer 后端 → data/raw/EXP-P01/ |
-| EXP-P02 | token_contract_matrix | 2026-08-24 | ✅ | 5 格:4 格符合预注册,thinking_flip 证伪(Qwen3 开关是纯尾扩展,命中 1326/1329)→ data/raw/EXP-P02/ |
-| EXP-P03 | hit_benefit_curve | 2026-08-24 | ✅ | TTFT p50:c1 −36%/c8 −63%(prefix 1792/2048);device_hit 计数与 Σcached 逐 token 相等;OFF 臂平 → data/derived/exp_p03_ttft_vs_prefix.csv |
-| EXP-P04 | lpm_vs_fcfs | 2026-08-24 | ✅ | std 档无可区分;boundary 档(192req>128 窗口)lpm p99 反劣 13%、hit −2.4pp(2σ)→ data/derived/exp_p04_fcfs_vs_lpm.csv |
-| EXP-P05 | eviction_pressure | 2026-08-24 | ✅ | LRU 悬崖:池<重用距离(8192×(1+cr))时 hit 1.0→0.0625 阶跃,三池验证,std=0 → data/derived/exp_p05_eviction_cliff.csv |
-| EXP-P07 | 8b_hit_benefit_curve | 2026-08-24 | ✅ | Qwen3-8B:TTFT p50 −77%(c1)/−78%(c8)@prefix 1792/2048;device_hit 逐 token 闭环复现;off 臂平 → data/derived/exp_p07_8b_ttft_vs_prefix.csv |
-| EXP-P08 | 8b_scheduling_tradeoff | 2026-08-24 | ✅ | 8B boundary:lpm p50 −62%/hit +17.7pp 但 p99 +64%——分位数再分配,不是标量优劣 → data/derived/exp_p08_8b_fcfs_vs_lpm.csv |
-| EXP-P06 | routing_pool_capacity | 2026-08-24 | ✅ | 双预测双证伪:rr@偶数热集=奇偶分片巧合全命中;cache_aware 冷启动全钉一卡而崩(100/0 流量);hot5 对照坐实 → data/derived/exp_p06_routing_pool.csv |
+| 编号 | 名称 | slug | 日期 | 状态 | 关键数字(指针) |
+|---|---|---|---:|:---:|---|
+| EXP-S00 | bootstrap 现场审计 | bootstrap_audit(并入) | 2026-08-24 | ✅ | 60s 超时事故排查+host 体检;GPU/端口清白证明 → data/raw/EXP-S00/ |
+| EXP-S01 | 独立环境与单 worker smoke | env_and_single_worker_smoke(并入) | 2026-08-24 | ✅ | venv sglang-lab 安装验证(现行共用环境的出生证明)→ records/EXP-S01 |
+| EXP-P01 | env 与单 worker smoke(radix 首证) | env_single_worker_smoke | 2026-08-24 | ✅ | 确定性✓;第二发 cached=1324/1325(=n−1);hit_rate 0.9992;flashinfer 后端 → data/raw/EXP-P01/ |
+| EXP-P02 | token 契约矩阵(含一处预注册假设证伪) | token_contract_matrix | 2026-08-24 | ✅ | 5 格:4 格符合预注册,thinking_flip 证伪(Qwen3 开关是纯尾扩展,命中 1326/1329)→ data/raw/EXP-P02/ |
+| EXP-P03 | 命中收益曲线:TTFT vs 共享前缀长度(radix on/off 双臂) | hit_benefit_curve | 2026-08-24 | ✅ | TTFT p50:c1 −36%/c8 −63%(prefix 1792/2048);device_hit 计数与 Σcached 逐 token 相等;OFF 臂平 → data/derived/exp_p03_ttft_vs_prefix.csv |
+| EXP-P04 | 调度策略:lpm vs fcfs(标准档无可区分;边界档 lpm 反劣) | lpm_vs_fcfs | 2026-08-24 | ✅ | std 档无可区分;boundary 档(192req>128 窗口)lpm p99 反劣 13%、hit −2.4pp(2σ)→ data/derived/exp_p04_fcfs_vs_lpm.csv |
+| EXP-P05 | 逐出压力:LRU 下命中不是衰减,是重用距离越线即崩塌 | eviction_pressure | 2026-08-24 | ✅ | LRU 悬崖:池<重用距离(8192×(1+cr))时 hit 1.0→0.0625 阶跃,三池验证,std=0 → data/derived/exp_p05_eviction_cliff.csv |
+| EXP-P07 | 8B 收益曲线:0.6B 结论在部署级模型上放大并复现 | 8b_hit_benefit_curve | 2026-08-24 | ✅ | Qwen3-8B:TTFT p50 −77%(c1)/−78%(c8)@prefix 1792/2048;device_hit 逐 token 闭环复现;off 臂平 → data/derived/exp_p07_8b_ttft_vs_prefix.csv |
+| EXP-P08 | 8B 调度:lpm vs fcfs 从"谁更好"变成"分位数再分配" | 8b_scheduling_tradeoff | 2026-08-24 | ✅ | 8B boundary:lpm p50 −62%/hit +17.7pp 但 p99 +64%——分位数再分配,不是标量优劣 → data/derived/exp_p08_8b_fcfs_vs_lpm.csv |
+| EXP-P06 | 路由 × 池容量:预注册预测被双向证伪,机理由对照钉死 | routing_pool_capacity | 2026-08-24 | ✅ | 双预测双证伪:rr@偶数热集=奇偶分片巧合全命中;cache_aware 冷启动全钉一卡而崩(100/0 流量);hot5 对照坐实 → data/derived/exp_p06_routing_pool.csv |
 
 ## 🧭 方法论与措辞红线(诚实度文化)
 

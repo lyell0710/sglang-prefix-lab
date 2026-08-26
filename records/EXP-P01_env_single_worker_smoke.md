@@ -47,7 +47,7 @@ gpu_after.csv,engine_metrics.txt,w0_startup.log}`
 input_len−1,theory/01 §2.2)——机制笔记的第一处实测锚。
 **并回溯闭环一个悬案**:16:12 首次尝试(在 sibling 仓)avail mem 仅 9.17GB 并
 CUDA graph OOM,本次同卡 23.07GB → 当时是与 sibling agent 的 worker 同卡相撞
-(其 16:21 提交的 EXP-S01 同窗口在跑),不是驱动/容器限制。
+(其 16:21 提交的 EXP-S01《独立环境与单 worker smoke》同窗口在跑),不是驱动/容器限制。
 
 ## 7. 异常、偏差与开放问题
 

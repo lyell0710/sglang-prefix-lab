@@ -4,7 +4,7 @@
 
 职责三件:①按 (臂, 并发, prefix_len) 归组 3 seeds,产出 p50 的 mean±std;
 ②cached 闭环硬校验(cached_ok_all 列,见下);③打印 /metrics 快照中的
-device_hit 行,供与客户端 Σcached_tokens 对账——EXP-P07 锚:引擎计数器
+device_hit 行,供与客户端 Σcached_tokens 对账——EXP-P07（8B 收益曲线）锚:引擎计数器
 device_hit=466,944 与 Σcached 逐 token 相等,0.6B/8B 双复现。
 臂名从文件名取(_radix_on_/_radix_off_):raw 命名即协议编码,聚合不读参数。
 cached_ok_all 是数据有效性 gate:任一请求违反"on 臂恰=prefix_len、off 臂或

@@ -22,11 +22,11 @@ TTFT 停表口径(全仓统一):t0=POST 发出前;停表=流中第一个带 delt
 + 逐请求 ttft_ms 数组 + cached_tokens 数组);重跑以时间前缀写新文件,不覆盖 raw。
 
 实测锚:Qwen3-8B prefix 1792/2048 时 TTFT p50 228.4→52.9 ms(并发 1,−77%)、
-1068.3→234.5 ms(并发 8,−78%),EXP-P07;0.6B 同协议仅 −36%/−63%(EXP-P03)
+1068.3→234.5 ms(并发 8,−78%),EXP-P07（8B 收益曲线）;0.6B 同协议仅 −36%/−63%(EXP-P03)
 ——收益正比于被跳过的 prefill 在 TTFT 中的占比,模型越大天花板越高。
 
 面试点:①为什么 input_ids 直传而不发文本——绕过 chat template 渲染,token
-序列完全受控,cached_tokens 才能与 prefix_len 逐 token 对账(EXP-P02:模板/
+序列完全受控,cached_tokens 才能与 prefix_len 逐 token 对账(EXP-P02（token 契约矩阵）:模板/
 thinking 开关都会改 token 流);②usage 为何随流取(stream_options.include_usage)
 ——停表与命中数在同一次响应内闭合,"快了多少"与"命中了多少"同源,归因
 不靠事后查 /metrics 推测。

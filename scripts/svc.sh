@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # svc.sh · 本仓唯一的服务进程生命周期入口(CLAUDE.md 铁律:进程只经本脚本管理,
 # 禁 killall/模糊 pkill——双卡与 venv 同 sibling 共享,模糊匹配会误杀对面进程)。
-# 脱胎于 EXP-S01 时期的 worker_ctl 脚手架;身份三形态校验与日志轮转均为事故后加固
-# (EXP-S01 并发撞车、EXP-P06 首轮 router 存活跨臂,见各记录 §7)。
+# 脱胎于 EXP-S01（独立环境与单 worker smoke）时期的 worker_ctl 脚手架;身份三形态校验与日志轮转均为事故后加固
+# (EXP-S01 并发撞车、EXP-P06（路由 × 池容量）首轮 router 存活跨臂,见各记录 §7)。
 # 进程生命周期:只管理本脚本写入 runtime/<name>.pid 的进程组。
 # 用法: svc.sh start <name> <gpu> <port> [extra launch_server args...]
 #       svc.sh stop <name> | status <name> | wait_health <name> [secs]
@@ -29,7 +29,7 @@ case "$cmd" in
     launch=("$VENV/bin/python" -m "$mod" --host 127.0.0.1 --port "$port" "$@")
     # 完整命令落盘:provenance 的一部分,也是 port_of 反查的依据。
     printf '%q ' "CUDA_VISIBLE_DEVICES=$gpu" "${launch[@]}" > "$cmdf"; echo >> "$cmdf"
-    if [[ -s "$logf" ]]; then mv "$logf" "$logf.prev"; fi   # 证据保全:上一段日志轮转不截断——失败现场是证据(EXP-S00 超时排查即靠残留日志)
+    if [[ -s "$logf" ]]; then mv "$logf" "$logf.prev"; fi   # 证据保全:上一段日志轮转不截断——失败现场是证据(EXP-S00（bootstrap 现场审计）超时排查即靠残留日志)
     : > "$logf"
     [[ "$gpu" == none ]] && gpu=""              # router 不占卡:CUDA_VISIBLE_DEVICES 置空 = 不可见任何 GPU
     # setsid:起独立进程组——sglang 是多进程树(scheduler/detokenizer 等),

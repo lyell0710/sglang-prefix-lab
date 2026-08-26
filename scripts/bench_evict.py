@@ -10,7 +10,7 @@
   D = hot_count × total_len × (1+cold_ratio) = 4×2048×(1+cr) = 8192×(1+cr)
 hot_count×total_len 特意取 8192 = 最小池位:cr=0 时 D 恰压在池边界上,
 cold_ratio 每 +1 把 D 线性外推一个池位。LRU 命中 ⇔ 池 ≥ D:8192 池 cr=0 保
-命中、cr≥1 崩;16384 池 cr=4(D=40960)崩;默认池(≈16 万(161671,EXP-P01 启动日志))全保。
+命中、cr≥1 崩;16384 池 cr=4(D=40960)崩;默认池(≈16 万(161671,EXP-P01（env 与单 worker smoke）启动日志))全保。
 
 协议:worker 以 --max-total-tokens 限池。H 个热前缀(prefix_len)先各预热一次;
 然后按 [热请求 ×1,冷请求 ×cold_ratio] 交替注入(串行,c=1,隔离排队效应:

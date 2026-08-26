@@ -3,7 +3,7 @@
 用法:plot_ttft_curve.py <derived_csv> <out_png> <title-result-sentence> <model_label>
 
 标题由调用方传"结论句":图自带结论,脱离正文也能被正确解读。同一脚本出
-fig1(0.6B,EXP-P03)与 fig2(8B,EXP-P07),模型差异只体现在数据与标签,
+fig1(0.6B,EXP-P03（命中收益曲线）)与 fig2(8B,EXP-P07（8B 收益曲线）),模型差异只体现在数据与标签,
 图形语言保持一致以支持两图对读(收益天花板随模型规模变化)。
 误差条 = 3 seeds 的 p50 std;脚注把 src 文件名 + provenance 首行打进图片,
 图不脱离数据谱系(哪份 csv、哪条命令、什么硬件)。

@@ -23,7 +23,7 @@ radix 命中判定发生在 **token id 序列**上(theory/01 §2.1),而 OpenAI �
 2. **thinking 开关**(Qwen3):模板含 `enable_thinking` 切换(protocol.py:958-971,
    qwen3 默认开,template_detection.py:188-208);`--default-chat-template-kwargs` 与
    每请求 `chat_template_kwargs` 合并(serving_chat.py:1053-1060,请求侧优先)。
-   **实测修正(EXP-P02,预注册假设被证伪)**:Qwen3 模板的开关落在 generation
+   **实测修正(EXP-P02《token 契约矩阵》,预注册假设被证伪)**:Qwen3 模板的开关落在 generation
    prompt 尾部——thinking-off = thinking-on 的完整渲染 **原样 + 追加**
    `<think>\n\n</think>\n\n`(1325→1329 token,首分叉位=1325 即无分叉,raw=
    EXP-P02/20260824T163438_template_divergence.json)。因此 **thinking 配置不一致
@@ -41,7 +41,7 @@ radix 命中判定发生在 **token id 序列**上(theory/01 §2.1),而 OpenAI �
   TPOT=(E2E−TTFT)/(out−1);ITL=chunk 间隔均摊(serving.py:747-767,:1116-1127)。
 - server 侧(`--enable-metrics` 才有):`queue_time`、`forward_entry_time`、
   `prefill_finished_time`、`e2e_latency`(req_time_stats.py:1167-1182,:479-480)。
-  → TTFT ≈ 排队 + prefill + 流式开销;归因闭环已由 engine counter 差分完成(EXP-P03/P07),
+  → TTFT ≈ 排队 + prefill + 流式开销;归因闭环已由 engine counter 差分完成(EXP-P03《命中收益曲线》/P07),
   **不要**拿 client TTFT 直接说"prefill 变快了"。
 - 预热与冷启动:JIT/CUDA graph 首跑污染第一批请求;`/flush_cache` 只在 idle 真清
   (scheduler.py:4251-4279)→ 每臂开始前:确认 flush success=true + 固定 warmup。

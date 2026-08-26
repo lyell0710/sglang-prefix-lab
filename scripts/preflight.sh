@@ -2,7 +2,7 @@
 # 无副作用体检:任何 GPU 实验前必须跑(CLAUDE.md 铁律)。零写操作,只读取证;
 # 发现外来 GPU compute 进程或本仓端口被占 → 非零退出,上层流程据此中止。
 # 为什么必须:双卡与 venv 同 sibling 仓共享,"整机独占"只能靠这里把关——
-# EXP-S01 的并发撞车事故(另一 agent 起了第二个 worker 抢同一卡)即反面教材。
+# EXP-S01（独立环境与单 worker smoke）的并发撞车事故(另一 agent 起了第二个 worker 抢同一卡)即反面教材。
 # 输出即证据:可传 $1 落盘为 raw preflight 快照(provenance 首行),与实验数据同谱系归档。
 # 面试点:判定与取证分离——判定用 nvidia-smi 计数(稳定),取证用 /proc 扫描
 # (能点名 exe/cmdline,但有进程消失竞态,故 set +e 防连坐)。

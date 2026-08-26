@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""单图单结论(EXP-P08):8B 积压档 lpm 赢 p50 输 p99——延迟在分位数间再分配。
+"""单图单结论(EXP-P08（8B 调度）):8B 积压档 lpm 赢 p50 输 p99——延迟在分位数间再分配。
 用法:plot_sched_tradeoff.py data/derived/exp_p08_8b_fcfs_vs_lpm.csv figures/fig4_p08_sched_tradeoff.png
 
 p50 与 p99 并排横条 + 命中率注记:让"换来什么(p50/hit)/付出什么(p99)"

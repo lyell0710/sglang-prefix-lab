@@ -2,10 +2,10 @@
 """P05 聚合:bench_evict raw json → derived csv(附重用距离模型列)。
 
 按 (池位, cold_ratio) 归组 3 seeds;池位从文件名 hint 反推(smallpool→8192,
-midpool16k→16384,否则 default≈16 万(161671,EXP-P01 启动日志))——raw 命名即协议编码。
+midpool16k→16384,否则 default≈16 万(161671,EXP-P01（env 与单 worker smoke）启动日志))——raw 命名即协议编码。
 reuse_distance_tokens 列 = 8192×(1+cr),即 D = hot_count×total_len×(1+cr):
 把"悬崖位置可由模型预测"直接写进表,读表即可对照 池≥D ⇔ hit=1.0。
-EXP-P05 锚:hit 呈 1.0 与 ~1/16 量级残余的两态(16384@cr4 为 0.125),seed 间 std=0。
+EXP-P05（逐出压力）锚:hit 呈 1.0 与 ~1/16 量级残余的两态(16384@cr4 为 0.125),seed 间 std=0。
 """
 import glob, json, statistics as st, sys
 rows = {}

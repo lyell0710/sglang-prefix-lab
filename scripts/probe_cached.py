@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""EXP-P01 探针:确定性 + radix 命中首证(同 prompt 双发,第二发 cached_tokens>0)。
+"""EXP-P01（env 与单 worker smoke）探针:确定性 + radix 命中首证(同 prompt 双发,第二发 cached_tokens>0)。
 
 解决什么问题:在跑任何收益曲线之前,用最小实验证明三个前提同时成立:
 ① server 可用(/v1/models 有数据);② temperature=0 双发 content 逐字符相等

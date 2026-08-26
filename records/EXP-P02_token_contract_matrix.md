@@ -5,7 +5,7 @@
 | 字段 | 值 |
 |---|---|
 | 日期 | 2026-08-24 |
-| 环境 | venv sglang-lab · GPU0 · worker 28000(参数同 EXP-P01)· evidence sha 1378595 |
+| 环境 | venv sglang-lab · GPU0 · worker 28000(参数同 EXP-P01《env 与单 worker smoke》)· evidence sha 1378595 |
 | 状态 | 完成 |
 | 关联清单项 | docs/PLAN.md#exp-p02 |
 

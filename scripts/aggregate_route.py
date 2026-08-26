@@ -2,7 +2,7 @@
 """P06 聚合:bench_route_pool raw json → derived csv。只聚合有效批次(165910)。
 
 为什么把时间戳写死进 glob:首轮(16:53)整批作废——router 丢弃 input_ids
-扩展字段致负载静默退化(EXP-P06 §7),作废 raw 按红线保留原地但永不入聚合,
+扩展字段致负载静默退化(EXP-P06（路由 × 池容量） §7),作废 raw 按红线保留原地但永不入聚合,
 锁时间戳防未来误混。config 轴 hot5_odd/hot6_even 即奇偶对照:rr 的"全命中"
 是否为轮转周期与副本数的整除巧合,由 hot5 打破整除后立即崩塌坐实。
 worker0/1_traffic 为 prompt_tokens_total 差分均值:cache_aware 的 100/0 单卡

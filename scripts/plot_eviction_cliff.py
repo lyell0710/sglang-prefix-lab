@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""单图单结论(EXP-P05):LRU 逐出不是斜坡是悬崖——池 < 重用距离即 1.0→0.06 阶跃。
+"""单图单结论(EXP-P05（逐出压力）):LRU 逐出不是斜坡是悬崖——池 < 重用距离即 1.0→0.06 阶跃。
 用法:plot_eviction_cliff.py data/derived/exp_p05_eviction_cliff.csv figures/fig3_p05_eviction_cliff.png
 
 x 轴取重用距离 D=8192×(1+cr) 而非 cold_ratio:D 才是机理变量(池≥D ⇔ 命中),

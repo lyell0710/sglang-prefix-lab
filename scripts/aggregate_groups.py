@@ -4,7 +4,7 @@
 
 文件名约定 *_<policy>_<tier>_s<seed>.json:policy(fcfs/lpm)与 tier
 (std/boundary)从倒数第 3/2 段解析——raw 命名即协议编码,聚合不读参数。
-产出列含 p50/p95/p99 各自的 mean±std:EXP-P08 的结论(lpm p50 −62% 但 p99
+产出列含 p50/p95/p99 各自的 mean±std:EXP-P08（8B 调度）的结论(lpm p50 −62% 但 p99
 +64%,分位数再分配)要求头尾两端同时呈现,单一均值会掩盖权衡。
 """
 import glob, json, statistics as st, sys

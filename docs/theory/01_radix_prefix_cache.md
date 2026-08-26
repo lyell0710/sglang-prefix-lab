@@ -57,11 +57,11 @@ verified_against: EXP-P01(cached=n−1 实测)、EXP-P02(契约矩阵)
 
 ## 3. 本项目实证(已回填)
 
-- cached = **prompt−1 的精确值**(1324/1325),不是近似——"至少重算 1 token"上限的实测锚(EXP-P01)。
-- 契约矩阵五格:input_ids/salt_same 均 n−1、salt_diff 全 miss、thinking 开关纯尾扩展不破坏共享(EXP-P02,含证伪与修正)。
-- 收益:TTFT p50 −77%(c1)/−78%(c8)@ Qwen3-8B, prefix 1792/2048(EXP-P07);0.6B 版 −36%/−63%(EXP-P03);
+- cached = **prompt−1 的精确值**(1324/1325),不是近似——"至少重算 1 token"上限的实测锚(EXP-P01《env 与单 worker smoke》)。
+- 契约矩阵五格:input_ids/salt_same 均 n−1、salt_diff 全 miss、thinking 开关纯尾扩展不破坏共享(EXP-P02《token 契约矩阵》,含证伪与修正)。
+- 收益:TTFT p50 −77%(c1)/−78%(c8)@ Qwen3-8B, prefix 1792/2048(EXP-P07《8B 收益曲线》);0.6B 版 −36%/−63%(EXP-P03《命中收益曲线》);
   `disable-radix` 反例臂全线打平;engine `device_hit=466,944` 与客户端 Σcached 逐 token 相等(P03/P07 双复现)。
-- 逐出:LRU 命中 ⇔ 池 ≥ 重用距离(EXP-P05,三池 std=0)。
+- 逐出:LRU 命中 ⇔ 池 ≥ 重用距离(EXP-P05《逐出压力》,三池 std=0)。
 
 ## 4. 怎么"看见"命中(观测点,写实验必须知道)
 

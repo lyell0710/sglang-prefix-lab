@@ -17,7 +17,7 @@ prefix_len 无趋势;③ON 臂收益与 engine 侧 prefill 命中计数一致。
 
 ## 2. 环境与配置
 
-`scripts/bench_prefix.py`:input_ids 直传(EXP-P02 契约结论),total=2048 token,
+`scripts/bench_prefix.py`:input_ids 直传(EXP-P02《token 契约矩阵》契约结论),total=2048 token,
 prefix ∈ {0,512,1024,1536,1792},每点 16 请求,输出 32,流式首 chunk 停表;
 每点先 /flush_cache,预热 1 条前缀请求(计时外);seed×3(20260824/25/26);
 ON 臂并发 {1,8},OFF 臂并发 1。

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""EXP-P04/P08 · 分组共享前缀负载:--schedule-policy fcfs vs lpm 的调度放大。
+"""EXP-P04（调度策略）/P08 · 分组共享前缀负载:--schedule-policy fcfs vs lpm 的调度放大。
 
 解决什么问题:验证 cache-aware 调度(lpm,最长前缀匹配排序)相对 fcfs 的
 真实收益窗口。实测结论必须带定语:0.6B std 档判平、boundary 档 lpm p99 反劣
 13%、hit −2.4pp(EXP-P04);8B boundary 档 lpm p50 −62%、hit +17.7pp 但 p99
-+64%(EXP-P08)——延迟在分位数间再分配,不是标量优劣。
++64%(EXP-P08（8B 调度）)——延迟在分位数间再分配,不是标量优劣。
 
 负载:G 组 × R 请求/组,组内共享 prefix_len 前缀,后缀唯一;全列表 shuffle(seed 固定)
 后以 concurrency 并发注入(对抗序:相邻请求大概率不同组)。

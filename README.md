@@ -23,7 +23,7 @@ flowchart LR
 | 前缀命中收益(Qwen3-8B) | TTFT p50 228.4 -> 52.9 ms(并发 1,**-77%**)、1068.3 -> 234.5 ms(并发 8,-78%),共享前缀 1792/2048,3 轮 mean±std;disable-radix 反例臂全线打平 | [EXP-P07](records/EXP-P07_8b_hit_benefit_curve.md),[exp_p07_8b_ttft_vs_prefix.csv](data/derived/exp_p07_8b_ttft_vs_prefix.csv) |
 | 逐 token 归因闭环 | 引擎计数器 device_hit = **466,944**,与客户端 Σcached_tokens 逐 token 相等(0.6B/8B 双复现) | [EXP-P03](records/EXP-P03_hit_benefit_curve.md) / [EXP-P07](records/EXP-P07_8b_hit_benefit_curve.md) |
 | LRU 逐出悬崖 | 池 < 重用距离 8192×(1+cr) 时命中 **1.0 -> 0.0625** 阶跃崩塌,无中间态;三池×四档冷流量,3 轮 seed 间 std=0 | [EXP-P05](records/EXP-P05_eviction_pressure.md),[exp_p05_eviction_cliff.csv](data/derived/exp_p05_eviction_cliff.csv) |
-| 调度不是标量优劣(8B 积压档) | lpm p50 **-62%**、命中 +17.7pp,但 p99 +64%(3 轮 mean±std):延迟在分位数间再分配;0.6B 同协议(EXP-P04)则单纯反劣 | [EXP-P08](records/EXP-P08_8b_scheduling_tradeoff.md),[exp_p08_8b_fcfs_vs_lpm.csv](data/derived/exp_p08_8b_fcfs_vs_lpm.csv) |
+| 调度不是标量优劣(8B 积压档) | lpm p50 **-62%**、命中 +17.7pp,但 p99 +64%(3 轮 mean±std):延迟在分位数间再分配;0.6B 同协议(EXP-P04《调度策略》)则单纯反劣 | [EXP-P08](records/EXP-P08_8b_scheduling_tradeoff.md),[exp_p08_8b_fcfs_vs_lpm.csv](data/derived/exp_p08_8b_fcfs_vs_lpm.csv) |
 | radix 命中首证 | 第二发 cached=**1324/1325(=n-1)**,精确命中源码"至少重算 1 token"的上限(单轮确定性验证) | [EXP-P01](records/EXP-P01_env_single_worker_smoke.md),data/raw/EXP-P01/ |
 | 预注册证伪 ×3(全程保留) | Qwen3 thinking 开关为纯尾扩展,不破坏共享(P02);rr 全命中为奇偶分片巧合;cache-aware 冷启动把热前缀集中到单卡,流量 100/0(P06 双证伪) | [EXP-P02](records/EXP-P02_token_contract_matrix.md) / [EXP-P06](records/EXP-P06_routing_pool_capacity.md) |
 
@@ -77,7 +77,7 @@ async def one_request(session, url, model, ids, out_tokens):
     return {"ttft_ms": ttft, "e2e_ms": e2e, "cached_tokens": cached}
 ```
 
-机制要点([docs/theory/01_radix_prefix_cache.md](docs/theory/01_radix_prefix_cache.md)):服务端把每个请求的 token id 序列插入 radix tree(节点值为 KV 物理块索引),新请求最长前缀匹配后直接复用 KV、跳过对应 prefill;调度器把匹配上限压到 input_len-1,保证至少重算 1 个 token 以产生 logits。实测锚点:EXP-P01 第二发 cached=1324/1325,恰为 n-1 的精确值。
+机制要点([docs/theory/01_radix_prefix_cache.md](docs/theory/01_radix_prefix_cache.md)):服务端把每个请求的 token id 序列插入 radix tree(节点值为 KV 物理块索引),新请求最长前缀匹配后直接复用 KV、跳过对应 prefill;调度器把匹配上限压到 input_len-1,保证至少重算 1 个 token 以产生 logits。实测锚点:EXP-P01《env 与单 worker smoke》第二发 cached=1324/1325,恰为 n-1 的精确值。
 
 聚合侧的闭环校验见 [scripts/aggregate_p03.py](scripts/aggregate_p03.py):每个请求的 cached_tokens 必须恰等于 prefix_len(ON 臂)或 0(OFF 臂),再与 /metrics 的 device_hit 计数器交叉对账。
 
@@ -109,16 +109,16 @@ bash scripts/svc.sh stop w0
 
 | 记录 | 一句话结论 |
 |---|---|
-| [EXP-S00](records/EXP-S00_bootstrap_audit.md) | 环境与基线体检:双卡/端口清白证明,以及一次 60s 超时故障的排查定位 |
-| [EXP-S01](records/EXP-S01_env_and_single_worker_smoke.md) | 实验环境(venv)安装验证与首个单 worker 冒烟,现行共用环境的出生证明 |
-| [EXP-P01](records/EXP-P01_env_single_worker_smoke.md) | radix 命中首证:第二发 cached=1324/1325(=n-1),确定性通过,flashinfer 后端 |
-| [EXP-P02](records/EXP-P02_token_contract_matrix.md) | 五格 token 契约矩阵:四格符合预注册;thinking 开关被证明是纯尾扩展,不破坏前缀共享(预注册假设证伪) |
-| [EXP-P03](records/EXP-P03_hit_benefit_curve.md) | 0.6B 收益曲线:TTFT p50 并发 1 时 -36%、并发 8 时 -63%;device_hit 与 Σcached 逐 token 相等 |
-| [EXP-P04](records/EXP-P04_lpm_vs_fcfs.md) | 0.6B 调度:轻载两策略判平;超 128 等待窗口后 lpm p99 反劣 13%、命中 -2.4pp |
-| [EXP-P05](records/EXP-P05_eviction_pressure.md) | LRU 逐出悬崖:池 ≥ 重用距离 8192×(1+cr) 时全命中,越线 1.0 -> 0.06 阶跃,无中间态 |
-| [EXP-P06](records/EXP-P06_routing_pool_capacity.md) | 路由双证伪:rr 全命中系奇偶分片巧合;cache-aware 冷启动把热前缀集中到单卡(流量 100/0) |
-| [EXP-P07](records/EXP-P07_8b_hit_benefit_curve.md) | 8B 收益曲线:TTFT p50 -77%/-78%,反例臂持平,计数器闭环在 8B 复现 |
-| [EXP-P08](records/EXP-P08_8b_scheduling_tradeoff.md) | 8B 调度权衡:lpm p50 -62%、命中 +17.7pp、p99 +64%,是分位数再分配而非标量优劣 |
+| [EXP-S00 bootstrap 现场审计](records/EXP-S00_bootstrap_audit.md) | 环境与基线体检:双卡/端口清白证明,以及一次 60s 超时故障的排查定位 |
+| [EXP-S01 独立环境与单 worker smoke](records/EXP-S01_env_and_single_worker_smoke.md) | 实验环境(venv)安装验证与首个单 worker 冒烟,现行共用环境的出生证明 |
+| [EXP-P01 env 与单 worker smoke(radix 首证)](records/EXP-P01_env_single_worker_smoke.md) | radix 命中首证:第二发 cached=1324/1325(=n-1),确定性通过,flashinfer 后端 |
+| [EXP-P02 token 契约矩阵(含一处预注册假设证伪)](records/EXP-P02_token_contract_matrix.md) | 五格 token 契约矩阵:四格符合预注册;thinking 开关被证明是纯尾扩展,不破坏前缀共享(预注册假设证伪) |
+| [EXP-P03 命中收益曲线:TTFT vs 共享前缀长度(radix on/off 双臂)](records/EXP-P03_hit_benefit_curve.md) | 0.6B 收益曲线:TTFT p50 并发 1 时 -36%、并发 8 时 -63%;device_hit 与 Σcached 逐 token 相等 |
+| [EXP-P04 调度策略:lpm vs fcfs(标准档无可区分;边界档 lpm 反劣)](records/EXP-P04_lpm_vs_fcfs.md) | 0.6B 调度:轻载两策略判平;超 128 等待窗口后 lpm p99 反劣 13%、命中 -2.4pp |
+| [EXP-P05 逐出压力:LRU 下命中不是衰减,是重用距离越线即崩塌](records/EXP-P05_eviction_pressure.md) | LRU 逐出悬崖:池 ≥ 重用距离 8192×(1+cr) 时全命中,越线 1.0 -> 0.06 阶跃,无中间态 |
+| [EXP-P06 路由 × 池容量:预注册预测被双向证伪,机理由对照钉死](records/EXP-P06_routing_pool_capacity.md) | 路由双证伪:rr 全命中系奇偶分片巧合;cache-aware 冷启动把热前缀集中到单卡(流量 100/0) |
+| [EXP-P07 8B 收益曲线:0.6B 结论在部署级模型上放大并复现](records/EXP-P07_8b_hit_benefit_curve.md) | 8B 收益曲线:TTFT p50 -77%/-78%,反例臂持平,计数器闭环在 8B 复现 |
+| [EXP-P08 8B 调度:lpm vs fcfs 从"谁更好"变成"分位数再分配"](records/EXP-P08_8b_scheduling_tradeoff.md) | 8B 调度权衡:lpm p50 -62%、命中 +17.7pp、p99 +64%,是分位数再分配而非标量优劣 |
 
 ## 测量方法
 

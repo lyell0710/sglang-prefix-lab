@@ -16,7 +16,7 @@ P03 同协议换 Qwen3-8B。预期:①prefill 变重使收益的**相对值**显
 
 ## 2-3. 配置与步骤
 
-与 EXP-P03 完全同协议(bench_prefix.py,prefix∈{0,512,1024,1536,1792}/2048,
+与 EXP-P03《命中收益曲线》完全同协议(bench_prefix.py,prefix∈{0,512,1024,1536,1792}/2048,
 16 req/点,3 seeds,c1+c8 on 臂,c1 off 臂),仅模型与 mem-fraction 变。
 
 ## 4. 原始数据

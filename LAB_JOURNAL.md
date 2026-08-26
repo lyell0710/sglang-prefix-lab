@@ -9,7 +9,7 @@
 - **做了什么**:接手用户"搭 SGLang 学习+简历项目"的任务。现场审计发现:①附件
   `sglang 内容.txt` 从未到达任何 agent(Codex 会话 15:48 同样记录缺失);②sibling
   agent(Codex)已在 `/root/projects/sglang-inference-lab` 建仓并推进(bootstrap
-  15:57,EXP-S01 提交 16:21),期间我在其未提交工作树里误写文件并与其 GPU worker
+  15:57,EXP-S01《独立环境与单 worker smoke》提交 16:21),期间我在其未提交工作树里误写文件并与其 GPU worker
   相撞(我方 smoke 在 16:12 CUDA graph OOM——同刻其 worker 占 GPU0 ~15.7GB,
   这是 avail=9.17GB 之谜的答案);③venv `/root/venvs/sglang-lab` 由其 uv 安装,
   16:09 完成,栈健康(torch 2.13.0+cu13, CUDA 可用双卡)。
@@ -21,7 +21,7 @@
 - **产物**:仓骨架 + docs/theory/01-03(radix 机制/路由机制/负载契约,全部
   file:line 锚)+ docs/tooling/bench_serving 笔记 + PLAN(P01-P06 预注册)+
   scripts(svc/preflight/provenance)+ records/data freeze。
-- **下一步**:commit → preflight → EXP-P01 smoke(GPU0, 28000)。
+- **下一步**:commit → preflight → EXP-P01《env 与单 worker smoke》 smoke(GPU0, 28000)。
 
 ## 2026-08-24 · EXP-P01/P02:radix 首证与契约矩阵(含一处证伪)
 
@@ -106,7 +106,7 @@
 ## 2026-08-25 · 双仓合一
 
 - **做了什么**:sglang-inference-lab(Codex 建)以完整历史并入(merge commit
-  c80aceb),随后拍平:收编 EXP-S00/S01(+raw)与 router 矩阵预注册协议
+  c80aceb),随后拍平:收编 EXP-S00《bootstrap 现场审计》/S01(+raw)与 router 矩阵预注册协议
   (docs/PLAN_router_matrix.md),删除重复脚手架(git 历史可找回);旧路径留
   指路牌,本地备份保全其 ignored 运行日志。
 - **为什么**:用户要求合一;Codex 自 08-24 16:22 静止,收编其唯一增量价值
