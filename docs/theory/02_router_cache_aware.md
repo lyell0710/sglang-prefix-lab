@@ -52,7 +52,7 @@ else                            -> 送最小负载(随机 tie-break)          # 
 
 - 端点（server.rs）：`/health`、`/flush_cache`（fan-out 所有 worker）、 `/get_loads` + `/v1/loads`、`/workers`（GET 列出/POST 加），Prometheus 独立端口默认 **29000**(`--prometheus-port`)。
 - 指标（`smg_*`）：`smg_worker_selection_total{worker,policy,...}`（每 worker 被选次数—— **直接量化路由分布**）、`smg_worker_requests_active{worker}`、 `smg_worker_routing_keys_active`、`smg_router_ttft_seconds`。 ⚠ **sgl-model-gateway 没有 cache-hit-rate 指标**——命中率只能从 engine 侧读。
-- 每请求哪张卡服务：sgl-model-gateway 的路由理由是 **DEBUG 级**日志（cache_aware.rs：496，：532-536），无响应头直接标注 worker。→ 要逐请求归卡，靠 `smg_worker_selection_total` 的增量 + 两 worker 各自 `/metrics` 的 per-worker 计数交叉验证（与 vllm/experiments EXP-013《EXT-1 request 级 KV-wait 关联》的"逐请求双端匹配"同法）。
+- 每请求哪张卡服务：sgl-model-gateway 的路由理由是 **DEBUG 级**日志（cache_aware.rs：496，：532-536），无响应头直接标注 worker。→ 要逐请求归卡，靠 `smg_worker_selection_total` 的增量 + 两 worker 各自 `/metrics` 的 per-worker 计数交叉验证（与 vllm/experiments vllm/experiments#EXP-013《EXT-1 request 级 KV-wait 关联》的"逐请求双端匹配"同法）。
 
 ## 5. 启动(两 worker 已跑时,本项目 40000 端口)
 

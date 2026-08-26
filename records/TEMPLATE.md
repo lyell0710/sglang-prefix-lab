@@ -4,7 +4,7 @@
 
 - **对数值统一方法**：同 SEED、同输入；自研引擎逐层 dump 中间 tensor，与 HF `output_hidden_states=True` / 各层 forward hook 输出对齐；记 **max_abs_err + mean_abs_err**。
 - **PASS 阈值**：max_abs_err < 1e-2（BF16）/ < 1e-3（FP32）。生成类：贪心逐 token 完全一致。
-- **参考实现版本写死**：transformers / torch 版本以 ENV.md（EXP-D01 固化）为准，记录中只写指针。
+- **参考实现版本写死**：transformers / torch 版本以 ENV.md（llm-engine#EXP-D01 固化）为准，记录中只写指针。
 - **SEED**：每个测量点唯一 SEED，写进配置表；性能数字 ≥3 轮，mean/std 落 stability 文件。
 - **大 dump 铁律**：入库「首末层 + 抽样中间层 + 最终 logits top-k」；全量本体放 data/local/（gitignore），仓里入 manifest（路径 + sha256 + provenance 行）。
 - raw 首行 provenance：`# provenance: env= sha= cmd= date= gpu= driver= seed=`。
