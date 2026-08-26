@@ -1,5 +1,7 @@
 # EXP-P01 · env 与单 worker smoke(radix 首证)
 
+> **一句话结论**：radix 缓存首证：`cached = n−1` 不是近似而是精确值（page_size=1，上限 input_len−1）——机制笔记的第一处实测锚。
+
 ## 0. 元信息
 
 | 字段 | 值 |
