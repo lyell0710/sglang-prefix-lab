@@ -1,4 +1,4 @@
-> 迁移注(2026-08-25):本协议为并入的 router 性能矩阵预注册计划(S02-S07,未执行),原仓 sglang-inference-lab;机读配置=config/protocol-router-v1.json;执行前须按本仓 CORE 附则复核端口与资源纪律。
+> 迁移注（2026-08-25）：本协议为并入的 router 性能矩阵预注册计划（S02-S07，未执行），原仓 sglang-inference-lab；机读配置=config/protocol-router-v1.json；执行前须按本仓 CORE 附则复核端口与资源纪律。
 
 # 实验计划 · Prefix locality × routing policy × load
 
@@ -6,8 +6,7 @@
 
 ## 研究问题
 
-在两个同构 SGLang worker 上，前缀感知路由是否能把同一热前缀稳定送到已有 KV 的 worker，从而降低 TTFT？
-当并发升高或热门前缀偏斜时，cache reuse 与 load balance 的交界在哪里？
+在两个同构 SGLang worker 上，前缀感知路由是否能把同一热前缀稳定送到已有 KV 的 worker，从而降低 TTFT？当并发升高或热门前缀偏斜时，cache reuse 与 load balance 的交界在哪里？
 
 ## 固定变量
 
@@ -23,13 +22,12 @@
 
 | 维度 | 水平 |
 |---|---|
-| 路由策略 | `round_robin`, `cache_aware` |
+| 路由策略 | `round_robin`， `cache_aware` |
 | 前缀局部性 | 总长均为 2 Ki-token：unique/control、1 Ki-token hot prefix、1.75 Ki-token hot prefix |
 | client concurrency | 1、4、16 |
 | 独立 round | 3 个配对 seed；每个 seed 内策略顺序随机化 |
 
-每个正式点 192 requests，满足官方 `num_prompts >= 5 × max_concurrency` 建议。输出长度固定 32 token；
-具体 tokenizer 后的长度由 EXP-S02 manifest 验证，超出上下文的请求在计时前即判协议 FAIL。
+每个正式点 192 requests，满足官方 `num_prompts >= 5 × max_concurrency` 建议。输出长度固定 32 token；具体 tokenizer 后的长度由 EXP-S02 manifest 验证，超出上下文的请求在计时前即判协议 FAIL。
 
 ## Gate（跑前锁定）
 
@@ -78,8 +76,7 @@
 
 ### EXP-S05 · boundary and profile attribution
 
-围绕 S04 的反转点做 Zipf/阈值最小附加 sweep；用独立 profile run 验证是 prefix prefill、排队还是路由开销主导，
-不混用 profile 时延。最后用官方 agentic-trace 或固定 multi-turn replay 检查受控 GSP 结论能否外推到会话型流量。
+围绕 S04 的反转点做 Zipf/阈值最小附加 sweep；用独立 profile run 验证是 prefix prefill、排队还是路由开销主导，不混用 profile 时延。最后用官方 agentic-trace 或固定 multi-turn replay 检查受控 GSP 结论能否外推到会话型流量。
 
 ### EXP-S06 · repeatability and resume evidence
 

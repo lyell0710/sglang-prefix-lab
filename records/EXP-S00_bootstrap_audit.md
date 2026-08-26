@@ -1,6 +1,6 @@
 # EXP-S00 · bootstrap 现场审计
 
-> 迁移注(2026-08-25):自 sglang-inference-lab(Codex 建仓)并入本仓,编号沿用;文内 scripts/ 指原仓工装(git 历史 582fc6a/3a091ad 可查),现行工装=本仓 scripts/。
+> 迁移注（2026-08-25）：自 sglang-inference-lab（Codex 建仓）并入本仓，编号沿用；文内 scripts/ 指原仓工装（git 历史 582fc6a/3a091ad 可查），现行工装=本仓 scripts/。
 
 ## 0. 元信息
 
@@ -14,8 +14,7 @@
 
 ## 1. 目的、假设与预锁阈值
 
-在安装或启动服务前判断截图中的 60 秒 subprocess 超时是否由 GPU kernel、服务端口、普通外网、半成品环境或
-host I/O 阻塞导致。允许输出“最可能归因”，不把相关性写成已证明因果。
+在安装或启动服务前判断截图中的 60 秒 subprocess 超时是否由 GPU kernel、服务端口、普通外网、半成品环境或 host I/O 阻塞导致。允许输出“最可能归因”，不把相关性写成已证明因果。
 
 ## 2. 环境与配置
 
@@ -31,8 +30,7 @@ cd /root/projects/sglang-inference-lab
 bash scripts/preflight.sh data/raw/EXP-S00/20260824T155701_host_preflight.txt
 ```
 
-现场诊断阶段另执行了 `ps`、`vmstat` 和 HTTPS HEAD 探测。确认一个 `rg` 是此前只读审计遗留后，只向其子进程
-PID 579648 和父 shell PID 579576 发送 TERM；未停止 Cursor/Claude 认证进程和任何用户服务。
+现场诊断阶段另执行了 `ps`、`vmstat` 和 HTTPS HEAD 探测。确认一个 `rg` 是此前只读审计遗留后，只向其子进程 PID 579648 和父 shell PID 579576 发送 TERM；未停止 Cursor/Claude 认证进程和任何用户服务。
 
 ## 4. 原始数据
 
@@ -41,25 +39,20 @@ PID 579648 和父 shell PID 579576 发送 TERM；未停止 Cursor/Claude 认证�
 
 ## 5. 直接测量结果
 
-raw 快照显示：两张卡各 1 MiB、0% utilization、P8，无 compute process；三个项目端口全空闲；无 SGLang
-进程；剩余磁盘 163 GB；upstream clean。
+raw 快照显示：两张卡各 1 MiB、0% utilization、P8，无 compute process；三个项目端口全空闲；无 SGLang 进程；剩余磁盘 163 GB；upstream clean。
 
-事故诊断时的终端级证据：一个从 `/root` 发起的全盘 `rg` 有 12 个线程与两条 `claude auth status --json`
-卡在 `folio_wait_bit_common`，I/O wait 一度约 32–37%；GitHub/Hugging Face HTTPS 均返回 200。遗留 `rg`
-停止后，15:57 的 raw 中已无 D-state task。
+事故诊断时的终端级证据：一个从 `/root` 发起的全盘 `rg` 有 12 个线程与两条 `claude auth status --json` 卡在 `folio_wait_bit_common`，I/O wait 一度约 32–37%；GitHub/Hugging Face HTTPS 均返回 200。遗留 `rg` 停止后，15:57 的 raw 中已无 D-state task。
 
 ## 6. 分析与结论
 
 - **实测**：没有 CUDA kernel/GPU 进程，没有端口冲突，也没有已安装一半的 SGLang venv。
-- **推断**：截图的通用“authentication and network connectivity”提示并不符合现场主要症状；60 秒超时更可能由
-  overlay/filesystem I/O 阻塞放大，而不是 GPU 占用或普通 HTTPS 断网。
+- **推断**：截图的通用“authentication and network connectivity”提示并不符合现场主要症状；60 秒超时更可能由 overlay/filesystem I/O 阻塞放大，而不是 GPU 占用或普通 HTTPS 断网。
 - 结论边界：没有 syscall trace，因此只能称“最可能归因”，不能称已证明根因。
 
 ## 7. 异常、偏差与开放问题
 
 - 事故高峰没有按项目格式即时存 raw，只能降级为终端级证据。
-- 若超时再次发生，第一动作应在**不全盘扫描**的前提下同步捕获 `ps -eLo`、`vmstat`、目标 subprocess cwd/cmd
-  和精确网络探测，再决定是否停止进程。
+- 若超时再次发生，第一动作应在**不全盘扫描**的前提下同步捕获 `ps -eLo`、`vmstat`、目标 subprocess cwd/cmd 和精确网络探测，再决定是否停止进程。
 
 ## 8. 下游影响
 

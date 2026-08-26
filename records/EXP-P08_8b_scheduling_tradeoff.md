@@ -5,24 +5,21 @@
 | 字段 | 值 |
 |---|---|
 | 日期 | 2026-08-24 |
-| 环境 | venv sglang-lab · GPU0 · Qwen3-8B @ 28000(参数同 EXP-P07《8B 收益曲线》)· evidence sha 2ddd624 |
+| 环境 | venv sglang-lab · GPU0 · Qwen3-8B @ 28000（参数同 EXP-P07《8B 收益曲线》）· evidence sha 2ddd624 |
 | 状态 | 完成 |
 | 关联清单项 | EXP-P04 §7 的 8B 复测 backlog |
 
 ## 1. 目的与假设(跑前锁定)
 
-P04 同协议换 8B。预期:prefill 变重后 P04 在 0.6B 上测得的"边界档 lpm 反劣"
-应更显著(命中价值与排序代价同时放大)。
+P04 同协议换 8B。预期：prefill 变重后 P04 在 0.6B 上测得的"边界档 lpm 反劣" 应更显著（命中价值与排序代价同时放大）。
 
 ## 2-3. 配置与步骤
 
-同 EXP-P04《调度策略》(bench_groups.py,std=G8×R8@c16 / boundary=G16×R12@c64,
-prefix 1536/2048,3 seeds,`--schedule-policy {fcfs,lpm}` 各起一次 worker)。
+同 EXP-P04《调度策略》（bench_groups.py,std=G8×R8@c16 / boundary=G16×R12@c64, prefix 1536/2048,3 seeds,`--schedule-policy {fcfs,lpm}` 各起一次 worker）。
 
 ## 4. 原始数据
 
-`data/raw/EXP-P08/20260824T172957_*`(12 json + 2 metrics + preflight,
-provenance 首行);聚合 `data/derived/exp_p08_8b_fcfs_vs_lpm.csv`。
+`data/raw/EXP-P08/20260824T172957_*`（12 json + 2 metrics + preflight, provenance 首行）；聚合 `data/derived/exp_p08_8b_fcfs_vs_lpm.csv`。
 
 ## 5. 结果(TTFT ms,3 seeds mean±std)
 
@@ -35,30 +32,17 @@ provenance 首行);聚合 `data/derived/exp_p08_8b_fcfs_vs_lpm.csv`。
 
 ## 6. 分析与结论
 
-- std 档:与 0.6B(EXP-P04)同判——差异与轮间波动同量级,无可区分。
-- **boundary 档:预期部分证伪,真相更有结构**。0.6B 时 lpm 单纯反劣
-  (p99 +13%,hit −2.4pp);8B 下二者**各赢一半**:
-  lpm p50 −62%(2505 vs 6659)、hit +17.7pp(0.934 vs 0.757),
-  但 p99 +64%(15656 vs 9538)。
-- 机理(实测组合+推断标注):①fcfs 在 c64 下同组请求**并发交错**,组内
-  首请求的 KV 尚未入树时同组后续已在跑 → 大量本可命中的请求 miss
-  (hit 0.757);lpm 排序把同组聚簇串行化,后来者稳定吃到前者的树
-  (hit 0.934)——**命中差在重 prefill 下从 2.4pp 放大到 17.7pp**。
-  ②聚簇的代价是排序靠后的组整组延后 → 尾部拉爆(p99 +64%):
-  locality 与 fairness 的教科书权衡,在 prefill 昂贵时才可见。
-- **结论一句话:调度策略的"好坏"在重负载下不是标量——lpm 把延迟从中位数
-  搬到尾部,换命中率;选它与否取决于 SLO 定义在 p50 还是 p99**。
+- std 档：与 0.6B(EXP-P04)同判——差异与轮间波动同量级，无可区分。
+- **boundary 档：预期部分证伪，真相更有结构**。0.6B 时 lpm 单纯反劣（p99 +13%，hit −2.4pp）；8B 下二者**各赢一半**： lpm p50 −62%(2505 vs 6659)、hit +17.7pp(0.934 vs 0.757)， 但 p99 +64%(15656 vs 9538)。
+- 机理（实测组合+推断标注）：①fcfs 在 c64 下同组请求**并发交错**，组内首请求的 KV 尚未入树时同组后续已在跑 → 大量本可命中的请求 miss (hit 0.757)；lpm 排序把同组聚簇串行化，后来者稳定吃到前者的树（hit 0.934）——**命中差在重 prefill 下从 2.4pp 放大到 17.7pp**。 ②聚簇的代价是排序靠后的组整组延后 → 尾部拉爆（p99 +64%）： locality 与 fairness 的教科书权衡，在 prefill 昂贵时才可见。
+- **结论一句话：调度策略的"好坏"在重负载下不是标量——lpm 把延迟从中位数搬到尾部，换命中率；选它与否取决于 SLO 定义在 p50 还是 p99**。
 
 ## 7. 异常、偏差与开放问题
 
-- lpm boundary 的 p50 std 大(±767):聚簇顺序对 seed 敏感(哪些组先被
-  聚簇决定中位请求落点),本身是机制的一部分,如实报。
-- fcfs 的并发同组 miss 机理为推断(与 hit/流量数据一致,未逐请求 trace);
-  确证需逐请求 arrival→insert 时序,列开放。
-- 0.6B(P04)与 8B(P08)的 boundary 结论不同侧重,两记录互为限定,
-  README/讲稿引用时必须带模型与负载定语。
+- lpm boundary 的 p50 std 大（±767）：聚簇顺序对 seed 敏感（哪些组先被聚簇决定中位请求落点），本身是机制的一部分，如实报。
+- fcfs 的并发同组 miss 机理为推断（与 hit/流量数据一致，未逐请求 trace）； 确证需逐请求 arrival→insert 时序，列开放。
+- 0.6B(P04)与 8B(P08)的 boundary 结论不同侧重，两记录互为限定， README/讲稿引用时必须带模型与负载定语。
 
 ## 8. 下游影响
 
-- 讲稿新增一张最硬的"权衡"牌;README 台账 P08 行;
-  P04 红线行改为"限 0.6B";新增红线:「lpm 更好/更差」的无定语说法禁用。
+- 讲稿新增一张最硬的"权衡"牌；README 台账 P08 行； P04 红线行改为"限 0.6B"；新增红线：「lpm 更好/更差」的无定语说法禁用。
