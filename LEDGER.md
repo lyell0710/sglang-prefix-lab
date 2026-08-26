@@ -42,5 +42,5 @@
 ## 🗺 路线图(未执行)与待办
 
 - 双副本 router 性能矩阵（S02-S07，预注册协议=[docs/PLAN_router_matrix.md](docs/PLAN_router_matrix.md) + [config/protocol-router-v1.json](config/protocol-router-v1.json)）——serving 部署故事的下一阶段，**需整机独占，择机执行**。
-- 本仓暂无远端：**待用户建 GitHub 远端后推送**；外部背书缺口见 [RESUME_EVIDENCE.md](RESUME_EVIDENCE.md) 缺口台账。
+- 远端：https://github.com/lyell0710/sglang-prefix-lab（2026-08-26 建仓并公开）。
 - P06 交叉复核位：router 矩阵执行后回填（EXP-P06 §8 已留 fallback 注记）。
