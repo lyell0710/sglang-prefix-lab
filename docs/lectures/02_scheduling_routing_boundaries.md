@@ -92,7 +92,7 @@ SGLang 论文把这件事的动机写得很直白："When there are many request
 
 ### 2.1 论文的最优性定理:它说了什么,以及它的三个前提
 
-论文为离线情形证明了一条定理，值得逐字引用（arXiv：2312.07104，§3，证明在附录 A.3）：
+论文为离线情形证明了一条定理，值得逐字引用（arXiv:2312.07104，§3，证明在附录 A.3）：
 
 > **Theorem 3.1.** For a batch of requests, we can achieve an optimal cache hit rate by visiting the radix tree of the requests in the depth-first search order, with a cache size ≥ the maximum request length. The longest-shared-prefix-first order is equivalent to a depth-first search order.
 
@@ -125,7 +125,7 @@ SGLang 论文把这件事的动机写得很直白："When there are many request
 
 **于是 lpm 的效果可以干净地分成两个成分**：
 
-$$\text{lpm 的效果} = \underbrace{\text{SPT 式重排}}_{\text{零和：搬运等待，p50↓ / p99↑}} + \underbrace{\text{缓存聚簇}}_{\text{非零和：删掉工作量，全员受益}}$$
+$$\text{lpm 的效果} = \underbrace{\text{SPT 式重排}}_{\text{零和：搬运等待，p50$\downarrow$ / p99$\uparrow$}} + \underbrace{\text{缓存聚簇}}_{\text{非零和：删掉工作量，全员受益}}$$
 
 这个二分立刻解释了两阶段认知（§3.2 的实测）：
 
@@ -161,7 +161,7 @@ $$\text{lpm 的效果} = \underbrace{\text{SPT 式重排}}_{\text{零和：搬�
 |---|---|---|
 | 纯随机（球入桶） | $n$ 球 $n$ 桶，最大负载 $\approx \ln n/\ln\ln n$ | round_robin / 随机选卡：负载均，但**缓存局部性为零** |
 | 两选一（power of two choices） | 每球随机看两桶选轻的，最大负载降到 $\ln\ln n/\ln 2 + O(1)$，指数级改善(Azar/Broder/Karlin/Upfal， SICOMP 29(1)：180-200, 1999) | 用少量随机性换均衡，仍不带亲和 |
-| 一致性哈希 + 有界负载 | 给定平衡参数 $c=1+\varepsilon$，保证没有桶的负载超过 $\lceil cm/n\rceil$，且每次增删只搬动常数个球（Mirrokni/Thorup/Zadimoghaddam， arXiv：1608.01350） | **亲和 + 容量上界**：正是 EXP-P06 缺的那个东西 |
+| 一致性哈希 + 有界负载 | 给定平衡参数 $c=1+\varepsilon$，保证没有桶的负载超过 $\lceil cm/n\rceil$，且每次增删只搬动常数个球（Mirrokni/Thorup/Zadimoghaddam， arXiv:1608.01350） | **亲和 + 容量上界**：正是 EXP-P06 缺的那个东西 |
 
 **第三行是这一篇的理论终点**：EXP-P06 观察到的崩塌，本质是一个"有亲和、无容量上界"的映射。而"亲和 + 容量上界"不是本讲义发明的补丁——被测的同一个 gateway 代码库里就有一个策略实现了它，只是本仓没测（§3.4.4、§8.2）。
 
@@ -182,7 +182,7 @@ python/sglang/srt/managers/schedule_policy.py)
 
 上游把理由写在注释里："Turn off the expensive prefix matching and sorting when the #queue is large."(：292)。把这句话量化（本讲义推导）：
 
-- 第 2 步对每个等待请求做一次 `match_prefix`，单次代价 $O（\text{树深}\times \text{段长}）$，实践中与前缀长度同阶；
+- 第 2 步对每个等待请求做一次 `match_prefix`，单次代价 $O(\text{树深}\times \text{段长})$，实践中与前缀长度同阶；
 - 第 4 步的排序是 $O(Q\log Q)$；
 - 合计每轮 $O(Q\cdot L_p + Q\log Q)$，而这一整块跑在**调度器线程**上，与 GPU 前向串行。
 
@@ -244,7 +244,7 @@ std 档按预锁阈值判平（差值与轮间波动同量级）；boundary 档 
 
 第 3 步其实就是 §2.2 的"聚簇成分"的机理：**miss 窗口的长度决定了聚簇能救回多少工作量**。把它写成一个粗糙但有用的估计（本讲义推导）：
 
-设一组有 $R$ 条请求，首请求的 prefill 耗时 $S_1$，并发下每轮批次能容纳 $m$ 条。在首请求完成之前进入 batch 的同组请求全部 miss。fcfs 下这个数目正比于 $S_1 \times（\text{到达速率}）$；8B 的 $S_1$ 大约是 0.6B 的 20 倍，所以 miss 窗口里挤进来的同组请求也多得多。$\text{hit} \approx 1 -（\text{窗口内 miss 数}）/(R-1)$——这就是 0.992 与 0.757 的量级差来源。lpm 通过串行化同组请求把窗口内的并发同伴数压到接近 1，于是命中率回到 0.934。
+设一组有 $R$ 条请求，首请求的 prefill 耗时 $S_1$，并发下每轮批次能容纳 $m$ 条。在首请求完成之前进入 batch 的同组请求全部 miss。fcfs 下这个数目正比于 $S_1 \times(\text{到达速率})$；8B 的 $S_1$ 大约是 0.6B 的 20 倍，所以 miss 窗口里挤进来的同组请求也多得多。$\text{hit} \approx 1 -(\text{窗口内 miss 数})/(R-1)$——这就是 0.992 与 0.757 的量级差来源。lpm 通过串行化同组请求把窗口内的并发同伴数压到接近 1，于是命中率回到 0.934。
 
 **这段解释是与数据一致的机理推断，不是逐请求 trace 验证过的结论**（EXP-P08 §6 已如实标注）。要验证它需要 server 侧的 per-request 时序，本仓没有采集。
 
@@ -280,7 +280,7 @@ else -> 送最小负载(随机 tie-break)                       # :456-467
 | 3 | **时间戳按 1/8 概率更新** | tree.rs：601-606，注释自述 "Update timestamp probabilistically (1 in 8 matches) to reduce DashMap contention" | router 树自己的 LRU 逐出也是近似的 |
 | 4 | **一个节点多租户时取任意一个** | tree.rs：578-582，`tenant_last_access_time.iter().next()` | 同一段前缀被两张卡都持有时，选谁没有语义保证 |
 
-第 2 层是最重要的一层，而且**上游论文描述的原始设计不是这样**：SGLang 论文附录 A.4 写的是 router 维护 meta-tree、worker 逐出时把事件提交到队列由 router 异步消费（"Should an eviction occur at a worker node， it commits this eviction to a queue， which the router then processes to update the meta-tree during periods of low activity"，arXiv：2312.07104，§A.4）。**被测的 0.3.2 版 gateway 没有这条回流通路**，这是"论文设计 vs 被测实现"的一处实打实的差距，也是 §8.1 表里的一行。
+第 2 层是最重要的一层，而且**上游论文描述的原始设计不是这样**：SGLang 论文附录 A.4 写的是 router 维护 meta-tree、worker 逐出时把事件提交到队列由 router 异步消费（"Should an eviction occur at a worker node， it commits this eviction to a queue， which the router then processes to update the meta-tree during periods of low activity"，arXiv:2312.07104，§A.4）。**被测的 0.3.2 版 gateway 没有这条回流通路**，这是"论文设计 vs 被测实现"的一处实打实的差距，也是 §8.1 表里的一行。
 
 #### 3.3.2 文件头注释与实现的一处分歧
 
@@ -316,19 +316,19 @@ cache_aware.rs 的文件头把低命中路径描述为"路由到树最小的 wor
 hot5 那一格是本实验最值钱的一格，因为它把两个平时纠缠在一起的量剥离开了。把它们写严格：
 
 - **均衡度**：各 worker 承担的 token 量之比。rr 在两个配置下都是 ~50/50。
-- **分散度**：热前缀集合被划分到各 worker 的**划分质量**。定义每卡的重用距离 $D_w =（\text{分到该卡的热前缀数}） \times（\text{单请求 token 量}）$， 命中条件是 $D_w \le P$。
+- **分散度**：热前缀集合被划分到各 worker 的**划分质量**。定义每卡的重用距离 $D_w =(\text{分到该卡的热前缀数}) \times(\text{单请求 token 量})$， 命中条件是 $D_w \le P$。
 
 rr 在 hot6 下的划分是 $\{1,3,5\}$ / $\{2,4,6\}$——每卡 3 个，$D_w \approx 6450 < 8192$，命中；rr 在 hot5 下没有稳定划分，每个前缀轮流落两张卡，等价于每卡都要装下全部 5 个，$D_w \approx 10750 > 8192$，崩。**两个配置的均衡度完全相同， 命中率差 500 倍。** 结论：
 
 $$\text{均衡度是关于流量的一阶统计量，分散度是关于映射的结构性质；前者不蕴含后者。}$$
 
-**一般化到 $W$ 副本**（本讲义推导）：严格轮询把 $H$ 个热前缀映射到 $W$ 张卡， 映射稳定当且仅当 $W \mid H$；此时每卡分到 $H/W$ 个，命中条件是 $(H/W)\cdot T \le P$。若 $\gcd(H，W) = g < W$，则每个前缀会在 $W/g$ 张卡之间轮流，每卡都必须装下 $H\cdot g/W$ 个甚至更多——$W=2， H=5$ 时 $g=1$，每卡要装全部 5 个。**所以 rr 的"缓存友好"完全依赖 $W \mid H$ 这个数论巧合，而 $H$ 是业务决定的、$W$ 是运维决定的，两者没有理由整除。**
+**一般化到 $W$ 副本**（本讲义推导）：严格轮询把 $H$ 个热前缀映射到 $W$ 张卡， 映射稳定当且仅当 $W \mid H$；此时每卡分到 $H/W$ 个，命中条件是 $(H/W)\cdot T \le P$。若 $\gcd(H,W) = g < W$，则每个前缀会在 $W/g$ 张卡之间轮流，每卡都必须装下 $H\cdot g/W$ 个甚至更多——$W=2, H=5$ 时 $g=1$，每卡要装全部 5 个。**所以 rr 的"缓存友好"完全依赖 $W \mid H$ 这个数论巧合，而 $H$ 是业务决定的、$W$ 是运维决定的，两者没有理由整除。**
 
 #### 3.4.2 修正后的一般化
 
 cache-aware 亲和等效于扩容的前提是 tenant **分散**在多卡；它的冷启动分配在低负载下会**集中**，此时亲和与容量约束相乘为负。rr 的命中依赖热集数与副本数的整除关系，不可依赖。一句话：**容量受限的多副本里，前缀→副本映射的质量（分散且稳定）比"cache-aware"这个策略标签重要；两种现成策略都不保证这一点**。限度见 §6 条 5。
 
-这条结论并不是本仓的独创发现，而是与分布式前缀调度文献的判断一致——Preble 在引言里把两个极端都点了名：一味均衡会把同前缀请求打散到不同 GPU 重复计算； "a naive solution that always sends requests with shared prefixes to the same GPU would result in imbalanced loads and low overall GPU utilization because the GPU that initially serves a request with a popular prefix will accumulate a huge load of new requests all trying to reuse the calculated prefix KV"(arXiv：2407.00023， §1)。**本仓的贡献不是发现这个张力，而是在一个容量受限的最小机理格里把它测出来， 并证明现成策略的两端都会掉进去。**
+这条结论并不是本仓的独创发现，而是与分布式前缀调度文献的判断一致——Preble 在引言里把两个极端都点了名：一味均衡会把同前缀请求打散到不同 GPU 重复计算； "a naive solution that always sends requests with shared prefixes to the same GPU would result in imbalanced loads and low overall GPU utilization because the GPU that initially serves a request with a popular prefix will accumulate a huge load of new requests all trying to reuse the calculated prefix KV"(arXiv:2407.00023， §1)。**本仓的贡献不是发现这个张力，而是在一个容量受限的最小机理格里把它测出来， 并证明现成策略的两端都会掉进去。**
 
 值得注意的是，Preble 与本仓观察到的**失效方式不同**：Preble 说的是"负载堆积"（那张卡忙不过来），本仓串行注入下根本没有负载堆积，失效的是**容量**（那张卡的池装不下）。这是同一个亲和集中现象的两种后果，而现成的失衡回退只防前者——它的判据是负载差（64/1.5），完全看不见"目标卡的 KV 池够不够"。**这正是 Preble 的代价函数里那个 $M_i$ 项（逐出代价）存在的理由，而 cache_aware 的决策式里没有对应的项**（§3.3 伪码里找不到任何与池占用有关的量）。
 
@@ -360,7 +360,7 @@ cache-aware 亲和等效于扩容的前提是 tenant **分散**在多卡；它�
 
 > 1. Extract first N tokens from the request (configurable prefix length) 2. Hash the token sequence using xxhash for fast, stable hashing 3. Use consistent hash ring to find the target worker 4. If worker is overloaded (load > avg * load_factor), find least loaded 5. Return least loaded worker that passes load check, or initial if all overloaded (prefix_hash.rs:9-13)
 
-配置项的默认值是 `prefix_token_count = 256`、`load_factor = 1.25` (config/types.rs：316-321、325-331)。**`load_factor = 1.25` 就是有界负载论文里的 $c = 1+\varepsilon$ 取 $\varepsilon = 0.25$**——理论论文的参数以默认值的形态出现在了实现里（Mirrokni/Thorup/Zadimoghaddam， arXiv：1608.01350）。而且它在第 1 步就用 **token** 而不是字符，消掉了 §3.3.1 的第 1 层近似。
+配置项的默认值是 `prefix_token_count = 256`、`load_factor = 1.25` (config/types.rs：316-321、325-331)。**`load_factor = 1.25` 就是有界负载论文里的 $c = 1+\varepsilon$ 取 $\varepsilon = 0.25$**——理论论文的参数以默认值的形态出现在了实现里（Mirrokni/Thorup/Zadimoghaddam， arXiv:1608.01350）。而且它在第 1 步就用 **token** 而不是字符，消掉了 §3.3.1 的第 1 层近似。
 
 **本仓没有测 prefix_hash**，所以不能主张它在 EXP-P06 的机理格上会赢。能说的只有：它在设计上补齐了 cache_aware 缺的那两样（稳定映射 + 容量/负载上界）， 是这条线最自然的下一格实验。同目录下还有 `power_of_two.rs`（两选一）与 `consistent_hashing.rs`（纯会话亲和），把 §2.5 的三个理论框架凑齐了—— **一个把负载均衡三十年的经典结论逐条实现了一遍的目录，值得单独读一遍。**
 
@@ -522,7 +522,7 @@ cache-aware 亲和等效于扩容的前提是 tenant **分散**在多卡；它�
 
 角色：亲和与均衡的仲裁点，**先问负载再问缓存**。两个阈值（默认 64 / 1.5， python 侧 router_args）是"与"关系：绝对差要大**且**相对比要大。改错会怎样： 换成"或"，小流量下轻微不均就放弃亲和，命中率被随机打散；EXP-P06 的教学点相反——串行注入下 max−min ≤ 1 远小于 64，这个分支从未执行，亲和集中无人纠偏（§3.4 证伪二）。
 
-**这个判据里缺了什么**（本讲义推导）：它只看**负载**，不看**容量**。目标 worker 的 KV 池已经装不下它被分配的工作集这件事，在这两个阈值里完全不可见。对照 Preble 的三项代价 $L_i + M_i + P_i$——其中 $M_i$ 正是"为了跑这条请求要逐出多少东西、逐出的代价有多大"(arXiv：2407.00023，§3.2)——**cache_aware 的决策式里没有任何对应于 $M_i$ 的项**。EXP-P06 崩塌的直接原因就是这个缺失项。
+**这个判据里缺了什么**（本讲义推导）：它只看**负载**，不看**容量**。目标 worker 的 KV 池已经装不下它被分配的工作集这件事，在这两个阈值里完全不可见。对照 Preble 的三项代价 $L_i + M_i + P_i$——其中 $M_i$ 正是"为了跑这条请求要逐出多少东西、逐出的代价有多大"(arXiv:2407.00023，§3.2)——**cache_aware 的决策式里没有任何对应于 $M_i$ 的项**。EXP-P06 崩塌的直接原因就是这个缺失项。
 
 **第 7 段 · router 亲和路径**(cache_aware.rs:436-450, 469-471)
 
@@ -552,7 +552,7 @@ cache-aware 亲和等效于扩容的前提是 tenant **分散**在多卡；它�
 
 角色：匹配对象是 `text` 的**字符**；`result.tenant` 是近似树记录的"这段前缀上次被送去的 worker"——树的 tenant 归属就是路由记忆，`tree.insert` 在**每次决策后**写回，于是首个请求落在哪张卡（冷启动、低负载时由 min-load 分支决定） 会被后续同前缀请求持续强化——这就是亲和集中的自增强回路。改错会怎样：阈值 0.3 调成 0，任何一丁点字符重合都触发亲和，不同前缀会被模板头的公共字符错误地钉到同一张卡。
 
-**分母的语义值得单独看一眼**：`match_rate = matched_char_count / input_char_count`，分母是**整条输入**的字符数，不是"可共享部分"的字符数。所以同一段系统提示词，在短用户问题后面 match_rate 高，在长用户问题后面 match_rate 低——**同一个前缀会因为后缀长度而时而触发亲和、时而不触发**。对照 Preble 的规则"matched > remaining"（等价于 match_rate > 0.5， arXiv：2407.00023，§3.2），两者形式相同而阈值不同：0.3 比 0.5 更偏向亲和。这两个阈值背后是同一个权衡，一个取了经验值，一个从"省下的算力是否超过新增的算力"推出来。
+**分母的语义值得单独看一眼**：`match_rate = matched_char_count / input_char_count`，分母是**整条输入**的字符数，不是"可共享部分"的字符数。所以同一段系统提示词，在短用户问题后面 match_rate 高，在长用户问题后面 match_rate 低——**同一个前缀会因为后缀长度而时而触发亲和、时而不触发**。对照 Preble 的规则"matched > remaining"（等价于 match_rate > 0.5， arXiv:2407.00023，§3.2），两者形式相同而阈值不同：0.3 比 0.5 更偏向亲和。这两个阈值背后是同一个权衡，一个取了经验值，一个从"省下的算力是否超过新增的算力"推出来。
 
 **第 8 段 · 低命中路径的随机 tie-break**(cache_aware.rs：451-467)
 
@@ -733,14 +733,14 @@ P05/P06 全部格 seed 间 std=0，不是"没测出波动"，而是协议确定�
 6. **Q：lpm 换命中率的代价为什么落在 p99 而不是均匀摊开？** 排序是全序重排：收益摊给被提前的多数（p50），代价集中给排最后的少数组（整组延后），分布两端被同时拉开——SPT 类调度的教科书性质。补一句量化： 代价不是纯零和，因为同一次重排还提高了命中率、缩短了 makespan(§5.2)。
 7. **Q：失衡回退的两个阈值为什么是"与"关系？** 绝对差（64）防小流量误触发，相对比（1.5）防大流量下绝对差虚高；单用任何一个都会在某个流量段错误触发/漏触发（cache_aware.rs：412-413）。
 8. **Q：怎么证明 cache_aware 臂真的在跑 cache_aware？** 每臂前置校验 router prometheus 的 `smg_worker_selection_total{policy=...}` 标签（首轮事故后加的 gate：进程存活 ≠ 策略正确）。进程身份还要容忍 setproctitle 改名形态（svc.sh 放行三形态）。
-9. **Q："映射分散度>策略标签"能推广到几副本？** 不等式形式可推广：每卡命中 ⇔ 该卡分到的热前缀重用距离 ≤ 单卡池。$W$ 副本下 rr 的"巧合分片"条件是 $W \mid H$(§3.4.1)，$\gcd(H，W)<W$ 时每卡都要装更多前缀，更脆；分散且稳定的映射（一致性哈希按前缀分片 + 负载上界）是通解方向——但本仓只测了 2 副本，推广是推导不是实测。
+9. **Q："映射分散度>策略标签"能推广到几副本？** 不等式形式可推广：每卡命中 ⇔ 该卡分到的热前缀重用距离 ≤ 单卡池。$W$ 副本下 rr 的"巧合分片"条件是 $W \mid H$(§3.4.1)，$\gcd(H,W)<W$ 时每卡都要装更多前缀，更脆；分散且稳定的映射（一致性哈希按前缀分片 + 负载上界）是通解方向——但本仓只测了 2 副本，推广是推导不是实测。
 10. **Q：engine 的 lpm 与 router 的 cache_aware 会互相干扰吗？** 两层 cache-aware 叠加行为本仓未测（EXP-P04 §8 明确列为扩展问题）。可以说的只有机制事实：router 决定"谁看见请求"，engine 决定"看见后怎么排"。
-11. **Q：SGLang 论文不是证明了 lpm 最优吗，为什么你们测出反劣？** Theorem 3.1 是**离线**结论，而且要求缓存 ≥ 最大请求长度；论文自己写了 "In the online case， the DFS order will be disrupted"(arXiv：2312.07104， §3)。本仓 boundary 档在线到达、缓存被在途请求分掉、而且队列 >128 时排序根本不执行——三个前提全破（§2.1 的表）。**定理与实测不冲突，是适用域不同。**
+11. **Q：SGLang 论文不是证明了 lpm 最优吗，为什么你们测出反劣？** Theorem 3.1 是**离线**结论，而且要求缓存 ≥ 最大请求长度；论文自己写了 "In the online case， the DFS order will be disrupted"(arXiv:2312.07104， §3)。本仓 boundary 档在线到达、缓存被在途请求分掉、而且队列 >128 时排序根本不执行——三个前提全破（§2.1 的表）。**定理与实测不冲突，是适用域不同。**
 12. **Q：lpm 到底是不是 SPT？** 是粗近似，四处不同：排序键是匹配长度不是剩余工作量（$k$ 而非 $n-k$， §4 第 5 段）；排序键随执行漂移；被延后的是整组而非独立作业；本仓是闭环系统不是 M/G/1。所以 SPT 文献的定量结论不能直接搬（§2.3）。
 13. **Q：Kleinrock 守恒律说重排是零和，你们却说总工作量减少了，矛盾吗？** 不矛盾。守恒律的适用类要求**调度决策不使用服务时间信息**；lpm 的排序键与有效服务时间相关，已经出了这个类。更根本的是，守恒律假设作业大小固定， 而 cache-aware 聚簇会**改变作业大小**（命中的 token 不用算）。makespan 26.86→20.41 s 就是这个"类外"效应的度量（§2.2、§5.2）。
 14. **Q：如果 fcfs 下命中率已经很高，还该不该开 lpm？** 按 §2.2 的二分：不该。命中率饱和意味着聚簇成分接近零，只剩零和的重排， 尾延迟必然变差而没有补偿——这正是 0.6B boundary 档的实测形态。**开关的判据是"fcfs 下的命中率离饱和有多远"，不是"要不要 cache-aware"。**
-15. **Q：cache_threshold 为什么是 0.3？有理论依据吗？** 没有检索到理论依据，是经验默认值（router_args.py：59）。作为对照，Preble 的规则是"匹配 token 数 > 剩余 token 数"才选择亲和（arXiv：2407.00023， §3.2），等价于阈值 0.5，且它是从"省下的算力是否超过新增的算力"推出来的。 0.3 比 0.5 更偏向亲和——在容量充裕时更好，在容量受限时更危险。
-16. **Q：那按理论该怎么改路由？** 亲和 + 容量上界：一致性哈希保证映射稳定，有界负载保证不集中（arXiv：1608.01350）。这不是空想——同一个 gateway 里的 `prefix_hash` 策略就是这么做的：prefix token 哈希 + 一致性哈希环 + `load_factor` 超载绕行，默认 `load_factor = 1.25` 恰是有界负载的 $c=1+\varepsilon$ (§3.4.4)。**本仓未测，所以只能说它在设计上补齐了缺口，不能说它会赢。**
+15. **Q：cache_threshold 为什么是 0.3？有理论依据吗？** 没有检索到理论依据，是经验默认值（router_args.py：59）。作为对照，Preble 的规则是"匹配 token 数 > 剩余 token 数"才选择亲和（arXiv:2407.00023， §3.2），等价于阈值 0.5，且它是从"省下的算力是否超过新增的算力"推出来的。 0.3 比 0.5 更偏向亲和——在容量充裕时更好，在容量受限时更危险。
+16. **Q：那按理论该怎么改路由？** 亲和 + 容量上界：一致性哈希保证映射稳定，有界负载保证不集中（arXiv:1608.01350）。这不是空想——同一个 gateway 里的 `prefix_hash` 策略就是这么做的：prefix token 哈希 + 一致性哈希环 + `load_factor` 超载绕行，默认 `load_factor = 1.25` 恰是有界负载的 $c=1+\varepsilon$ (§3.4.4)。**本仓未测，所以只能说它在设计上补齐了缺口，不能说它会赢。**
 17. **压力问 Q：lpm p50=2505±767，std 这么大，−62% 可信吗？** 诚实答：3 seeds 的区间（约 1738-3272）与 fcfs 的 6659±274 无重叠，方向与量级站得住；但 ±767 说明中位数本身对聚簇顺序敏感，−62% 是三轮均值的点估计，换负载结构（组数/组大小/并发）不应期望复现这个具体数值。方差大是机制（哪组先被聚簇）而非噪声，这一点记录里如实标注（EXP-P08 §7）。补一条独立佐证：makespan 也从 26.86 降到 20.41 s(§5.2)，两个方向一致的量同时改善，比单看 p50 更可信。
 18. **压力问 Q：P06 的结论会不会只是 sglang-router 0.3.2 一个版本的 bug？** 可能性无法排除——冷启动集中的内部路径未定（源码读出的是随机 tie-break， 与 3 seeds 全同的实测冲突，§3.4.3；日志级两次尝试无决策输出）， 上游新一代实现（experimental/sgl-router 的 cache_aware_zmq，block-hash of token ids + ZMQ 事件）已是不同设计。但本仓结论的一般化部分（"亲和等效扩容以映射分散为前提；整除巧合不可依赖"）是从重用距离不等式推出的， 不依赖该版本的具体实现；版本特定的部分（冷启动全钉一卡）已限定版本号并保留为潜在上游 issue 素材（EXP-P06 §8）。
 19. **压力问 Q：你读了源码却解释不了自己的数据，这不是说明实验有问题吗？** 诚实答：两种可能都在，而且本仓给出了区分它们的探针（§3.4.3 末尾：决策级日志或响应头记录被选 worker）。在探针跑通之前，能确定的是**观测事实**（流量 100/0、3 seeds 全同、两配置粘住的卡不同）和**源码事实**（低命中路径写的是随机 tie-break），以及两者不相容。**把不相容原样留在讲义里， 比挑一边圆过去更接近工程现实**——生产系统里"源码这么写但行为不是这样" 是常态，通常答案就在构建版本、配置注入或某条没读到的分支里。
@@ -759,7 +759,7 @@ P05/P06 全部格 seed 间 std=0，不是"没测出波动"，而是协议确定�
 | 6 | cache_aware.rs：452 注释：低命中路径"Tie break randomly" | 6（或 5）个热前缀首落点 3 seeds 全同，两配置各粘一张卡（std=0） | **直接冲突**。随机解释在数量级上被排除（§3.4.3）。候选原因：wheel 与 checkout 非同一 revision（tracing 行号系统性偏移约 5 行）、亲和路径提前触发、load() 非平局。**未核实，留探针** |
 | 7 | Preble §1：一味把同前缀请求送同一 GPU 会造成负载不均与低利用率 | 本仓测到的是**容量**失效（单池装不下工作集），不是负载堆积（串行注入下负载恒 0） | 同一现象的两种后果。现成的失衡回退只防负载（64/1.5），看不见容量——对应 Preble 代价函数里缺失的 $M_i$ 项（§3.4.2） |
 | 8 | Preble §3.2：匹配 token 数 > 剩余 token 数时才选亲和（等价阈值 0.5） | 被测实现用固定 `cache_threshold = 0.3`(router_args.py：59) | 形式相同、来源不同：Preble 从"省下的算力 vs 新增的算力"推出；0.3 是经验默认值。0.3 更偏向亲和，在容量受限时更危险 |
-| 9 | 有界负载论文：平衡参数 $c=1+\varepsilon$ 可保证无副本超过 $\lceil cm/n\rceil$(arXiv：1608.01350) | 本仓未测；但同代码库的 `prefix_hash` 策略默认 `load_factor = 1.25`(config/types.rs：329-331) | **理论参数以默认值形态出现在实现里**。本仓没有测这条策略，所以只能指出它在设计上补齐了 cache_aware 缺的两样，不能主张它在 P06 格上会赢 |
+| 9 | 有界负载论文：平衡参数 $c=1+\varepsilon$ 可保证无副本超过 $\lceil cm/n\rceil$(arXiv:1608.01350) | 本仓未测；但同代码库的 `prefix_hash` 策略默认 `load_factor = 1.25`(config/types.rs：329-331) | **理论参数以默认值形态出现在实现里**。本仓没有测这条策略，所以只能指出它在设计上补齐了 cache_aware 缺的两样，不能主张它在 P06 格上会赢 |
 | 10 | Bansal & Harchol-Balter：SRPT 对大作业的不公平"surprisingly small" | 8B boundary 档 lpm p99 +64% | 四处口径不同：对照物（PS vs FCFS）、策略（SRPT vs lpm 近似）、系统（开环 M/G/1 vs 闭环饱和）、统计量（稳态分位 vs 192 样本的次序统计量）。**不是文献错了，是四条定语都不一样**(§2.3) |
 | 11 | Kleinrock 守恒律：一大类规则下 $\sum\rho_p W_p$ 不变 | 8B boundary 档 lpm 的 makespan 从 26.86 降到 20.41 s | **lpm 在守恒律的适用类之外**（它用服务时间相关信息，并且改变作业大小）。makespan 下降就是"类外"效应的度量（§2.2、§5.2） |
 | 12 | SGLang v0.4 发布说明：cache-aware 负载均衡器带来"up to 1.9x throughput increase and 3.8x hit rate improvement" | 本仓 cache_aware 臂在容量受限格里 hit **崩到 0.0020** | **不可比**：发布说明的场景是容量充裕的多副本 serving，本仓是刻意压小池的机理格。两个数字回答的不是同一个问题——一个问"顺风时能多快"，一个问"逆风时会不会翻车" |
@@ -779,15 +779,15 @@ P05/P06 全部格 seed 间 std=0，不是"没测出波动"，而是协议确定�
 
 **论文**
 
-1. Zheng， Yin， Xie， Sun， Huang， Yu， Cao， Kozyrakis， Stoica， Gonzalez， Barrett， Sheng， "SGLang： Efficient Execution of Structured Language Model Programs"， arXiv：2312.07104，§3 "Cache-aware scheduling"、Theorem 3.1、附录 A.2、A.3、A.4。——想知道 lpm 的原始定义、它凭什么"最优"、以及那个最优性有哪三个前提，读这四处；§A.4 还给出了多副本的原始设计，与被测 gateway 对读即见代差。
-2. Srivatsa， He， Abhyankar， Li， Zhang， "Preble： Efficient Distributed Prompt Scheduling for LLM Serving"， arXiv：2407.00023，§1、§3.2（E2 算法与三项代价 $L_i + M_i + P_i$）。——想知道"一个把缓存与负载放进同一个代价函数里的路由长什么样"，以及本仓 §3.4.2 说的那个缺失项 $M_i$ 具体怎么算，读这两节。
+1. Zheng， Yin， Xie， Sun， Huang， Yu， Cao， Kozyrakis， Stoica， Gonzalez， Barrett， Sheng， "SGLang： Efficient Execution of Structured Language Model Programs"， arXiv:2312.07104，§3 "Cache-aware scheduling"、Theorem 3.1、附录 A.2、A.3、A.4。——想知道 lpm 的原始定义、它凭什么"最优"、以及那个最优性有哪三个前提，读这四处；§A.4 还给出了多副本的原始设计，与被测 gateway 对读即见代差。
+2. Srivatsa， He， Abhyankar， Li， Zhang， "Preble： Efficient Distributed Prompt Scheduling for LLM Serving"， arXiv:2407.00023，§1、§3.2（E2 算法与三项代价 $L_i + M_i + P_i$）。——想知道"一个把缓存与负载放进同一个代价函数里的路由长什么样"，以及本仓 §3.4.2 说的那个缺失项 $M_i$ 具体怎么算，读这两节。
 3. Kleinrock， "A conservation law for a wide class of queueing disciplines"， Naval Research Logistics Quarterly 12(2)：181-192, 1965。——想把"重排是零和" 这句直觉做严格，以及知道**这条守恒律的适用类要求调度不使用服务时间信息**（从而 lpm 出了这个类），读这一篇。
 4. Schrage， "A Proof of the Optimality of the Shortest Remaining Processing Time Discipline"， Operations Research 16(3)：687-690, 1968。——想知道"最短剩余优先在什么意义上最优"（最小化任意时刻的在系统作业数），读这一篇；它是 §2.3 说 lpm 是"SPT 近似"时对标的那个精确结论。
 5. Bansal & Harchol-Balter， "Analysis of SRPT scheduling： investigating unfairness"， ACM SIGMETRICS PER 29(1)：279-290, 2001。——想知道"SPT 类调度对大作业到底有多不公平"，读这一篇；它的结论（不公平"surprisingly small"） 与本仓 p99 +64% 表面冲突，四处口径差异见 §2.3，是练习"读文献先对齐口径"的好材料。
 6. Azar， Broder， Karlin， Upfal， "Balanced Allocations"， SIAM Journal on Computing 29(1)：180-200, 1999。——想知道"为什么只多看一个桶就能把最大负载从 $\ln n/\ln\ln n$ 降到 $\ln\ln n/\ln 2$"，读这一篇；它是 `power_of_two.rs` 那个策略的理论出处。
-7. Mirrokni， Thorup， Zadimoghaddam， "Consistent Hashing with Bounded Loads"， arXiv：1608.01350。——想知道"怎么同时要亲和与均衡"的标准答案，读这一篇； 它的平衡参数 $c=1+\varepsilon$ 就是 `prefix_hash` 策略里那个默认 `load_factor = 1.25`(§3.4.4)。
+7. Mirrokni， Thorup， Zadimoghaddam， "Consistent Hashing with Bounded Loads"， arXiv:1608.01350。——想知道"怎么同时要亲和与均衡"的标准答案，读这一篇； 它的平衡参数 $c=1+\varepsilon$ 就是 `prefix_hash` 策略里那个默认 `load_factor = 1.25`(§3.4.4)。
 8. Little， "A Proof for the Queuing Formula： L = λW"， Operations Research 9(3)：383-387, 1961；以及 Lazowska， Zahorjan， Graham， Sevcik， *Quantitative System Performance*， Prentice-Hall， 1984，"Fundamental Laws" 一章（$R = N/X - Z$）。——想把"makespan 就是吞吐的倒数""闭环并发不会让时延发散" 这两句话做严格，读这两处；§5.2 的 makespan 读法全部建立在它们上面。
-9. Qin et al.， "Mooncake： A KVCache-centric Disaggregated Architecture for LLM Serving"， arXiv：2407.00079。——想看一个生产系统怎么把"KVCache 为中心"的调度做到集群级（含过载时的预测式早拒），读这一篇；它是本仓这条线在规模上的延伸方向。
+9. Qin et al.， "Mooncake： A KVCache-centric Disaggregated Architecture for LLM Serving"， arXiv:2407.00079。——想看一个生产系统怎么把"KVCache 为中心"的调度做到集群级（含过载时的预测式早拒），读这一篇；它是本仓这条线在规模上的延伸方向。
 
 **官方文档与源码**
 

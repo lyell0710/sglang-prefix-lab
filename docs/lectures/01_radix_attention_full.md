@@ -97,18 +97,18 @@
 
 **没有前缀缓存的世界**：Transformer 解码是自回归的，生成第 $t$ 个 token 需要前面所有 token 的 Key/Value 张量（KV）。一条请求进来，引擎先对全部输入 token 做一次前向计算（prefill）把 KV 算出来，然后逐 token 解码。现在考虑真实 serving 流量： 几百个请求共享同一个 2000 token 的系统提示词。没有缓存时，这段完全相同的前缀会被逐请求重算几百遍——每一遍的计算结果（KV）逐位相同。计算是幂等的，重复计算纯属浪费，而且浪费的正是 TTFT（首 token 延迟）里最大的一块：prefill。
 
-SGLang 论文把这条观察写成一句话："KV cache computation depends only on prefix tokens. Therefore， requests with the same prompt prefix can reuse the KV cache， reducing redundant computation and memory usage."（arXiv：2312.07104，§3 开头）。注意论文这句话同时主张了两件事——省计算与省显存；本仓的实验只验证了前者（TTFT 曲线，EXP-P03/P07），显存侧的收益（更大 batch）本仓未测，不外推。
+SGLang 论文把这条观察写成一句话："KV cache computation depends only on prefix tokens. Therefore， requests with the same prompt prefix can reuse the KV cache， reducing redundant computation and memory usage."（arXiv:2312.07104，§3 开头）。注意论文这句话同时主张了两件事——省计算与省显存；本仓的实验只验证了前者（TTFT 曲线，EXP-P03/P07），显存侧的收益（更大 batch）本仓未测，不外推。
 
 ### 2.1 前缀可复用而后缀不可:严格陈述与失效条件
 
-**陈述**：设两条请求的输入 token 序列为 $x_{0..n-1}$ 与 $y_{0..m-1}$，若 $x_i = y_i$ 对所有 $i < k$ 成立，则在同一模型、同一算子序列下，两条请求前 $k$ 个位置的 $K^{(l)}_i， V^{(l)}_i$（所有层 $l$）逐位相同。
+**陈述**：设两条请求的输入 token 序列为 $x_{0..n-1}$ 与 $y_{0..m-1}$，若 $x_i = y_i$ 对所有 $i < k$ 成立，则在同一模型、同一算子序列下，两条请求前 $k$ 个位置的 $K^{(l)}_i, V^{(l)}_i$（所有层 $l$）逐位相同。
 
 **逐步推**（每步注明凭什么合法）：
 
 1. 第 0 层输入 $h^{(0)}_i = \mathrm{Embed}(x_i)$，只依赖 $x_i$ 自己。——embedding 是逐 token 查表，不跨位置。
 2. 归纳假设：$h^{(l)}_i$ 只依赖 $x_{0..i}$。——attention 被 causal mask 截断，位置 $i$ 只看 $\le i$；FFN 与 norm 是逐位置的。
-3. 于是 $K^{(l)}_i = f(h^{(l)}_i， i)$、$V^{(l)}_i = g(h^{(l)}_i)$ 也只依赖 $x_{0..i}$ 与位置下标 $i$。——位置编码（RoPE）只用绝对下标 $i$，而 $i$ 在两条请求里相同（都是从 0 起的前缀）。
-4. 对 $i < k$，$x_{0..i} = y_{0..i}$，故两边的 $h， K， V$ 全部相同。**得证。**
+3. 于是 $K^{(l)}_i = f(h^{(l)}_i, i)$、$V^{(l)}_i = g(h^{(l)}_i)$ 也只依赖 $x_{0..i}$ 与位置下标 $i$。——位置编码（RoPE）只用绝对下标 $i$，而 $i$ 在两条请求里相同（都是从 0 起的前缀）。
+4. 对 $i < k$，$x_{0..i} = y_{0..i}$，故两边的 $h, K, V$ 全部相同。**得证。**
 5. 反向：$i \ge k$ 时 $x_{0..i} \ne y_{0..i}$，第 2 步的依赖关系里含有已分叉的 token，所以**后缀文本即使一样，KV 也全部不同**——一位都不能复用。
 
 **这条论证在哪一步会失效**（四个真实的边界）：
@@ -118,7 +118,7 @@ SGLang 论文把这条观察写成一句话："KV cache computation depends only
 - **状态空间/线性注意力**：没有"每位置一份 KV"这种结构，复用要换成状态快照。
 - **位置偏移**：如果实现把前缀放到非零起始位置（例如把缓存段拼到中间），第 3 步的"位置下标相同"就不成立，RoPE 之后的 K 会不同。前缀复用天然只在**前缀** 上成立，这也是"prefix caching"而不是"substring caching"的原因。
 
-第四条同时解释了 PromptCache 一类"非前缀模块复用"方案为什么必须付出精度代价——SGLang 论文在相关工作里点名了这一点："PromptCache [12] proposes the modular reuse of the KV cache beyond the prefix but can impact accuracy by up to a 43% drop."(arXiv：2312.07104，§7)。本仓不涉及该路线。
+第四条同时解释了 PromptCache 一类"非前缀模块复用"方案为什么必须付出精度代价——SGLang 论文在相关工作里点名了这一点："PromptCache [12] proposes the modular reuse of the KV cache beyond the prefix but can impact accuracy by up to a 43% drop."(arXiv:2312.07104，§7)。本仓不涉及该路线。
 
 ### 2.2 三条贯穿全篇的公理
 
@@ -140,9 +140,9 @@ SGLang 论文把这条观察写成一句话："KV cache computation depends only
 |---|---|---|---|---|
 | 整段 prompt 哈希 | 只有全等命中 | $O(1)$/条 | 简单 | 前缀差一个 token 即全 miss；无部分命中 |
 | 逐 token trie | 任意前缀 | $O(\sum n_i)$ 节点 | 简单 | 节点数爆炸，指针开销远大于载荷 |
-| radix tree（压缩前缀树） | 任意前缀 | 节点数 $O（\#\text{分叉}）$ | 需分裂/合并 | 树维护与并发锁复杂度 |
+| radix tree（压缩前缀树） | 任意前缀 | 节点数 $O(\#\text{分叉})$ | 需分裂/合并 | 树维护与并发锁复杂度 |
 
-SGLang 论文对第三项的说明是："Unlike typical trees， the edges of a radix tree can be labeled not just with single elements but also with sequences of elements of varying lengths， significantly enhancing efficiency."（arXiv：2312.07104，§3 "RadixAttention" 小节）。同一段还写明了两件本仓要反复用到的实现事实： KV 张量"are stored in a non-contiguous， paged layout， where the size of each page is equivalent to one token"；以及逐出策略是"a simple LRU eviction policy that evicts the least recently used **leaf** first. By evicting leaves first， we enable the re-use of their common ancestors until those ancestors become leaves and are also evicted."（着重号为本讲义所加）。**"逐出叶子"这四个字是 §3.5.2 整节的出发点**——它看起来只是一个实现细节，实际上决定了共享前缀的存活语义。
+SGLang 论文对第三项的说明是："Unlike typical trees， the edges of a radix tree can be labeled not just with single elements but also with sequences of elements of varying lengths， significantly enhancing efficiency."（arXiv:2312.07104，§3 "RadixAttention" 小节）。同一段还写明了两件本仓要反复用到的实现事实： KV 张量"are stored in a non-contiguous， paged layout， where the size of each page is equivalent to one token"；以及逐出策略是"a simple LRU eviction policy that evicts the least recently used **leaf** first. By evicting leaves first， we enable the re-use of their common ancestors until those ancestors become leaves and are also evicted."（着重号为本讲义所加）。**"逐出叶子"这四个字是 §3.5.2 整节的出发点**——它看起来只是一个实现细节，实际上决定了共享前缀的存活语义。
 
 ### 2.5 三层"命中"必须分开
 
@@ -162,13 +162,13 @@ SGLang 论文对第三项的说明是："Unlike typical trees， the edges of a 
 
 #### 3.1.1 RadixKey 的三个分量与命名空间代数
 
-把 RadixKey 写成三元组 $(\mathbf{t}， e， s)$：token 序列、extra_key、cache_salt。匹配是"在同一 $(e，s)$ 命名空间内对 $\mathbf{t}$ 求最长公共前缀"。上游把这条语义写进了 `match_prefix` 的 docstring(radix_cache.py：376-390)：
+把 RadixKey 写成三元组 $(\mathbf{t}, e, s)$：token 序列、extra_key、cache_salt。匹配是"在同一 $(e,s)$ 命名空间内对 $\mathbf{t}$ 求最长公共前缀"。上游把这条语义写进了 `match_prefix` 的 docstring(radix_cache.py：376-390)：
 
 > The logical namespace for prefix matching is determined by both the token id sequence and the optional `extra_key` carried by `RadixKey`. Entries that share identical leading token ids but have *different* `extra_key` values are intentionally kept disjoint and never share prefix nodes.
 
 三条推论（本讲义推导）：
 
-1. **隔离是硬的，不是软的**：不同命名空间不是"匹配长度变短"，而是根本不进同一棵子树——`child_key` 把 $(e，s)$ 编进了字典键（radix_cache.py：217）。所以 EXP-P02 的 salt_diff 格测到的是 0 而不是"小一点的命中"。
+1. **隔离是硬的，不是软的**：不同命名空间不是"匹配长度变短"，而是根本不进同一棵子树——`child_key` 把 $(e,s)$ 编进了字典键（radix_cache.py：217）。所以 EXP-P02 的 salt_diff 格测到的是 0 而不是"小一点的命中"。
 2. **salt 是一个可用的实验旋钮**：想在同一负载上制造"人为 miss"的对照臂， 改 salt 比改 token 序列干净——token 序列不变意味着计算量不变，唯一变化的是命中与否。
 3. **salt 的安全语义是时延侧信道防护**：命中带来的 TTFT 差可以被外部观察者用来探测"别人是否问过同样的前缀"，salt 提供硬隔离。这一条属于机制推断，本仓没有做侧信道实测，标注为未核实。
 
@@ -189,7 +189,7 @@ SGLang 论文对第三项的说明是："Unlike typical trees， the edges of a 
 
 `match_prefix` 在下行前做 `key.page_aligned(self.page_size)` (radix_cache.py：419)，`page_aligned` 的实现是 `(matched_tokens // page_size) * page_size`(radix_cache.py：215)——**向下取整到页边界**。于是命中长度从 $k$ 变成 $\lfloor k/p \rfloor \cdot p$，损失 $k \bmod p$ 个 token。
 
-若把 $k \bmod p$ 视作在 $\{0，\dots，p-1\}$ 上近似均匀，期望损失为 $(p-1)/2$ 个 token，相对损失 $\approx (p-1)/(2k)$。取 $p=16$、$k=1792$：期望损失 7.5 token， 相对 0.42%——可忽略。但取 $p=64$、$k=100$（短前缀、大页）：期望损失 31.5， 相对 31.5%——不可忽略。**结论：页粒度的对齐折扣只对短前缀致命**，这正是 "长系统提示词"场景下 vLLM 的 16-token block 与 SGLang 的 page_size=1 差别不大、而在长尾短前缀上差别明显的原因（本讲义推导；本仓 page_size=1 全程，未测 $p>1$， 该折算未经本机验证）。
+若把 $k \bmod p$ 视作在 $\{0,\dots,p-1\}$ 上近似均匀，期望损失为 $(p-1)/2$ 个 token，相对损失 $\approx (p-1)/(2k)$。取 $p=16$、$k=1792$：期望损失 7.5 token， 相对 0.42%——可忽略。但取 $p=64$、$k=100$（短前缀、大页）：期望损失 31.5， 相对 31.5%——不可忽略。**结论：页粒度的对齐折扣只对短前缀致命**，这正是 "长系统提示词"场景下 vLLM 的 16-token block 与 SGLang 的 page_size=1 差别不大、而在长尾短前缀上差别明显的原因（本讲义推导；本仓 page_size=1 全程，未测 $p>1$， 该折算未经本机验证）。
 
 ### 3.2 chat template 三层变换陷阱:thinking 证伪案例全程复盘
 
@@ -263,7 +263,7 @@ attention 本体另计：每层每 token 平均 $2\times 2\times (S/2)\times H\t
 
 **这里必须诚实地记一条冲突**：98 / 91 意味着实测已达到白皮书峰值的约 93%， 而稠密 GEMM 在消费级卡上通常达不到这个比例。至少三种可能：①白皮书 Appendix A Table 2 的 165.2 TFLOPS 不是这一 kernel 组合的适用峰值（例如实际走的累加精度或时钟档与该数字的假设不同）；②本讲义的 FLOP 计数偏高（例如 attention 项的平均长度取法过于粗糙）；③"斜率"本身并不等于"纯 prefill 的每 token 时间"——斜率是 TTFT 的差分，里面可能吸收了随前缀长度变化的其它开销。**本仓没有 kernel 级测量，无法判定是哪一种，标注为未核实**。可以确定的只有方向性结论：8B 的 prefill 在本机上运行在算术界附近，kernel 侧几乎没有可压缩空间，**唯一的大杠杆是把计算整个跳过**——这正是前缀缓存的立足点。
 
-**对照 decode 一步**：decode 读全部 KV，算术强度只有个位数 FLOP/B（与算术界 164 差两个数量级），是带宽/延迟受限。所以同一条请求的两个阶段落在 roofline 的两端：**prefill 靠算力，decode 靠带宽**；前缀缓存只对前者有效。这解释了 SGLang 论文里的那句观察："The speedup is more noticeable for short outputs because KV cache reuse mostly helps reduce the prefix time. For long outputs， because there is not much sharing between different chat sessions and the decoding time dominates， there is almost no speedup."(arXiv：2312.07104，§6.2)。本仓的 output_len 固定 32，正落在"短输出"这一侧，收益因此显著——**这是一个负载定语， 不是模型能力**。
+**对照 decode 一步**：decode 读全部 KV，算术强度只有个位数 FLOP/B（与算术界 164 差两个数量级），是带宽/延迟受限。所以同一条请求的两个阶段落在 roofline 的两端：**prefill 靠算力，decode 靠带宽**；前缀缓存只对前者有效。这解释了 SGLang 论文里的那句观察："The speedup is more noticeable for short outputs because KV cache reuse mostly helps reduce the prefix time. For long outputs， because there is not much sharing between different chat sessions and the decoding time dominates， there is almost no speedup."(arXiv:2312.07104，§6.2)。本仓的 output_len 固定 32，正落在"短输出"这一侧，收益因此显著——**这是一个负载定语， 不是模型能力**。
 
 #### 3.3.3 实测曲线对账(总长 2048,扫 prefix ∈ {0,512,1024,1536,1792},3 seeds)
 
@@ -287,7 +287,7 @@ $$E[W_q] \approx \left(\frac{\rho}{1-\rho}\right)\cdot\left(\frac{c_a^2+c_s^2}{2
 
 1. **客户端逐请求**：流式响应的 `usage.prompt_tokens_details.cached_tokens`（随流返回，与停表同一响应内闭合，§4 走读第 1 段）。逐请求硬校验： on 臂必须恰 = prefix_len，off 臂与 prefix=0 必须恰 = 0（§4 第 4 段）。
 2. **引擎计数器**：`/metrics` 的 `sglang:prefill_effective_tokens_total{mode="device_hit"}` counter， 实测终值 **466,944.0**（raw=data/raw/EXP-P07/20260824T171520_8b_radix_on_metrics.txt， 0.6B 的 EXP-P03 同值复现）。
-3. **协议期望**（纯算术）：每点 16 请求，Σ over prefix∈{512,1024,1536,1792}: $16 \times (512+1024+1536+1792) = 16 \times 4864 = 77{,}824$; × 3 seeds = 233,472;× 2 个并发臂（c1+c8）= **466,944**。prefix=0 点贡献 0。
+3. **协议期望**（纯算术）：每点 16 请求，Σ over prefix∈{512,1024,1536,1792}： $16 \times (512+1024+1536+1792) = 16 \times 4864 = 77{,}824$； × 3 seeds = 233,472；× 2 个并发臂（c1+c8）= **466,944**。prefix=0 点贡献 0。
 
 三方逐 token 相等（0.6B/8B 双复现，EXP-P03/P07 §6）意味着：没有一个 token 的命中是虚报的，也没有协议外的意外命中（预热残留、跨点污染都会破坏等式）。这就是"降幅确实且仅由省掉的 prefill 兑现"这句话的证据形态。
 
@@ -318,7 +318,7 @@ Mattson 等人在 1970 年给出了一次遍历就能算出所有缓存大小命
 
 #### 3.5.2 树形 LRU 的等价性:为什么"只逐出叶子"不是限制(本讲义推导)
 
-SGLang 的逐出不是在一个平坦条目集合上做 LRU，而是**只在叶子上**做： `evict` 从 `self.evictable_leaves` 建堆（radix_cache.py：598-602），弹出最小 priority 的叶子，删掉之后如果父节点变成无子且 `lock_ref == 0`，再把父节点推进堆（radix_cache.py：613-615）。论文对此的表述是"evicts the least recently used **leaf** first"(arXiv：2312.07104，§3)。
+SGLang 的逐出不是在一个平坦条目集合上做 LRU，而是**只在叶子上**做： `evict` 从 `self.evictable_leaves` 建堆（radix_cache.py：598-602），弹出最小 priority 的叶子，删掉之后如果父节点变成无子且 `lock_ref == 0`，再把父节点推进堆（radix_cache.py：613-615）。论文对此的表述是"evicts the least recently used **leaf** first"(arXiv:2312.07104，§3)。
 
 一个自然的疑问：**这个"只看叶子"的限制，会不会让实际逐出顺序偏离真正的 LRU？**
 
@@ -392,7 +392,7 @@ $$D_w(h) + |h| = \underbrace{3\times1536}_{\text{另外 3 个热前缀}} + \unde
 
 #### 3.5.6 真实到达序会把悬崖抹平:Che 近似与它的适用范围
 
-轮转访问是最坏例；真实流量不是。在独立引用模型（IRM）下，Che 等人提出的近似把 LRU 的命中率写成一个极简形式（Fricker， Robert， Roberts， arXiv：1202.3974， 该文给出了这个近似为何准确的数学解释）：对容量 $C$ 的 LRU 缓存，定义**特征时间** $t_C$ 为"恰好有 $C$ 个不同条目被访问所需的时间"，则条目 $i$ 的命中率近似为
+轮转访问是最坏例；真实流量不是。在独立引用模型（IRM）下，Che 等人提出的近似把 LRU 的命中率写成一个极简形式（Fricker， Robert， Roberts， arXiv:1202.3974， 该文给出了这个近似为何准确的数学解释）：对容量 $C$ 的 LRU 缓存，定义**特征时间** $t_C$ 为"恰好有 $C$ 个不同条目被访问所需的时间"，则条目 $i$ 的命中率近似为
 
 $$h_i \approx 1 - e^{-\lambda_i t_C}$$
 
@@ -402,7 +402,7 @@ $$h_i \approx 1 - e^{-\lambda_i t_C}$$
 
 #### 3.5.7 实验构造与实测
 
-**实验构造**(EXP-P05，bench_evict.py)：$H=4， T=2048$，故 $D = 8192 \times (1+cr)$；特意让 $H \cdot T = 8192$ = 最小池位，使 cr=0 时 $D$ 恰压在池边界上，cr 每 +1 把 $D$ 线性外推一个池位。三池（`--max-total-tokens` 8192 / 16384 / 默认 ≈16 万，161671，EXP-P01 启动日志） × 冷流量 cr ∈ {0,1,2,4} × 3 seeds，串行并发 1（隔离排队与 lock_ref 扰动）。
+**实验构造**(EXP-P05，bench_evict.py)：$H=4, T=2048$，故 $D = 8192 \times (1+cr)$；特意让 $H \cdot T = 8192$ = 最小池位，使 cr=0 时 $D$ 恰压在池边界上，cr 每 +1 把 $D$ 线性外推一个池位。三池（`--max-total-tokens` 8192 / 16384 / 默认 ≈16 万，161671，EXP-P01 启动日志） × 冷流量 cr ∈ {0,1,2,4} × 3 seeds，串行并发 1（隔离排队与 lock_ref 扰动）。
 
 **实测**（data/derived/exp_p05_eviction_cliff.csv，seed 间 std 全为 0）：
 
@@ -443,9 +443,9 @@ $$b = 2 \times L \times \mathrm{KVH} \times D \times \mathrm{sizeof(dtype)}$$
 
 ### 3.7 page_size = 1 凭什么可行:分页 KV 的 kernel 侧语义(硬件语义层)
 
-SGLang 论文写明 KV"stored in a non-contiguous， paged layout， where the size of each page is equivalent to one token"(arXiv：2312.07104，§3)。一个 token 一页意味着 attention kernel 每读一个历史 token 都要过一次间接寻址。**为什么这不会把带宽打垮？**
+SGLang 论文写明 KV"stored in a non-contiguous， paged layout， where the size of each page is equivalent to one token"(arXiv:2312.07104，§3)。一个 token 一页意味着 attention kernel 每读一个历史 token 都要过一次间接寻址。**为什么这不会把带宽打垮？**
 
-答案在最后一维的连续性。FlashInfer 把各种 KV 布局统一成块稀疏矩阵，并明确写道： "The last dimension of the KV-Cache remains contiguous (with size of head dimension d， commonly 128 or 256)， maintaining coalesced memory access." (arXiv：2501.01005，§3.2.1)。代入本仓：head_dim = 128、bf16，单个（token， head） 的 K 或 V 是 $128\times2 = 256$ 字节的**连续**块。
+答案在最后一维的连续性。FlashInfer 把各种 KV 布局统一成块稀疏矩阵，并明确写道： "The last dimension of the KV-Cache remains contiguous (with size of head dimension d， commonly 128 or 256)， maintaining coalesced memory access." (arXiv:2501.01005，§3.2.1)。代入本仓：head_dim = 128、bf16，单个（token， head） 的 K 或 V 是 $128\times2 = 256$ 字节的**连续**块。
 
 对照 CUDA 的访存粒度语义：全局内存以 32/64/128 字节的对齐事务服务，且在 compute capability 6.0 及以上，数据访问单元是 32 字节（NVIDIA， "CUDA C++ Best Practices Guide"，Coalesced Access to Global Memory 一节）。256 字节 = 8 个 32 字节扇区，且天然对齐。**所以 page_size=1 付出的代价只是"多一次索引查找"， 而不是"访存变成非合并"**——真正决定合并度的最后一维始终连续。
 
@@ -513,7 +513,7 @@ async def one_request(session, url, model, ids, out_tokens):
 
 角色：全仓统一的 TTFT 停表口径就定义在这 26 行里。三个关键选择： ①`input_ids` 直传（EXP-P02 契约结论）——token 序列完全受控，`cached_tokens` 才能与 prefix_len 逐 token 对账；②停表停在**首个非空 content delta** 到达客户端，不停在 HTTP 首字节（那只是 SSE 响应头，不含 token），也不用 server 侧直方图（要的是含排队+prefill+首 token 解码的用户可感知延迟）；③ `stream_options.include_usage` 让 usage 随流返回，"快了多少"与"命中了多少" 同源。改错会怎样：若停表停在首个 chunk 而不判 `delta.content`，会被 role-only 首 chunk 提前触发，TTFT 系统性偏小；若事后查 /metrics 取命中，并发下无法归属到单个请求，闭环校验（第 4 段）就做不成。
 
-**这个口径与论文口径的差别**（本讲义推导）：SGLang 论文的 latency 是端到端的程序完成时间（arXiv：2312.07104，§6），vLLM 论文用的是 normalized latency（每输出 token 的平均端到端时延，arXiv：2309.06180，§6.1）。本仓用 TTFT， 因为被测机制（省 prefill）只作用在首 token 之前；用端到端会被 decode 段稀释， 用 normalized latency 会把结论变成"输出越短收益越大"这个同义反复。**换口径就换结论，这是读任何 serving 论文时首先要对齐的一件事。**
+**这个口径与论文口径的差别**（本讲义推导）：SGLang 论文的 latency 是端到端的程序完成时间（arXiv:2312.07104，§6），vLLM 论文用的是 normalized latency（每输出 token 的平均端到端时延，arXiv:2309.06180，§6.1）。本仓用 TTFT， 因为被测机制（省 prefill）只作用在首 token 之前；用端到端会被 decode 段稀释， 用 normalized latency 会把结论变成"输出越短收益越大"这个同义反复。**换口径就换结论，这是读任何 serving 论文时首先要对齐的一件事。**
 
 **第 2 段 · 测量点前置：flush 与预热**(scripts/bench_prefix.py：74-91)
 
@@ -845,7 +845,7 @@ P05/P06 全部格 seed 间 std=0，不是"没测出波动"，而是协议确定�
 11. **Q："只逐出叶子"会不会让实际逐出顺序偏离真 LRU？** 在 v0.5.18 的实现下不会。`_match_prefix_helper` 与 `_insert_helper` 对路径上每个节点写同一个时间戳，所以祖先的时间戳不小于任何后代，LRU 最小值落在叶子上（§3.5.2 的命题与证明）。唯一例外是同一次下行里新建的节点， 微秒级差异，不改变逐出次序。
 12. **Q：EXP-P05 的 cr=0 格，$D$ 明明等于池容量，为什么能全命中？** 精算下需求是 8224 而池是 8192，名义上越线 32 个 token。能命中是因为逐出只补缺口（common.py：138）且弹出的是最老的**后缀叶子**（一次释放 520）， 热前缀节点此时不是叶子、也不是最老的（§3.5.4）。**粗模型给对了答案， 理由不完整。**
 13. **Q：如果换成 FIFO 逐出会怎样？** FIFO 不满足包含性质，可能出现 Belady 异常（加大池反而更多 miss； Belady/Nelson/Shedler 1969）。上游确实提供 `FIFOStrategy` (evict_policy.py：26-28)，所以这不是假想问题——用 fifo 时"加池一定不变差"这条直觉失效。本仓未测。
-14. **Q：为什么不用 Belady 的 MIN 做逐出？** MIN 需要知道未来访问序（Belady 1966），在线系统拿不到。它的价值是作为 **上界**：把 MIN 的命中率算出来，可以量化在线策略离最优有多远——SGLang 论文正是这么做的，报告 cache-aware 调度"approaches 96% of the optimal hit rate on average"(arXiv：2312.07104，§6.2)。本仓没有实现 MIN 基线。
+14. **Q：为什么不用 Belady 的 MIN 做逐出？** MIN 需要知道未来访问序（Belady 1966），在线系统拿不到。它的价值是作为 **上界**：把 MIN 的命中率算出来，可以量化在线策略离最优有多远——SGLang 论文正是这么做的，报告 cache-aware 调度"approaches 96% of the optimal hit rate on average"(arXiv:2312.07104，§6.2)。本仓没有实现 MIN 基线。
 15. **Q：命中率能不能不实测、直接算出来？** 原则上能：Mattson 的一次遍历法可以从访问 trace 一次算出所有容量下的命中率 (IBM Systems Journal 9(2)， 1970)。前提是拿得到逐访问的 trace，本仓没有采集 engine 侧访问序，所以只能逐档实测。这是一个明确的工具缺口。
 16. **Q：为什么 prefill 的收益上限不是 100%？** 因为地板 $C$ 存在，而且匹配上限是 $n-1$。即使 $k=n-1$，还要算 1 个 token 的完整前向 + 全部固定开销。8B 上 $C \approx 24$ ms，占 miss TTFT 的 10.5%——这就是 87.5% 的前缀占比只兑现出 77% 降幅的算术来源（§3.3）。
 17. **压力问 Q：466,944 三方相等，是否证明了 TTFT 降幅的因果？** 诚实答：它证明的是**命中账目**分毫不差（没有虚报/漏报的 token），因果归因还需要 off 反例臂（排除其它机制）与曲线的线性形态（斜率稳定）共同支撑。严格的"降幅逐请求分解到 prefill 段"需要 server 侧 per-request 时序（queue_time/prefill_finished_time），本仓用 counter 差分 + 反例臂的组合替代，这是口径上的取舍（theory/03 §3 明示不要拿 client TTFT 直接说"prefill 变快了"）。补一个具体的漏洞：与前缀长度相关但与 prefill 无关的机制，反例臂分离不了；要堵住它需要"前缀相同但强制 miss"的第三臂（`SGLANG_RADIX_FORCE_MISS`），本仓未做（§3.4.1）。
@@ -867,7 +867,7 @@ P05/P06 全部格 seed 间 std=0，不是"没测出波动"，而是协议确定�
 | 5 | SGLang §6.2："The speedup is more noticeable for short outputs... For long outputs... there is almost no speedup" | 本仓 output_len 固定 32（短输出），未扫输出长度 | 不可比，但**方向被本仓的机制账支持**：收益上限 ≈ prefill 占比（§3.3），输出越长 decode 段越占主导。本仓不能主张自己验证了这条 |
 | 6 | PagedAttention §1：既有系统 KV 显存利用率仅 20.4%-38.2% | 本仓**未测显存利用率**（固定池，只看时延与命中） | 不可比。论文测的是"分配了多少 vs 真正用了多少"；本仓的池是显式配置的固定值，不存在预留浪费这个变量 |
 | 7 | PagedAttention §6.4：共享 1-shot 前缀（80 token）吞吐 1.67×，5-shot(341 token)3.58× | 本仓 8B 共享 1792 token 时 TTFT p50 −77%（≈4.3× 加速） | **同向，数值不可直接比**：三处口径差异——论文是吞吐（req/s）本仓是 TTFT；论文前缀 80/341 token 本仓 1792；论文 LLaMA-13B 本仓 Qwen3-8B。共同点是"共享得越多、收益越大"，且都不是线性 |
-| 8 | PagedAttention §7.2：block size 16 是默认，"large enough to efficiently enable... yet small enough to avoid significant internal fragmentation" | 本仓 page_size=1，未做对照 | 两条不同的设计点。本讲义给出的是**折扣公式**(§3.1.3：期望损失 $(p-1)/2$ token)，说明大页只在短前缀上致命——这解释了为什么 16 在长 prompt 场景下够用 |
+| 8 | PagedAttention §7.2：block size 16 是默认，"large enough to efficiently enable... yet small enough to avoid significant internal fragmentation" | 本仓 page_size=1，未做对照 | 两条不同的设计点。本讲义给出的是**折扣公式**（§3.1.3：期望损失 $(p-1)/2$ token），说明大页只在短前缀上致命——这解释了为什么 16 在长 prompt 场景下够用 |
 | 9 | FlashInfer 附录 B：page size 1 的向量稀疏 gather，decode 内 1%、prefill 约 10% 开销 | 本仓全程 page_size=1 且无对照臂，**这项开销已包含在所有数字里** | 无冲突。含义是本仓的 −77% 是**含分页开销的净值**；若把这 10% 也省掉，收益还会更大一点 |
 | 10 | Mattson 1970：满足包含性质的算法命中率随容量单调不减 | EXP-P05 三池：8192 崩得最早、16384 次之、默认全保 | **一致**，而且这不是巧合而是定理的直接后果。反过来说：如果测到"加大池反而更差"，第一反应应当是怀疑协议而不是怀疑理论 |
 | 11 | Sleator-Tarjan 1985：LRU 的竞争比等于缓存大小 $k$，下界由循环访问序达到 | EXP-P05 观察到 hit 1.0 → 0.0625 的阶跃 | **一致**。本仓的构造就是那个下界构造的 token 计价版。把这条对上意味着：实测到的不是实现缺陷，是一条 1985 年的下界 |
@@ -879,7 +879,7 @@ P05/P06 全部格 seed 间 std=0，不是"没测出波动"，而是协议确定�
 
 - **vLLM(automatic prefix caching)**：同思想不同数据结构——vLLM 以固定大小 block 的 hash 链实现前缀复用（block 粒度命中），SGLang radix tree 是 token/page 粒度 + 节点分裂，长尾前缀的命中粒度更细；代价是树结构的维护与锁复杂度。vLLM 的哈希把三个分量串起来：父块哈希、本块的 token 元组、以及 "其它使这个块唯一的值，如 LoRA id、多模态输入哈希、cache salt"（vLLM 官方设计文档 "Automatic Prefix Caching"）——**注意这三个分量与 SGLang 的 RadixKey 三元组几乎一一对应**，只是一个编进哈希、一个编进字典键。两家在 "命名空间隔离"这件事上的语义是相同的。vLLM 只缓存整块（"We only cache full blocks"），这正是 §3.1.3 那条对齐折扣公式的另一种表述。本仓 page_size=1， 未测 page>1 时的对齐折扣（theory/03 §4）。
 - **SGLang 上游 HiCache / hiradix**(mem_cache/hiradix_cache.py)：KV 分层到 host 内存甚至存储，`cached_tokens_total{cache_source=device|host}` 的 host 维度本仓从未触发——单机显存池内的结论，不含分层缓存的换入换出。分层之后 §3.5 的模型要改成多级栈距离（每一级各有各的容量与命中条件）， 这是一个自然但本仓未做的推广。
-- **多副本 serving**：单 worker 结论到了多副本会叠加"前缀→副本映射"这一层（sgl-model-gateway 的字符级近似树与 engine 的 token 树是两棵树），见讲义 02 与 EXP-P06。SGLang 论文附录 A.4 描述的是另一种设计：router 维护 meta-tree，worker 逐出时把事件提交到队列由 router 异步消费（"Should an eviction occur at a worker node， it commits this eviction to a queue， which the router then processes to update the meta-tree during periods of low activity"，arXiv：2312.07104，§A.4）。**被测的 0.3.2 版 gateway 不是这个设计**（它用字符级近似树，不接收 worker 的逐出事件），这是讲义 02 §3.3 那 "两棵树不一致"问题的根源。
+- **多副本 serving**：单 worker 结论到了多副本会叠加"前缀→副本映射"这一层（sgl-model-gateway 的字符级近似树与 engine 的 token 树是两棵树），见讲义 02 与 EXP-P06。SGLang 论文附录 A.4 描述的是另一种设计：router 维护 meta-tree，worker 逐出时把事件提交到队列由 router 异步消费（"Should an eviction occur at a worker node， it commits this eviction to a queue， which the router then processes to update the meta-tree during periods of low activity"，arXiv:2312.07104，§A.4）。**被测的 0.3.2 版 gateway 不是这个设计**（它用字符级近似树，不接收 worker 的逐出事件），这是讲义 02 §3.3 那 "两棵树不一致"问题的根源。
 - **确定性与缓存的互斥面**：上游 `cache_finished_req` 里有 `disable_finished_insert`（确定性模式不插树）——复用与逐 bit 可复现之间存在工程权衡，本仓 temperature=0 的确定性验证（EXP-P01）未开该模式。
 - **本仓刻意没做的三件事**：①显存侧收益（需要变池大小 + 测最大 batch）； ②真实 trace 回放（需要采集或获取生产访问序）；③MIN 基线（需要离线最优）。这三件加起来就是"从机理实验升级为容量规划工具"的完整路径。
 
@@ -887,14 +887,14 @@ P05/P06 全部格 seed 间 std=0，不是"没测出波动"，而是协议确定�
 
 **论文**
 
-1. Zheng， Yin， Xie， Sun， Huang， Yu， Cao， Kozyrakis， Stoica， Gonzalez， Barrett， Sheng， "SGLang： Efficient Execution of Structured Language Model Programs"， arXiv：2312.07104，§3、附录 A.2(Alg. 1)、附录 A.3（Theorem 3.1 及证明）、附录 A.4。——想知道"RadixAttention 到底是什么"、"cache-aware 调度为什么等价于 DFS"、"多副本原设计长什么样"，读这四处；§3 的"evict the least recently used leaf first"一句是本篇 §3.5.2 的出发点。
-2. Kwon， Li， Zhuang， Sheng， Zheng， Yu， Gonzalez， Zhang， Stoica， "Efficient Memory Management for Large Language Model Serving with PagedAttention"， arXiv：2309.06180，§1、§4.1-4.3、§4.4(shared prefix)、§6.4、§7.2(block size)。——想弄清"另一条路线（定长 block + block table + copy-on-write）怎么做前缀共享"以及"块大小该怎么选"，读这几节；与本篇 §3.1.3 的对齐折扣公式对读。
-3. Ye， Chen， Lai， Lin， Zheng， Wang， Chen， Wang， Yu， Ceze 等， "FlashInfer： Efficient and Customizable Attention Engine for LLM Inference Serving"， arXiv：2501.01005，§3.1.1、§3.1.2、§3.2.1、附录 B。——想回答"page_size=1 为什么不把带宽打垮"以及"共享前缀在 kernel 层怎么被利用"，读这四处； §3.2.1 的"last dimension remains contiguous"是本篇 §3.7 的关键句。
-4. Srivatsa， He， Abhyankar， Li， Zhang， "Preble： Efficient Distributed Prompt Scheduling for LLM Serving"， arXiv：2407.00023，§1、§3.2。——想知道"把前缀亲和推到多副本会出什么问题"以及"一个带容量项的路由代价函数长什么样"， 读这两节；它是讲义 02 §3.4 那次证伪的理论对照物。
+1. Zheng， Yin， Xie， Sun， Huang， Yu， Cao， Kozyrakis， Stoica， Gonzalez， Barrett， Sheng， "SGLang： Efficient Execution of Structured Language Model Programs"， arXiv:2312.07104，§3、附录 A.2(Alg. 1)、附录 A.3（Theorem 3.1 及证明）、附录 A.4。——想知道"RadixAttention 到底是什么"、"cache-aware 调度为什么等价于 DFS"、"多副本原设计长什么样"，读这四处；§3 的"evict the least recently used leaf first"一句是本篇 §3.5.2 的出发点。
+2. Kwon， Li， Zhuang， Sheng， Zheng， Yu， Gonzalez， Zhang， Stoica， "Efficient Memory Management for Large Language Model Serving with PagedAttention"， arXiv:2309.06180，§1、§4.1-4.3、§4.4(shared prefix)、§6.4、§7.2(block size)。——想弄清"另一条路线（定长 block + block table + copy-on-write）怎么做前缀共享"以及"块大小该怎么选"，读这几节；与本篇 §3.1.3 的对齐折扣公式对读。
+3. Ye， Chen， Lai， Lin， Zheng， Wang， Chen， Wang， Yu， Ceze 等， "FlashInfer： Efficient and Customizable Attention Engine for LLM Inference Serving"， arXiv:2501.01005，§3.1.1、§3.1.2、§3.2.1、附录 B。——想回答"page_size=1 为什么不把带宽打垮"以及"共享前缀在 kernel 层怎么被利用"，读这四处； §3.2.1 的"last dimension remains contiguous"是本篇 §3.7 的关键句。
+4. Srivatsa， He， Abhyankar， Li， Zhang， "Preble： Efficient Distributed Prompt Scheduling for LLM Serving"， arXiv:2407.00023，§1、§3.2。——想知道"把前缀亲和推到多副本会出什么问题"以及"一个带容量项的路由代价函数长什么样"， 读这两节；它是讲义 02 §3.4 那次证伪的理论对照物。
 5. Mattson， Gecsei， Slutz， Traiger， "Evaluation techniques for storage hierarchies"， IBM Systems Journal 9(2)：78-117, 1970(DOI 10.1147/sj.92.0078)。——想知道"栈距离/重用距离的原始定义"与"为什么 LRU 的命中率随容量单调"， 读这一篇；本篇 §3.5.1 的两条推论全部来自它。
 6. Belady， "A study of replacement algorithms for a virtual-storage computer"， IBM Systems Journal 5(2)：78-101, 1966(DOI 10.1147/sj.52.0078)。——想知道 "最优离线替换（MIN）长什么样、为什么在线系统做不到"，读这一篇；它是 SGLang 论文里"optimal hit rate"那个基线的来源。
 7. Sleator & Tarjan， "Amortized efficiency of list update and paging rules"， CACM 28(2)：202-208, 1985(DOI 10.1145/2786.2793)。——想知道"LRU 最坏能坏到什么程度"以及"为什么轮转访问是最坏输入"，读这一篇；本篇 §3.5.5 把 EXP-P05 接到了它的下界构造上。
-8. Fricker， Robert， Roberts， "A versatile and accurate approximation for LRU cache performance"， arXiv：1202.3974。——想知道"真实流行度分布下 LRU 的命中率曲线为什么是光滑 S 形而不是阶跃"，读这一篇；它给出本篇 §3.5.6 的定量形式与它的 IRM 前提。
+8. Fricker， Robert， Roberts， "A versatile and accurate approximation for LRU cache performance"， arXiv:1202.3974。——想知道"真实流行度分布下 LRU 的命中率曲线为什么是光滑 S 形而不是阶跃"，读这一篇；它给出本篇 §3.5.6 的定量形式与它的 IRM 前提。
 9. Denning， "The working set model for program behavior"， CACM 11(5)：323-333, 1968(DOI 10.1145/363095.363141)。——想把"热集大小"这个直觉概念做严格， 以及理解"为什么按工作集配内存可以避免抖动"，读这一篇；它是 §3.5 那句 "按重用距离配池而不是按热集大小"的反面参照。
 10. Kingman， "The single server queue in heavy traffic"， Proc. Cambridge Phil. Soc. 57(4)：902-904, 1961。——想知道"为什么服务时间降一点、等待时间降很多"， 读这一篇的 VUT 形式；注意它是开环模型，与本仓的闭环并发定义口径不同（§3.3.3 的标注）。
 11. Little， "A Proof for the Queuing Formula： L = λW"， Operations Research 9(3)：383-387, 1961。——想把"并发 = 吞吐 × 时延"这条换算做严格，读这一篇； §4 第 3 段的闭环讨论全部建立在它上面。
