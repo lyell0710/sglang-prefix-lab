@@ -1,516 +1,516 @@
 {
  "summary": {
   "hot_prefix_1024_s2026082401.jsonl": {
-   "sha256": "70056b93967258defb89add292fcf29cd0e182ec8c05f9ab0b1b084372e23eaf",
+   "sha256": "09cfbc3fbd3c400c25177daf838af6bb53dda6417f417368657e766809a882fd",
    "n_probe": 8
   },
   "hot_prefix_1024_s2026082402.jsonl": {
-   "sha256": "8f54cab50bd29db44be1f6f8d9a05ff74b6f433397182f3514f77eb45689549f",
+   "sha256": "1860f08c309412950c40202336f37f3c43941fb2373b7e2d6aa847c5f89f1c34",
    "n_probe": 8
   },
   "hot_prefix_1024_s2026082403.jsonl": {
-   "sha256": "efe53ea6555c27ee80f6481ab4fd686d6132dfc15748989259b9c41649e465ab",
+   "sha256": "4ad2bf37870a2e6adeb6c14cb15bacc3d0f8afa910995e12663152c0d5c80375",
    "n_probe": 8
   },
   "hot_prefix_1792_s2026082401.jsonl": {
-   "sha256": "5163d84ae01edd7f0f73c5432def2b144318bd345d18f1b2f0d05070fdc5180b",
+   "sha256": "96c6e5dcf22d6faa14d10c8c34b6e1f9cdadbba7e8729e7fd70e7166b1cc6961",
    "n_probe": 8
   },
   "hot_prefix_1792_s2026082402.jsonl": {
-   "sha256": "0affbd0b6ca980240c06353b8d82343e66bd2a91b13da9d0ae5ff044672132f1",
+   "sha256": "be3812ce5b9d38f5506806b5da6d34200b29da5ceea22ceb62eba5f89756d1ad",
    "n_probe": 8
   },
   "hot_prefix_1792_s2026082403.jsonl": {
-   "sha256": "affea5fc1165a312feb4a473fbd0a09140f05a38a0a6788c34c6c2a8c3ce7474",
+   "sha256": "a890653b9be1110302f00b15534c938d90879f43a506ed78f9327b9a84b1014e",
    "n_probe": 8
   },
   "unique_control_s2026082401.jsonl": {
-   "sha256": "78ae422cd289bf84a1d576b6747e474b8408960a46a0124f99c6300ca1cb173a",
+   "sha256": "e8bc98b004260d29b1e256ca083d0fc87e0a7c56d5853d89e3713d92f1a59bb5",
    "n_probe": 8
   },
   "unique_control_s2026082402.jsonl": {
-   "sha256": "7593c1189956642e82fd93e4057696f94f94a84aa038ab45ef87e551b0c3ade4",
+   "sha256": "61ebb81bcd204dda75911f2c55e1819cdd1b35606a5bbda6d22800a366069826",
    "n_probe": 8
   },
   "unique_control_s2026082403.jsonl": {
-   "sha256": "7d4e122a0d2f6afef1c6c775bcc44e8dd53e8e52eddb75504e0c7e2b0d05effe",
+   "sha256": "04f9fee5e8b079c5a164cdc39f4920b9df72424c5e8dc310d6accbbed99feabb",
    "n_probe": 8
   }
  },
  "full": {
   "hot_prefix_1024_s2026082401.jsonl": {
-   "sha256": "70056b93967258defb89add292fcf29cd0e182ec8c05f9ab0b1b084372e23eaf",
+   "sha256": "09cfbc3fbd3c400c25177daf838af6bb53dda6417f417368657e766809a882fd",
    "refs": [
     {
      "request_id": "hot_prefix_1024_s2026082401_r0",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a mix of random characters, some code snippets,",
-     "prompt_tokens": 2160,
-     "cached_tokens": null
-    },
-    {
-     "request_id": "hot_prefix_1024_s2026082401_r1",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random characters, symbols,",
-     "prompt_tokens": 2154,
-     "cached_tokens": null
-    },
-    {
-     "request_id": "hot_prefix_1024_s2026082401_r2",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random characters, symbols,",
-     "prompt_tokens": 2169,
-     "cached_tokens": null
-    },
-    {
-     "request_id": "hot_prefix_1024_s2026082401_r3",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random characters, symbols,",
+     "content": "It seems like you've pasted a large, seemingly random or corrupted block of text that includes a mix of programming code snippets, random characters, possibly corrupted data",
      "prompt_tokens": 2164,
      "cached_tokens": null
     },
     {
-     "request_id": "hot_prefix_1024_s2026082401_r4",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random characters, symbols,",
-     "prompt_tokens": 2165,
-     "cached_tokens": null
-    },
-    {
-     "request_id": "hot_prefix_1024_s2026082401_r5",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random characters, symbols,",
+     "request_id": "hot_prefix_1024_s2026082401_r1",
+     "content": "It seems like you've pasted a large, seemingly random or corrupted text block that contains a mix of programming terms, code snippets, random characters, and possibly",
      "prompt_tokens": 2158,
      "cached_tokens": null
     },
     {
+     "request_id": "hot_prefix_1024_s2026082401_r2",
+     "content": "It seems like you've pasted a large, seemingly random or corrupted text block that contains a mix of programming terms, code snippets, random characters, and possibly",
+     "prompt_tokens": 2173,
+     "cached_tokens": null
+    },
+    {
+     "request_id": "hot_prefix_1024_s2026082401_r3",
+     "content": "It seems like the text you've provided is a mix of random characters, possibly corrupted data, or a jumble of code snippets, text fragments, and nons",
+     "prompt_tokens": 2168,
+     "cached_tokens": null
+    },
+    {
+     "request_id": "hot_prefix_1024_s2026082401_r4",
+     "content": "It seems like the text you've provided is a mix of random characters, possibly corrupted data, or a jumble of code snippets, text fragments, and nons",
+     "prompt_tokens": 2169,
+     "cached_tokens": null
+    },
+    {
+     "request_id": "hot_prefix_1024_s2026082401_r5",
+     "content": "It seems like you've pasted a long, seemingly random string of text that includes a mix of programming terms, code snippets, random characters, and possibly some",
+     "prompt_tokens": 2162,
+     "cached_tokens": null
+    },
+    {
      "request_id": "hot_prefix_1024_s2026082401_r6",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random characters, symbols,",
-     "prompt_tokens": 2149,
+     "content": "It seems like the text you've provided is a mix of random characters, possibly corrupted data, or a string of non-sensical code fragments. It includes",
+     "prompt_tokens": 2153,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1024_s2026082401_r7",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random characters, symbols,",
-     "prompt_tokens": 2170,
+     "content": "It seems like you've pasted a large, seemingly random or corrupted block of text that includes a mix of programming code snippets, random characters, possibly some corrupted",
+     "prompt_tokens": 2174,
      "cached_tokens": null
     }
    ]
   },
   "hot_prefix_1024_s2026082402.jsonl": {
-   "sha256": "8f54cab50bd29db44be1f6f8d9a05ff74b6f433397182f3514f77eb45689549f",
+   "sha256": "1860f08c309412950c40202336f37f3c43941fb2373b7e2d6aa847c5f89f1c34",
    "refs": [
     {
      "request_id": "hot_prefix_1024_s2026082402_r0",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The input is a long string of random characters, symbols, and some words",
-     "prompt_tokens": 2153,
+     "content": "It seems like you've pasted a long, seemingly random string of text that includes a mix of programming terms, random characters, possibly some code snippets, and",
+     "prompt_tokens": 2157,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1024_s2026082402_r1",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random characters, symbols,",
-     "prompt_tokens": 2140,
+     "content": "It seems like you've pasted a long, seemingly random string of text that includes a mix of programming terms, random characters, possibly some code snippets, and",
+     "prompt_tokens": 2144,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1024_s2026082402_r2",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random characters, symbols,",
-     "prompt_tokens": 2130,
+     "content": "It seems like the text you've provided is a mix of random characters, possibly corrupted data, or a string of unrelated words and symbols. It might be a",
+     "prompt_tokens": 2134,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1024_s2026082402_r3",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random characters, symbols,",
-     "prompt_tokens": 2151,
+     "content": "It seems like the text you've provided is a mix of random characters, possibly corrupted data, or a string of unrelated words and symbols. It might be the",
+     "prompt_tokens": 2155,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1024_s2026082402_r4",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random characters, symbols,",
-     "prompt_tokens": 2156,
+     "content": "It seems like you've pasted a large, seemingly random or corrupted text block that contains a mix of programming terms, random characters, possibly some code snippets,",
+     "prompt_tokens": 2160,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1024_s2026082402_r5",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random characters, symbols,",
-     "prompt_tokens": 2143,
+     "content": "It seems like you've pasted a long, seemingly random string of text that includes a mix of programming terms, random characters, possibly some code snippets, and",
+     "prompt_tokens": 2147,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1024_s2026082402_r6",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query is a mix of random characters, some words, and phrases that",
-     "prompt_tokens": 2140,
+     "content": "It seems like the text you've provided is a mix of random characters, possibly corrupted data, or a string of unrelated words and symbols. It might be a",
+     "prompt_tokens": 2144,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1024_s2026082402_r7",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The input is a long string of seemingly random characters, symbols, and some",
-     "prompt_tokens": 2137,
+     "content": "It seems like the text you've provided is a mix of random characters, possibly corrupted data, or a string of unrelated words and symbols. It might be the",
+     "prompt_tokens": 2141,
      "cached_tokens": null
     }
    ]
   },
   "hot_prefix_1024_s2026082403.jsonl": {
-   "sha256": "efe53ea6555c27ee80f6481ab4fd686d6132dfc15748989259b9c41649e465ab",
+   "sha256": "4ad2bf37870a2e6adeb6c14cb15bacc3d0f8afa910995e12663152c0d5c80375",
    "refs": [
     {
      "request_id": "hot_prefix_1024_s2026082403_r0",
-     "content": "<think>\nOkay, let's try to figure out what's going on here. The user provided a long string of text that seems to be a mix of code",
-     "prompt_tokens": 2149,
+     "content": "It seems like you've pasted a large block of seemingly random or corrupted text, possibly containing a mix of code snippets, error messages, and other non-",
+     "prompt_tokens": 2153,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1024_s2026082403_r1",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a mix of random characters, some code snippets,",
-     "prompt_tokens": 2166,
+     "content": "It seems like you've pasted a large block of seemingly random or corrupted text, possibly containing a mix of code snippets, error messages, random characters, and",
+     "prompt_tokens": 2170,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1024_s2026082403_r2",
-     "content": "<think>\nOkay, let's try to figure out what's going on here. The user provided a long string of text that seems to be a mix of code",
-     "prompt_tokens": 2158,
+     "content": "It looks like you've pasted a large block of seemingly random or corrupted text, possibly containing a mix of code snippets, error messages, random characters, and",
+     "prompt_tokens": 2162,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1024_s2026082403_r3",
-     "content": "<think>\nOkay, let's try to figure out what's going on here. The user provided a long string of text that seems to be a mix of code",
-     "prompt_tokens": 2155,
+     "content": "It seems like you've pasted a large block of seemingly random or corrupted text, possibly containing a mix of code snippets, error messages, and other non-",
+     "prompt_tokens": 2159,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1024_s2026082403_r4",
-     "content": "<think>\nOkay, let's try to figure out what's going on here. The user provided a long string of text that seems to be a mix of code",
-     "prompt_tokens": 2154,
+     "content": "It seems like you've pasted a large block of seemingly random or corrupted text, possibly containing a mix of code snippets, error messages, and other non-",
+     "prompt_tokens": 2158,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1024_s2026082403_r5",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a mix of random characters, some code snippets,",
-     "prompt_tokens": 2155,
+     "content": "It seems like you've pasted a large block of seemingly random or corrupted text, possibly containing a mix of code snippets, error messages, random characters, and",
+     "prompt_tokens": 2159,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1024_s2026082403_r6",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a mix of random characters, some code snippets,",
-     "prompt_tokens": 2149,
+     "content": "It seems like you've pasted a large block of seemingly random or corrupted text, possibly containing a mix of code snippets, error messages, and other non-",
+     "prompt_tokens": 2153,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1024_s2026082403_r7",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a mix of random characters, some code snippets,",
-     "prompt_tokens": 2146,
+     "content": "It seems like you've pasted a large block of seemingly random or corrupted text, possibly containing a mix of code snippets, error messages, and other non-s",
+     "prompt_tokens": 2150,
      "cached_tokens": null
     }
    ]
   },
   "hot_prefix_1792_s2026082401.jsonl": {
-   "sha256": "5163d84ae01edd7f0f73c5432def2b144318bd345d18f1b2f0d05070fdc5180b",
+   "sha256": "96c6e5dcf22d6faa14d10c8c34b6e1f9cdadbba7e8729e7fd70e7166b1cc6961",
    "refs": [
     {
      "request_id": "hot_prefix_1792_s2026082401_r0",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random characters, symbols,",
-     "prompt_tokens": 2156,
+     "content": "It seems like you've pasted a large, seemingly random or corrupted text block that contains a mix of programming terms, code snippets, random characters, and possibly",
+     "prompt_tokens": 2160,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1792_s2026082401_r1",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random characters, symbols,",
-     "prompt_tokens": 2152,
+     "content": "It seems like you've pasted a large, seemingly random or corrupted text block that contains a mix of programming terms, code snippets, random characters, and possibly",
+     "prompt_tokens": 2156,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1792_s2026082401_r2",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a mix of random characters, some words, and",
-     "prompt_tokens": 2158,
+     "content": "It seems like you've pasted a large, seemingly random or corrupted text block that contains a mix of programming terms, code snippets, random characters, and possibly",
+     "prompt_tokens": 2162,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1792_s2026082401_r3",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random characters, symbols,",
-     "prompt_tokens": 2164,
+     "content": "It seems like you've pasted a long, seemingly random or corrupted string of text that includes a mix of programming terms, code snippets, random characters, and",
+     "prompt_tokens": 2168,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1792_s2026082401_r4",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random characters, symbols,",
-     "prompt_tokens": 2152,
+     "content": "It seems like you've pasted a large, seemingly random or corrupted text block that contains a mix of programming terms, code snippets, random characters, and possibly",
+     "prompt_tokens": 2156,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1792_s2026082401_r5",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random characters, symbols,",
-     "prompt_tokens": 2149,
+     "content": "It seems like you've pasted a long, seemingly random string of text that includes a mix of programming terms, random characters, and possibly some corrupted or malformed",
+     "prompt_tokens": 2153,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1792_s2026082401_r6",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random characters, symbols,",
-     "prompt_tokens": 2146,
+     "content": "It seems like you've pasted a large, seemingly random or corrupted text block that contains a mix of programming terms, code snippets, random characters, and possibly",
+     "prompt_tokens": 2150,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1792_s2026082401_r7",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a mix of random characters, some code snippets,",
-     "prompt_tokens": 2160,
+     "content": "It seems like you've pasted a large, seemingly random or corrupted text block that contains a mix of programming terms, code snippets, random characters, and possibly",
+     "prompt_tokens": 2164,
      "cached_tokens": null
     }
    ]
   },
   "hot_prefix_1792_s2026082402.jsonl": {
-   "sha256": "0affbd0b6ca980240c06353b8d82343e66bd2a91b13da9d0ae5ff044672132f1",
+   "sha256": "be3812ce5b9d38f5506806b5da6d34200b29da5ceea22ceb62eba5f89756d1ad",
    "refs": [
     {
      "request_id": "hot_prefix_1792_s2026082402_r0",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The input is a long string of random characters, symbols, and some words",
-     "prompt_tokens": 2163,
-     "cached_tokens": null
-    },
-    {
-     "request_id": "hot_prefix_1792_s2026082402_r1",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The input they provided is a long string of random characters, symbols, and",
-     "prompt_tokens": 2173,
-     "cached_tokens": null
-    },
-    {
-     "request_id": "hot_prefix_1792_s2026082402_r2",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The input is a long string of seemingly random characters, symbols, and some",
-     "prompt_tokens": 2163,
-     "cached_tokens": null
-    },
-    {
-     "request_id": "hot_prefix_1792_s2026082402_r3",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The input is a long string of random characters, symbols, and some words",
-     "prompt_tokens": 2176,
-     "cached_tokens": null
-    },
-    {
-     "request_id": "hot_prefix_1792_s2026082402_r4",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The input is a long string of seemingly random characters, symbols, and some",
-     "prompt_tokens": 2172,
-     "cached_tokens": null
-    },
-    {
-     "request_id": "hot_prefix_1792_s2026082402_r5",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random characters, symbols,",
-     "prompt_tokens": 2173,
-     "cached_tokens": null
-    },
-    {
-     "request_id": "hot_prefix_1792_s2026082402_r6",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The input is a long string of random characters, symbols, and some words",
+     "content": "It seems like the text you've provided is a mix of random characters, possibly corrupted data, or a string of unrelated words and symbols. It might be a",
      "prompt_tokens": 2167,
      "cached_tokens": null
     },
     {
+     "request_id": "hot_prefix_1792_s2026082402_r1",
+     "content": "It seems like the text you've provided is a mix of random characters, possibly corrupted data, or a string of unrelated words and symbols. It might be a",
+     "prompt_tokens": 2177,
+     "cached_tokens": null
+    },
+    {
+     "request_id": "hot_prefix_1792_s2026082402_r2",
+     "content": "It seems like you've pasted a large, seemingly random or corrupted text block that contains a mix of programming terms, code snippets, random characters, and possibly",
+     "prompt_tokens": 2167,
+     "cached_tokens": null
+    },
+    {
+     "request_id": "hot_prefix_1792_s2026082402_r3",
+     "content": "It seems like you've pasted a large, seemingly random or corrupted text block that contains a mix of programming terms, random characters, possibly some code snippets,",
+     "prompt_tokens": 2180,
+     "cached_tokens": null
+    },
+    {
+     "request_id": "hot_prefix_1792_s2026082402_r4",
+     "content": "It seems like you've pasted a long, seemingly random string of text that includes a mix of programming terms, random characters, possibly some code snippets, and",
+     "prompt_tokens": 2176,
+     "cached_tokens": null
+    },
+    {
+     "request_id": "hot_prefix_1792_s2026082402_r5",
+     "content": "It seems like the text you've provided is a mix of random characters, possibly corrupted data, or a string of unrelated words and symbols. It might be a",
+     "prompt_tokens": 2177,
+     "cached_tokens": null
+    },
+    {
+     "request_id": "hot_prefix_1792_s2026082402_r6",
+     "content": "It seems like the text you've provided is a mix of random characters, possibly corrupted data, or a string of unrelated words and symbols. It might be a",
+     "prompt_tokens": 2171,
+     "cached_tokens": null
+    },
+    {
      "request_id": "hot_prefix_1792_s2026082402_r7",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The input is a long string of random characters, symbols, and some words",
-     "prompt_tokens": 2165,
+     "content": "It seems like you've pasted a long, seemingly random string of text that includes a mix of programming terms, random characters, possibly some code snippets, and",
+     "prompt_tokens": 2169,
      "cached_tokens": null
     }
    ]
   },
   "hot_prefix_1792_s2026082403.jsonl": {
-   "sha256": "affea5fc1165a312feb4a473fbd0a09140f05a38a0a6788c34c6c2a8c3ce7474",
+   "sha256": "a890653b9be1110302f00b15534c938d90879f43a506ed78f9327b9a84b1014e",
    "refs": [
     {
      "request_id": "hot_prefix_1792_s2026082403_r0",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a mix of random characters, some code snippets,",
-     "prompt_tokens": 2164,
+     "content": "It looks like you've pasted a large block of seemingly random or corrupted text, possibly containing a mix of code snippets, error messages, and other non-",
+     "prompt_tokens": 2168,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1792_s2026082403_r1",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a mix of random characters, some code snippets,",
-     "prompt_tokens": 2162,
+     "content": "It seems like you've pasted a large block of seemingly random or corrupted text, possibly containing a mix of programming code, error messages, random characters, and",
+     "prompt_tokens": 2166,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1792_s2026082403_r2",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a mix of random characters, some code snippets,",
-     "prompt_tokens": 2162,
+     "content": "It seems like you've pasted a large block of seemingly random or corrupted text, possibly containing a mix of programming code, error messages, random characters, and",
+     "prompt_tokens": 2166,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1792_s2026082403_r3",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a mix of random characters, some code snippets,",
-     "prompt_tokens": 2158,
+     "content": "It seems like you've pasted a large block of seemingly random or corrupted text, possibly containing a mix of code snippets, error messages, and other non-",
+     "prompt_tokens": 2162,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1792_s2026082403_r4",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a mix of random characters, some code snippets,",
-     "prompt_tokens": 2157,
+     "content": "It seems like you've pasted a large block of seemingly random or corrupted text, possibly containing a mix of code snippets, error messages, and other non-",
+     "prompt_tokens": 2161,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1792_s2026082403_r5",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a mix of random characters, some code snippets,",
-     "prompt_tokens": 2154,
+     "content": "It seems like you've pasted a large block of seemingly random or corrupted text, possibly containing a mix of code snippets, error messages, and other non-",
+     "prompt_tokens": 2158,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1792_s2026082403_r6",
-     "content": "<think>\nOkay, let's try to figure out what's going on here. The user provided a long string of text that seems to be a mix of code",
-     "prompt_tokens": 2152,
+     "content": "It looks like you've pasted a large block of seemingly random or corrupted text, possibly containing a mix of programming code, error messages, random characters, and",
+     "prompt_tokens": 2156,
      "cached_tokens": null
     },
     {
      "request_id": "hot_prefix_1792_s2026082403_r7",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a mix of random characters, some code snippets,",
-     "prompt_tokens": 2152,
+     "content": "It seems like you've pasted a large block of seemingly random or corrupted text, possibly containing a mix of programming code, error messages, random characters, and",
+     "prompt_tokens": 2156,
      "cached_tokens": null
     }
    ]
   },
   "unique_control_s2026082401.jsonl": {
-   "sha256": "78ae422cd289bf84a1d576b6747e474b8408960a46a0124f99c6300ca1cb173a",
+   "sha256": "e8bc98b004260d29b1e256ca083d0fc87e0a7c56d5853d89e3713d92f1a59bb5",
    "refs": [
     {
      "request_id": "unique_control_s2026082401_r0",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query is a mix of random characters, some words, and code snippets",
-     "prompt_tokens": 2162,
+     "content": "It seems like the text you've provided is a mix of random characters, possibly corrupted data, or a string of non-sensical words and symbols. It",
+     "prompt_tokens": 2166,
      "cached_tokens": null
     },
     {
      "request_id": "unique_control_s2026082401_r1",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The input is a long string of seemingly random words, symbols, and some",
-     "prompt_tokens": 2187,
+     "content": "It seems like you've pasted a long, seemingly random string of text that includes a mix of programming terms, code snippets, variable names, and other technical",
+     "prompt_tokens": 2191,
      "cached_tokens": null
     },
     {
      "request_id": "unique_control_s2026082401_r2",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The input is a long string of seemingly random characters, symbols, and some",
-     "prompt_tokens": 2161,
+     "content": "It seems like you've pasted a long string of seemingly random or corrupted text, possibly containing a mix of programming code, random characters, and possibly some corrupted",
+     "prompt_tokens": 2165,
      "cached_tokens": null
     },
     {
      "request_id": "unique_control_s2026082401_r3",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random characters, symbols,",
-     "prompt_tokens": 2150,
+     "content": "It seems like you've pasted a large, seemingly random or corrupted block of text that includes a mix of programming code, random characters, possibly some natural language",
+     "prompt_tokens": 2154,
      "cached_tokens": null
     },
     {
      "request_id": "unique_control_s2026082401_r4",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random characters, symbols,",
-     "prompt_tokens": 2163,
+     "content": "It seems like you've pasted a long, seemingly random string of text that includes a mix of programming terms, code snippets, random characters, and possibly some",
+     "prompt_tokens": 2167,
      "cached_tokens": null
     },
     {
      "request_id": "unique_control_s2026082401_r5",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random characters, symbols,",
-     "prompt_tokens": 2155,
+     "content": "It seems like you've pasted a large block of seemingly random or corrupted text, possibly containing a mix of programming code, random characters, and possibly some corrupted",
+     "prompt_tokens": 2159,
      "cached_tokens": null
     },
     {
      "request_id": "unique_control_s2026082401_r6",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query is a mix of random words, some code snippets, and possibly",
-     "prompt_tokens": 2158,
+     "content": "It seems like the text you've provided is a mix of random characters, possibly corrupted data, or a string of non-sensical words and symbols. It",
+     "prompt_tokens": 2162,
      "cached_tokens": null
     },
     {
      "request_id": "unique_control_s2026082401_r7",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The message they provided is a long string of seemingly random characters, symbols,",
-     "prompt_tokens": 2170,
+     "content": "It seems like you've pasted a large block of seemingly random or corrupted text, possibly containing a mix of programming code, random characters, and possibly some corrupted",
+     "prompt_tokens": 2174,
      "cached_tokens": null
     }
    ]
   },
   "unique_control_s2026082402.jsonl": {
-   "sha256": "7593c1189956642e82fd93e4057696f94f94a84aa038ab45ef87e551b0c3ade4",
+   "sha256": "61ebb81bcd204dda75911f2c55e1819cdd1b35606a5bbda6d22800a366069826",
    "refs": [
     {
      "request_id": "unique_control_s2026082402_r0",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random characters, symbols,",
-     "prompt_tokens": 2158,
-     "cached_tokens": null
-    },
-    {
-     "request_id": "unique_control_s2026082402_r1",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The input is a long string of seemingly random characters, symbols, and some",
-     "prompt_tokens": 2163,
-     "cached_tokens": null
-    },
-    {
-     "request_id": "unique_control_s2026082402_r2",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random characters, symbols,",
-     "prompt_tokens": 2149,
-     "cached_tokens": null
-    },
-    {
-     "request_id": "unique_control_s2026082402_r3",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a mix of random characters, some English words,",
-     "prompt_tokens": 2179,
-     "cached_tokens": null
-    },
-    {
-     "request_id": "unique_control_s2026082402_r4",
-     "content": "<think>\n嗯，用户发来的这个查询看起来有点混乱，里面有很多乱码、特殊符号和不相关的词汇。首先，我需要弄清楚用户",
-     "prompt_tokens": 2165,
-     "cached_tokens": null
-    },
-    {
-     "request_id": "unique_control_s2026082402_r5",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of random characters, symbols, and",
-     "prompt_tokens": 2155,
-     "cached_tokens": null
-    },
-    {
-     "request_id": "unique_control_s2026082402_r6",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random characters, symbols,",
+     "content": "It seems like you've pasted a large block of seemingly random or corrupted text, possibly containing a mix of programming code, random characters, and possibly some corrupted",
      "prompt_tokens": 2162,
      "cached_tokens": null
     },
     {
+     "request_id": "unique_control_s2026082402_r1",
+     "content": "It seems like you've pasted a long, seemingly random string of text that includes a mix of programming terms, random characters, possibly corrupted or malformed code,",
+     "prompt_tokens": 2167,
+     "cached_tokens": null
+    },
+    {
+     "request_id": "unique_control_s2026082402_r2",
+     "content": "It seems like you've pasted a long, seemingly random string of text that includes a mix of programming terms, random characters, possibly some code snippets, and",
+     "prompt_tokens": 2153,
+     "cached_tokens": null
+    },
+    {
+     "request_id": "unique_control_s2026082402_r3",
+     "content": "It seems like you've pasted a large, seemingly random or corrupted text block that contains a mix of programming terms, random characters, possibly some code snippets,",
+     "prompt_tokens": 2183,
+     "cached_tokens": null
+    },
+    {
+     "request_id": "unique_control_s2026082402_r4",
+     "content": "It seems like you've pasted a long, seemingly random string of text that includes a mix of programming terms, random characters, possibly corrupted or malformed code,",
+     "prompt_tokens": 2169,
+     "cached_tokens": null
+    },
+    {
+     "request_id": "unique_control_s2026082402_r5",
+     "content": "It seems like you've pasted a large block of seemingly random or corrupted text, possibly containing a mix of programming code, HTML, random characters, and other",
+     "prompt_tokens": 2159,
+     "cached_tokens": null
+    },
+    {
+     "request_id": "unique_control_s2026082402_r6",
+     "content": "It seems like the text you've provided is a mix of random characters, possibly corrupted data, or a string of non-sensical words and symbols. It",
+     "prompt_tokens": 2166,
+     "cached_tokens": null
+    },
+    {
      "request_id": "unique_control_s2026082402_r7",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query is a mix of random characters, some words in different languages,",
-     "prompt_tokens": 2127,
+     "content": "It seems like the text you've provided is a mix of random characters, possibly corrupted data, or a combination of code snippets, gibberish, and non",
+     "prompt_tokens": 2131,
      "cached_tokens": null
     }
    ]
   },
   "unique_control_s2026082403.jsonl": {
-   "sha256": "7d4e122a0d2f6afef1c6c775bcc44e8dd53e8e52eddb75504e0c7e2b0d05effe",
+   "sha256": "04f9fee5e8b079c5a164cdc39f4920b9df72424c5e8dc310d6accbbed99feabb",
    "refs": [
     {
      "request_id": "unique_control_s2026082403_r0",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random characters, symbols,",
-     "prompt_tokens": 2147,
+     "content": "It seems like you've pasted a long, seemingly random string of text that includes a mix of programming terms, random characters, and possibly some corrupted or malformed",
+     "prompt_tokens": 2151,
      "cached_tokens": null
     },
     {
      "request_id": "unique_control_s2026082403_r1",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a mix of random characters, some words, and",
-     "prompt_tokens": 2171,
+     "content": "It seems like the text you've provided is a mix of random characters, possibly corrupted data, or a combination of code snippets, text fragments, and nonsens",
+     "prompt_tokens": 2175,
      "cached_tokens": null
     },
     {
      "request_id": "unique_control_s2026082403_r2",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random words, symbols,",
-     "prompt_tokens": 2147,
+     "content": "It seems like the text you've provided is a mix of random characters, possibly corrupted data, or a string of non-sensical words and symbols. It",
+     "prompt_tokens": 2151,
      "cached_tokens": null
     },
     {
      "request_id": "unique_control_s2026082403_r3",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The input is a long string of seemingly random characters, symbols, and some",
-     "prompt_tokens": 2158,
+     "content": "It seems like you've pasted a large, seemingly random or corrupted block of text that includes a mix of programming code snippets, random characters, possibly some HTML",
+     "prompt_tokens": 2162,
      "cached_tokens": null
     },
     {
      "request_id": "unique_control_s2026082403_r4",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random characters, symbols,",
-     "prompt_tokens": 2150,
+     "content": "It seems like you've pasted a long string of seemingly random or corrupted text, possibly containing a mix of programming code, random characters, and possibly some corrupted",
+     "prompt_tokens": 2154,
      "cached_tokens": null
     },
     {
      "request_id": "unique_control_s2026082403_r5",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query is a long string of random words, symbols, and some code",
-     "prompt_tokens": 2157,
+     "content": "It seems like you've pasted a long, seemingly random string of text that includes a mix of programming terms, random characters, possibly some code snippets, and",
+     "prompt_tokens": 2161,
      "cached_tokens": null
     },
     {
      "request_id": "unique_control_s2026082403_r6",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random words, symbols,",
-     "prompt_tokens": 2153,
+     "content": "It seems like you've pasted a long string of seemingly random or corrupted text, possibly containing a mix of programming code, random characters, and possibly some corrupted",
+     "prompt_tokens": 2157,
      "cached_tokens": null
     },
     {
      "request_id": "unique_control_s2026082403_r7",
-     "content": "<think>\nOkay, let's try to figure out what the user is asking here. The query they provided is a long string of seemingly random words, symbols,",
-     "prompt_tokens": 2134,
+     "content": "It seems like you've pasted a large, seemingly random or corrupted text block that contains a mix of programming terms, random characters, possibly some code snippets,",
+     "prompt_tokens": 2138,
      "cached_tokens": null
     }
    ]

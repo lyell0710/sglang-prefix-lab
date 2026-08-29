@@ -48,8 +48,10 @@ manifest SHA256（节选，全量见 reference.json summary）：
 
 ## 7. 异常、偏差与开放问题
 
+- **thinking 修正（本记录重要勘误）**：初版 reference 未关 Qwen3 的 enable_thinking，thinking 输出即使 temperature=0 也非确定（位置 78 起分叉）——EXP-S01 §7 已知此坑，S02 初版遗漏。已重采：`chat_template_kwargs={"enable_thinking": False}` 后 parity 逐 token 一致。S04 的 bench 必须同关。
 - 重编码 token 漂移（2048→2139~2156）：`tok.decode(ids)` 再 encode 不精确往返（tokenizer 的 BPE 合并边界），bench_route_pool 的硬 gate 下限取 `prefix_len//2` 正是为此——本 manifest 的 gate 同样以响应 prompt_tokens 为准，不追求精确等长。
 - 8B 加载 + CUDA graph capture 185s（冷启动），S03/S04 的 worker 生命周期管理要预留。
+- worker metrics 默认关（v0.5.18 `enable_metrics=False`），需显式 `--enable-metrics` 否则 /metrics 404——S03 已用此参数重启 worker。
 
 ## 8. 下游影响
 

@@ -16,7 +16,8 @@ from pathlib import Path
 async def one(session, base, model, text, max_tokens=32):
     payload = {"model": model,
                "messages": [{"role": "user", "content": text}],
-               "temperature": 0.0, "max_tokens": max_tokens, "stream": False}
+               "temperature": 0.0, "max_tokens": max_tokens, "stream": False,
+               "chat_template_kwargs": {"enable_thinking": False}}  # Qwen3 thinking 非确定,必须关(EXP-S01 §7)
     async with session.post(base + "/v1/chat/completions", json=payload) as r:
         d = await r.json()
     content = d["choices"][0]["message"]["content"]
