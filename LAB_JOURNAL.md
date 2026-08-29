@@ -98,3 +98,12 @@
 - **踩坑三则**：①Qwen3 enable_thinking 非确定（temperature=0 也分叉），reference 必须关 thinking 重采（EXP-S01 §7 已知，S02 初版遗漏）；②v0.5.18 worker metrics 默认关（enable_metrics=False），不加 --enable-metrics 则 /metrics 404；③protocol 端口字段（18000/18001/30000）是原仓旧值，本仓工装用 28000/28001/40000，以工装为准。
 - **产物**：records/EXP-S02、EXP-S03、scripts/{gen_router_manifest,gen_router_reference,bench_router_matrix,run_router_matrix,aggregate_router_matrix}.py/.sh、data/raw/EXP-S02/（9 manifest + reference）、data/raw/EXP-S04/（54 cell 跑完后全量）。
 - **下一步**：S04 矩阵跑完（~1h）→ aggregate → 写 EXP-S04 记录 → S05（boundary/profile）→ S06（repeatability）→ S07（gap）。
+
+## 2026-08-30 · router 矩阵 S04 主矩阵 + S05 根因归因（交叉复核闭合）
+
+- **做了什么**：①S04 主矩阵 54 cell 后台跑完（~64min），aggregate 出 derived；②发现决定性缺陷：router 响应丢 prompt_tokens_details（cached_tokens 无法从响应验证，EXP-P06 同族）；③worker metrics 差分补证：cache_aware 流量 100/0 钉单卡 + 未命中（delta≈全量）；④S05 正向实验：预热后同前缀再发仍全量重算——cache_aware 在本版本本配置下**命中根本没生效**。
+- **为什么**：交接单任务 6（router 矩阵 S02-S07）是本机最大 GPU 活，择机执行；S04 数据暴露出 cache_aware 的实测缺陷，必须归因才能下结论。
+- **关键数字**：54 cell 全量；cache_aware vs round_robin 高并发 TTFT +53~196%（unique_control c16 +196%、hot_prefix_1024 c4 +96%）；补证 w1 delta 43124/43200（100/0 集中）；预热后第二遍 delta 仍 21575/21600（命中未生效）。
+- **结论**：cache_aware 在 2 卡容量受限 + 低负载场景「既不能分散、也不能命中」——冷启动集中 + 失衡回退不触发（EXP-P06 同机理）+ 预热后仍不命中（新发现）。前缀→副本映射质量比「cache_aware」标签重要。0.6B→8B 完整复现，8B 贵 prefill 放大代价。
+- **产物**：records/EXP-S04、EXP-S05、scripts/{bench_router_matrix,run_router_matrix,aggregate_router_matrix}.py/.sh、data/raw/EXP-S04/（54 cell + derived）。
+- **下一步**：S06（repeatability + 简历草案）→ S07（upstream gap：cache_aware 未命中是否上游 bug，查 issue/PR，无真实缺口则诚实结束）。
