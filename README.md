@@ -119,6 +119,12 @@ bash scripts/svc.sh stop w0
 | [EXP-P06 路由 × 池容量:预注册预测被双向证伪,机理由对照钉死](records/EXP-P06_routing_pool_capacity.md) | 路由双证伪：rr 全命中系奇偶分片巧合；cache-aware 冷启动把热前缀集中到单卡（流量 100/0） |
 | [EXP-P07 8B 收益曲线:0.6B 结论在部署级模型上放大并复现](records/EXP-P07_8b_hit_benefit_curve.md) | 8B 收益曲线：TTFT p50 -77%/-78%，反例臂持平，计数器闭环在 8B 复现 |
 | [EXP-P08 8B 调度:lpm vs fcfs 从"谁更好"变成"分位数再分配"](records/EXP-P08_8b_scheduling_tradeoff.md) | 8B 调度权衡：lpm p50 -62%、命中 +17.7pp、p99 +64%，是分位数再分配而非标量优劣 |
+| [EXP-S02 correctness and workload contract](records/EXP-S02_correctness_workload_contract.md) | router 矩阵不可变 manifest（3×3×192）+ 单 worker 确定性 reference，SHA256 可复现 |
+| [EXP-S03 dual-replica router observability](records/EXP-S03_dual_replica_router_observability.md) | 双 worker + router 可观测性打通，两策略 parity 逐 token 一致 |
+| [EXP-S04 routing policy matrix(主矩阵 54 cell)](records/EXP-S04_routing_policy_matrix.md) | 54 cell 全量：cache_aware 高并发 TTFT +53~196%，worker 计数器差分证 100/0 集中 + 未命中 |
+| [EXP-S05 cache_aware 8B 未命中根因](records/EXP-S05_boundary_profile_attribution.md) | 冷启动集中 + 失衡回退不触发 + 预热后仍不命中，0.6B 跨模型复现 + 8B 放大 |
+| [EXP-S06 repeatability and resume evidence](records/EXP-S06_repeatability_resume_evidence.md) | 可复现性核对 + 简历草案（负结果句带完整边界） |
+| [EXP-S07 upstream gap and PR gate](records/EXP-S07_upstream_gap_pr_gate.md) | cache_aware 缺陷 = 上游 RFC #34513 已承认，诚实结束不造 PR |
 
 ## 测量方法
 

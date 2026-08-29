@@ -23,7 +23,7 @@ GitHub issue/PR 检索（cache_aware 命中失效 + 共享前缀 + 近似树）�
 
 ## 4. 原始数据
 
-- sglang RFC #34513「Agent-aware session affinity without routing keys」
+- sglang RFC #34513「Agent-aware session affinity without routing keys」（终端级证据，查证无 GPU raw）
 - sglang PR #27430「use full conversation for PD chat cache-aware routing」（#26263）
 - `sgl-model-gateway/src/policies/cache_aware.rs` 源码
 

@@ -27,7 +27,7 @@
 ## 4. 原始数据
 
 - `runtime/{w0,w1,router_rr,router_ca}.log`（启动日志，含 policy 与 workers 注册）。
-- parity probe 输出（终端级，与 reference.json 逐 token 比对）。
+- parity probe 输出（终端级证据，与 reference.json 逐 token 比对，未落盘 data/raw/）。
 
 ## 5. 结果
 

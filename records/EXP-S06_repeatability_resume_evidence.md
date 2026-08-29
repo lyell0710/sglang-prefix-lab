@@ -25,9 +25,9 @@
 
 ## 4. 原始数据
 
-- manifest 9 文件 + reference.json（SHA256 见 S02）。
+- manifest 9 文件 + reference.json（SHA256 见 S02，可复现）。
 - `data/raw/EXP-S04/derived_matrix.csv`（18 cell × 3 seeds）。
-- 3 seeds 一致性：S04 各 cell 的 3 seeds p50 差异极小（c1 各 workload 两策略差 <3%）。
+- 3 seeds 一致性核对（终端级证据，未落盘 data/raw/）。
 
 ## 5. 结果
 

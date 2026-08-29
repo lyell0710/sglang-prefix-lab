@@ -25,7 +25,7 @@ S04 遗留：cache_aware 未命中 + 负载失衡，需归因。假设（跑前�
 
 ## 4. 原始数据
 
-- 补证输出（终端级）：`w0 delta=0, w1 delta=43124`。
+- 补证输出（终端级证据）：`w0 delta=0, w1 delta=43124`；预热后第二遍 `w0 delta=21575`。未落盘 data/raw/。
 - 对照：EXP-P06 raw（`data/derived/exp_p06_routing_pool.csv`，cache_aware 流量 100/0）。
 
 ## 5. 结果
