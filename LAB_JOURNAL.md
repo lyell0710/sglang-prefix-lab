@@ -89,3 +89,12 @@
 - **关键数字**：无新测量；数字全部沿用现行 derived，测量条件定语保留。
 - **产物**：LEDGER.md、README.md、scripts/plot_{ttft_curve,eviction_cliff,sched_tradeoff}.py、 figures/fig1-4、CLAUDE.md、docs/PLAN.md。收尾自检 0 FAIL。
 - **下一步**：建远端后推送；router 矩阵按 LEDGER 待办择机执行。
+
+## 2026-08-30 · router 矩阵 S02/S03 + S04 开跑（择机执行落地）
+
+- **做了什么**：①S02：写 gen_router_manifest.py 生成 3 workload × 3 seeds × 192 请求的不可变 manifest（SHA256 可复现）+ gen_router_reference.py 采单 worker 确定性 reference；②S03：双 worker（8B×2，--enable-metrics）+ router 起停，/workers//get_loads//metrics 可采，round_robin 与 cache_aware 两臂 parity probe 逐 token 一致；③S04：写 bench_router_matrix.py（stream 计时 TTFT/TPOT/E2E）+ run_router_matrix.sh（54 cell driver），后台开跑。
+- **为什么**：交接单任务 6（router 矩阵 S02-S07）是本机最大 GPU 活，双卡空闲即择机执行；预注册协议（PLAN_router_matrix + protocol-router-v1）早已写好，S02-S07 是纯执行。
+- **关键数字**：单 cell smoke（cache_aware unique_control c4）TTFT p50 477ms / TPOT p50 18ms / E2E p50 1053ms / 吞吐 3.85 req/s——8B 全 miss prefill 量级合理。
+- **踩坑三则**：①Qwen3 enable_thinking 非确定（temperature=0 也分叉），reference 必须关 thinking 重采（EXP-S01 §7 已知，S02 初版遗漏）；②v0.5.18 worker metrics 默认关（enable_metrics=False），不加 --enable-metrics 则 /metrics 404；③protocol 端口字段（18000/18001/30000）是原仓旧值，本仓工装用 28000/28001/40000，以工装为准。
+- **产物**：records/EXP-S02、EXP-S03、scripts/{gen_router_manifest,gen_router_reference,bench_router_matrix,run_router_matrix,aggregate_router_matrix}.py/.sh、data/raw/EXP-S02/（9 manifest + reference）、data/raw/EXP-S04/（54 cell 跑完后全量）。
+- **下一步**：S04 矩阵跑完（~1h）→ aggregate → 写 EXP-S04 记录 → S05（boundary/profile）→ S06（repeatability）→ S07（gap）。
