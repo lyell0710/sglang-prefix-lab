@@ -107,3 +107,12 @@
 - **结论**：cache_aware 在 2 卡容量受限 + 低负载场景「既不能分散、也不能命中」——冷启动集中 + 失衡回退不触发（EXP-P06 同机理）+ 预热后仍不命中（新发现）。前缀→副本映射质量比「cache_aware」标签重要。0.6B→8B 完整复现，8B 贵 prefill 放大代价。
 - **产物**：records/EXP-S04、EXP-S05、scripts/{bench_router_matrix,run_router_matrix,aggregate_router_matrix}.py/.sh、data/raw/EXP-S04/（54 cell + derived）。
 - **下一步**：S06（repeatability + 简历草案）→ S07（upstream gap：cache_aware 未命中是否上游 bug，查 issue/PR，无真实缺口则诚实结束）。
+
+## 2026-08-30 · router 矩阵 S06/S07 收官（全线闭环，负结果主导）
+
+- **做了什么**：①S06：可复现性核对 + 简历草案（负结果句带边界）；②S07：上游查证——cache_aware 缺陷 = sglang 官方 RFC #34513 已承认（「degrades precisely on the shared-prefix case」），根因在近似树设计（router 自记路由决策、不观察 worker 实际缓存），诚实结束不造 PR。
+- **为什么**：S05 遗留「命中未生效是否上游 bug」，需查证才能下最终结论；S02-S07 是预注册的完整序列，收官即闭环。
+- **关键数字**：无新测量；S07 查证结果——上游 RFC #34513 + cache_aware.rs 源码 + PR #27430。
+- **结论**：router 矩阵（S02-S07）全线收官，总结论=**负结果**：2×4090 容量受限场景下 cache_aware 不提供前缀缓存收益且集中分配劣化，机理闭环 + 上游印证。RESUME_EVIDENCE 缺口闭环，LEDGER 销账。
+- **产物**：records/EXP-S06、EXP-S07、RESUME_EVIDENCE 更新、LEDGER 台账 + 红线 + 路线图销账。
+- **下一步**：本仓待办清零；可选 9 月池（agent_aware 在新版本对照，需升级 sglang）。

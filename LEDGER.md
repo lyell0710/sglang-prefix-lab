@@ -16,6 +16,12 @@
 | EXP-P07 | 8B 收益曲线：0.6B 结论在部署级模型上放大并复现 | 8b_hit_benefit_curve | 2026-08-24 | ✅ | Qwen3-8B：TTFT p50 −77%(c1)/−78%(c8)@prefix 1792/2048；device_hit 逐 token 闭环复现；off 臂平 → data/derived/exp_p07_8b_ttft_vs_prefix.csv |
 | EXP-P08 | 8B 调度：lpm vs fcfs 从"谁更好"变成"分位数再分配" | 8b_scheduling_tradeoff | 2026-08-24 | ✅ | 8B boundary：lpm p50 −62%/hit +17.7pp 但 p99 +64%——分位数再分配，不是标量优劣 → data/derived/exp_p08_8b_fcfs_vs_lpm.csv |
 | EXP-P06 | 路由 × 池容量：预注册预测被双向证伪，机理由对照钉死 | routing_pool_capacity | 2026-08-24 | ✅ | 双预测双证伪：rr@偶数热集=奇偶分片巧合全命中；cache_aware 冷启动全钉一卡而崩（100/0 流量）；hot5 对照坐实 → data/derived/exp_p06_routing_pool.csv |
+| EXP-S02 | correctness and workload contract（router 矩阵前置） | router_manifest_reference | 2026-08-30 | ✅ | 3 workload × 3 seeds × 192 请求不可变 manifest（SHA256 可复现）+ 9×8 确定性 reference → data/raw/EXP-S02/ |
+| EXP-S03 | dual-replica router observability | router_observability | 2026-08-30 | ✅ | /workers//get_loads//metrics 可采（worker 需 --enable-metrics）；两策略 parity 逐 token 一致（关 thinking）→ records/EXP-S03 |
+| EXP-S04 | routing policy matrix（主矩阵 54 cell） | routing_policy_matrix | 2026-08-30 | ✅ | 54 cell 全量；cache_aware 高并发 TTFT +53~196%；router 响应丢 prompt_tokens_details；worker metrics 差分证 cache_aware 100/0 集中 + 未命中 → data/raw/EXP-S04/ |
+| EXP-S05 | cache_aware 8B 未命中根因（boundary + 机理） | cache_aware_rootcause | 2026-08-30 | ✅ | 冷启动集中 + 失衡回退不触发 + 预热后仍不命中（delta 21575/21600）——0.6B 跨模型复现 + 8B 放大 → records/EXP-S05 |
+| EXP-S06 | repeatability and resume evidence | repeatability_resume | 2026-08-30 | ✅ | manifest 可重放 + 简历草案（负结果句带完整边界）→ records/EXP-S06 |
+| EXP-S07 | upstream gap and PR gate | upstream_gap | 2026-08-30 | ✅ | cache_aware 缺陷=上游 RFC #34513 已承认（shared-prefix 崩），诚实结束不造 PR → records/EXP-S07 |
 
 ## 🧭 方法论与措辞红线(诚实度文化)
 
@@ -26,7 +32,7 @@
 | "搭建 SGLang 前缀缓存实验台（单 worker）" | ✅ 已解锁（EXP-P01,08-24）|— |
 | "前缀命中使 TTFT 降 77%/78%"(8B) | ✅ 已解锁 | EXP-P07 全 gate PASS（3 seeds+反例臂+计数器闭环）|
 | "lpm 调度提升命中率/尾延迟"（无定语） | 🚫 永久禁用 | P04（0.6B 反劣）与 P08（8B 分位数再分配）证明须带模型/负载/分位数定语 |
-| "router cache-aware 提升 TTFT/吞吐"类主张 | ⛔ | 本仓只测了容量受限机理格（P06）；性能矩阵属 S02-S07 未执行 |
+| "router cache-aware 提升 TTFT/吞吐"类主张 | 🚫 永久禁用 | S04/S05 实测：2 卡容量受限下 cache_aware 高并发 TTFT +53~196%，冷启动集中 + 预热后仍不命中（上游 RFC #34513 印证），负结果 |
 | "生产级/多机/集群" | 🚫 | 超出硬件与实验范围 |
 
 ## 与相邻项目的边界
@@ -41,6 +47,6 @@
 
 ## 🗺 路线图(未执行)与待办
 
-- 双副本 router 性能矩阵（S02-S07，预注册协议=[docs/PLAN_router_matrix.md](docs/PLAN_router_matrix.md) + [config/protocol-router-v1.json](config/protocol-router-v1.json)）——serving 部署故事的下一阶段，**需整机独占，择机执行**。
+- ~~双副本 router 性能矩阵（S02-S07）~~ —— **已完成（2026-08-30，EXP-S02~S07）**。结论=负结果：cache_aware 在 2 卡容量受限场景既不能分散也不能命中（上游 RFC #34513 印证），round_robin 均衡是奇偶巧合。预注册协议按史料保留。
 - 远端：https://github.com/lyell0710/sglang-prefix-lab（2026-08-26 建仓并公开）。
-- P06 交叉复核位：router 矩阵执行后回填（EXP-P06 §8 已留 fallback 注记）。
+- ~~P06 交叉复核位~~ —— **已回填**（EXP-S05 §8）：0.6B 与 8B 同机理，跨模型复现闭环。
